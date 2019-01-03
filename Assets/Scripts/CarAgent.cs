@@ -4,13 +4,60 @@ using UnityEngine;
 
 public class CarAgent : MonoBehaviour {
 
-	// Use this for initialization
+    public MotorSimulator motor;
+
+    public List<Vector3> waypoints;
+
+    public bool isArrived;
+
 	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+        // **** testing start ****
+
+
+        var wayP = GameObject.FindGameObjectWithTag("waypoints");
+        var n = wayP.transform.childCount;
+
+        waypoints = new List<Vector3>();
+        for (int i=0; i<n; i++)
+            waypoints.Add(wayP.transform.GetChild(i).transform.position - Vector3.up * 3f);
+
+        transform.position = waypoints[0];
+        waypoints.Remove(waypoints[0]);
+        isArrived = false;
+
+
+        // **** testing end ****
+    }
+
+    void Update () {
+
+        // **** testing start ****
+        Debug.Log(angleToTurn());
+
+
+
+
+
+        // **** testing end ****
+
+    }
+
+
+
+    private float angleToTurn()
+    {
+        var heading = waypoints[0] - transform.position;
+        var cross = Vector3.Cross(transform.forward , heading.normalized );
+        return cross.y;
+    }
+
+
+
+
+
+
+
+
+
 }

@@ -37,7 +37,7 @@ public class Network : MonoBehaviour {
         tripPlanner.startColor = Color.green;
         tripPlanner.endColor = Color.cyan;
         tripPlanner.positionCount = 0;
-        first = true;
+        first = false;
         done = false;
     }
 
