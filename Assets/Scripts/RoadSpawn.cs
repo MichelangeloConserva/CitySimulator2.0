@@ -62,7 +62,9 @@ public class RoadSpawn : MonoBehaviour {
         GUI.Label(new Rect(10, 10, 300, 100), string.Format("Edit mode: {0}", editMode), style);
     }
 
-
+    /// <summary>
+    /// Called by the "Spawn chunk" button to create a new chunk
+    /// </summary>
     public void InitialSpawn()
     {
         curBlocks = new List<GameObject>();
