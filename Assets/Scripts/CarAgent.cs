@@ -34,17 +34,7 @@ public class CarAgent : MonoBehaviour {
 
     void Start () {
 
-        // **** testing start ****
-
-        var wayP = GameObject.FindGameObjectWithTag("waypoints");
-        var n = wayP.transform.childCount;
-
-        waypoints = new List<Vector3>();
-        for (int i=0; i<n; i++)
-            waypoints.Add(wayP.transform.GetChild(i).transform.position - Vector3.up * 3f);
-
-        transform.position = waypoints[0]+Vector3.up*2;
-        waypoints.Remove(waypoints[0]);
+        // **** testing start **
         isArrived = false;
 
         aboutToCrash = false;
@@ -58,7 +48,7 @@ public class CarAgent : MonoBehaviour {
         // checking velocity
         rbSpeed = GetComponent<Rigidbody>().velocity.sqrMagnitude;
 
-
+        force = speed;
         turning = AngleToTurn();
         var car = transform.position;
         var wayPos = waypoints[0];
@@ -71,7 +61,13 @@ public class CarAgent : MonoBehaviour {
         {
             lastWaypoint = waypoints[0];
             waypoints.Remove(waypoints[0]);
-            Debug.DrawLine(transform.position+transform.forward, waypoints[0], Color.red, Mathf.Infinity);
+
+            // checking for destination
+            if (waypoints.Count == 0)
+            {
+                isArrived = true;
+                Destroy(this.gameObject);
+            }
             aboutToCrash = false;
         }
 
@@ -129,27 +125,35 @@ public class CarAgent : MonoBehaviour {
                 }
             }
 
-        force = speed;
-        // Braking before turning          braking before arriving to a waypoint where I need to turn
-        if ((Mathf.Abs(turning) > 0.4f) || (IsAboutToTurn() && distance < minDistanceForSlowingDown))
+       
+        
+
+
+        // braking before arriving to a waypoint where I need to turn
+        if ((IsAboutToTurn() && distance < minDistanceForSlowingDown))
         {
             if (rbSpeed > 1f)
             {
-                Debug.Log("Braking");
-                force = -rbSpeed * 15f; // braking
+                force = -(minDistanceForSlowingDown - distance)*rbSpeed; // braking
+            }
+        }
+        // Braking before turning 
+        if ((Mathf.Abs(turning) > 0.4f))
+        {
+            if (rbSpeed > 1f)
+            {
+                force = -rbSpeed; // braking
             }
         }
 
 
 
 
-        // giving power to the car
-        //return;
 
-        // Taking into account the passing of time
+
+        // giving power to the car
         turningForce = turning * motor.turnPower ;
         frontForce = force * motor.enginePower ;
-
         if (turning > minTurn)
             motor.MotorControlling(frontForce, turningForce);
         else if (turning < -minTurn)

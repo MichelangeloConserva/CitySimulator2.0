@@ -863,7 +863,7 @@ Prefab:
     - target: {fileID: 114555581099218092, guid: 35c23973a1733f840ab2cbe8e3ea4c9c,
         type: 2}
       propertyPath: minDistanceForSlowingDown
-      value: 5
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 114545910702199636, guid: 35c23973a1733f840ab2cbe8e3ea4c9c,
         type: 2}

@@ -20,13 +20,14 @@ public class CarsManager : MonoBehaviour {
 	
 	void Update () {
 
-        if (net.done)
-        {
-            var startPos = net.startNode.nodePosition;
-            var curCar = Instantiate(car, startPos+Vector3.up, Quaternion.identity, garage.transform);
-
-            net.done = false;
-        }
-
     }
+
+
+    public void SpawnCar(Vector3 startPos, List<Vector3> wayPoints)
+    {
+        Debug.Log("Spawned car");
+        var curCar = Instantiate(car, startPos + Vector3.up, Quaternion.identity, garage.transform);
+        curCar.GetComponent<CarAgent>().waypoints = wayPoints;
+    }
+
 }

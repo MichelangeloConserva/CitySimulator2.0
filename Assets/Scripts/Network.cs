@@ -9,13 +9,13 @@ public class Network : MonoBehaviour {
     public Transform testDestination;
     public Transform testStart;
     public LineRenderer tripPlanner;
-    public bool first;
-    public bool done;
+    public bool spawn;
 
     [Header("SETTINGS")]
     public float minDistFromNode;
 
     [Header("GAME OBJECTS REQUIRED")]
+    public CarsManager carsManager;
     public RoadSpawn roadSpawn;
     public GameObject sphere;
 
@@ -37,18 +37,14 @@ public class Network : MonoBehaviour {
         tripPlanner.startColor = Color.green;
         tripPlanner.endColor = Color.cyan;
         tripPlanner.positionCount = 0;
-        first = false;
-        done = false;
     }
 
     void Update()
     {
 
         // Testing
-        if (first & Time.time > 15f )
+        if (spawn)
         {
-            Debug.Log("Beginning search");
-            first = false;
 
             startNode = GetNearestNode(testStart.position);
             Instantiate(sphere, startNode.nodePosition + Vector3.up * 2f, Quaternion.identity);
@@ -58,14 +54,16 @@ public class Network : MonoBehaviour {
 
             var pathFinder = new AStar(startNode, endNode);
             var found = pathFinder.PathFinder();
-            var path = pathFinder.path;
+            var path = new List<Vector3>();
+            foreach (NodeStreet n in pathFinder.path)
+                path.Add(n.nodePosition);
 
-            foreach (NodeStreet node in path)
-                tripPlanner.SetPosition(++tripPlanner.positionCount-1, node.nodePosition+ Vector3.up*2f);
+            foreach (Vector3 v in path)
+                tripPlanner.SetPosition(++tripPlanner.positionCount-1, v + Vector3.up*2f);
 
-            done = true;
-            Debug.Log("Finished search");
-            
+            carsManager.SpawnCar(startNode.nodePosition, path);
+
+            spawn = false;
 
         }
     }
@@ -137,6 +135,12 @@ public class Network : MonoBehaviour {
         if (minDistNode == null) { Debug.LogError("No node found",this.gameObject); }
 
         return minDistNode;
+    }
+
+
+    public void spawnCar()
+    {
+        spawn = true;
     }
 
 
