@@ -43,8 +43,6 @@ public class Network : MonoBehaviour {
 
     void Update()
     {
-        if (first && Time.time > 10f)
-            Debug.Log("Hurry");
 
         // Testing
         if (first & Time.time > 15f )
