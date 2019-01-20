@@ -20,12 +20,6 @@ public class Wheel : MonoBehaviour {
     }
 
 
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
     public void Move(float torque)
     {
         wc.motorTorque = torque;
@@ -35,5 +29,10 @@ public class Wheel : MonoBehaviour {
     {
         wc.steerAngle = turnSpeed;
         tire.localEulerAngles = new Vector3(0f, wc.steerAngle, 90f);
+    }
+
+    public void Brake(float brake)
+    {
+        wc.brakeTorque = brake;
     }
 }

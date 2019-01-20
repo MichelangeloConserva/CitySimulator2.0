@@ -38,17 +38,20 @@ public class MotorSimulator : MonoBehaviour {
 
     public void MotorControlling(float torque, float turnSpeed)
     {
-        if (GetComponent<Rigidbody>().velocity.sqrMagnitude > maxSpeed)
-        {
-            torque = -0.1f;
-        }
 
-        if (torque != 0)
+        if (torque > 0)
         {
-            Debug.Log(GetComponent<Rigidbody>().velocity.sqrMagnitude);
+            wheel[0].Brake(0);
+            wheel[1].Brake(0);
+
             //front wheel drive
             wheel[0].Move(torque);
             wheel[1].Move(torque);
+        } else
+        {
+            //front wheel drive
+            wheel[0].Brake(-torque);
+            wheel[1].Brake(-torque);
         }
 
         //front wheel steering

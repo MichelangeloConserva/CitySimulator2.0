@@ -15,11 +15,21 @@ public class CarAgent : MonoBehaviour {
     public float minDistanceForSlowingDown;
     public float speed;
     public float distVision;
-    public bool isArrived;
 
+    public bool isArrived;
     public bool aboutToCrash;
 
     public GameObject debug;
+
+    [Header("Debug variables")]
+    public float turning;
+    public float distance;
+    public float force;
+    public float turningForce;
+    public float frontForce;
+    public float rbSpeed;
+
+
 
 
     void Start () {
@@ -45,33 +55,27 @@ public class CarAgent : MonoBehaviour {
 
     void FixedUpdate()
     {
-        var turning = AngleToTurn();
+        // checking velocity
+        rbSpeed = GetComponent<Rigidbody>().velocity.sqrMagnitude;
+
+
+        turning = AngleToTurn();
         var car = transform.position;
         var wayPos = waypoints[0];
         wayPos.y = 0;
         car.y = 0;
-        var distance = Vector3.Distance(car, wayPos);
-        float force;
+        distance = Vector3.Distance(car, wayPos);
 
         // Arriving to the waypoint and deleting it
         if (distance < minDistance)
         {
             lastWaypoint = waypoints[0];
             waypoints.Remove(waypoints[0]);
-            Debug.DrawLine(transform.position, waypoints[0], Color.red, Mathf.Infinity);
+            Debug.DrawLine(transform.position+transform.forward, waypoints[0], Color.red, Mathf.Infinity);
             aboutToCrash = false;
         }
 
-        
-       
-        // checking condition for slowing down
-        bool shouldSlow = (IsAboutToTurn() && distance < minDistanceForSlowingDown) ||  // getting near to a turning point
-                          (Mathf.Abs(turning) > 0.2f);                                  // completely wrong direction
 
-        if (shouldSlow)
-            force = speed / 3;
-        else
-            force = speed;
 
         // Raycast hit manual way
         var coneLeft = Vector3.RotateTowards(transform.forward, -transform.right, Mathf.PI / 6, 2 * Mathf.PI) * distVision;
@@ -125,18 +129,41 @@ public class CarAgent : MonoBehaviour {
                 }
             }
 
+        force = speed;
+        // Braking before turning          braking before arriving to a waypoint where I need to turn
+        if ((Mathf.Abs(turning) > 0.4f) || (IsAboutToTurn() && distance < minDistanceForSlowingDown))
+        {
+            if (rbSpeed > 1f)
+            {
+                Debug.Log("Braking");
+                force = -rbSpeed * 15f; // braking
+            }
+        }
+
+
 
 
         // giving power to the car
         //return;
-        if (turning > minTurn)
-            motor.MotorControlling(force * motor.enginePower, turning * motor.turnPower);
-        else if (turning < -minTurn)
-            motor.MotorControlling(force * motor.enginePower, turning * motor.turnPower);
 
+        // Taking into account the passing of time
+        turningForce = turning * motor.turnPower ;
+        frontForce = force * motor.enginePower ;
+
+        if (turning > minTurn)
+            motor.MotorControlling(frontForce, turningForce);
+        else if (turning < -minTurn)
+            motor.MotorControlling(frontForce, turningForce);
+        else
+            motor.MotorControlling(2 * frontForce, 0);
 
 
     }
+
+
+
+
+
 
     /// <summary>
     /// Positive value: turn right, Negative value: turn left
