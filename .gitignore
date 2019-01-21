@@ -11,6 +11,7 @@ sysinfo.txt
 /Assets/AssetStoreTools*
 *.apk
 *.unitypackage
+*.meta
 CitySimulator/Assets/Scenes/SampleScene.unity
  
 # ===================================== #
