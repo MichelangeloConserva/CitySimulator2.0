@@ -158,8 +158,6 @@ public class RoadSpawn : MonoBehaviour {
         //Disabilitiamo l'editing
         isEditing = false;
 
-
-
         Vector3[] snapMask = pathCreator.path.CalculateEvenlySpacedPoints(snapSpacing);
         if (snapPointList.Count > 0) { return; }
         foreach (Vector3 p in snapMask)
@@ -180,7 +178,20 @@ public class RoadSpawn : MonoBehaviour {
 
         //abilitiamo l'editing
         isEditing = true;
+
+
     }
+
+
+    public void DisableSnaps()
+    {
+        foreach (GameObject g in snapPointList)
+        {
+            g.GetComponent<SphereCollider>().enabled = false;
+            g.GetComponent<MeshRenderer>().enabled = false;
+        }
+    }
+
 
 
 

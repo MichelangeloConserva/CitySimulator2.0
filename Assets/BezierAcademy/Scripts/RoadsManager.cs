@@ -117,7 +117,6 @@ public class RoadsManager : MonoBehaviour {
             {
                 Vector3 forward = curStreet[i - 1] - curStreet[i - 2];
                 Vector3 left = new Vector3(-forward.z, 0, forward.x);
-                Debug.DrawLine(curStreet[i], curStreet[i] - left.normalized, Color.red, Mathf.Infinity);
                 curStreet[i] = curStreet[i] - left.normalized;
             }
         }
@@ -142,7 +141,15 @@ public class RoadsManager : MonoBehaviour {
 
     public void CompleteNetwork()
     {
+
+       // Create the navmesh
        CreateNavMeshPoints();
+
+        // Disabling the snaps used for the nav mesh creation
+        foreach (GameObject g in roads.Keys)
+            if (roads[g] && g)
+                g.GetComponent<RoadSpawn>().DisableSnaps();
+
     }
 
 
@@ -192,8 +199,6 @@ public class RoadsManager : MonoBehaviour {
         {
             var otherSh = waypoint.GetComponent<IsCollidingScript>().otherSphere;
             var otherRoadSpawn = otherSh.GetComponentInParent<RoadSpawn>();
-            Debug.DrawLine(Vector3.zero, otherRoadSpawn.NextWaypoint(otherSh).transform.position, Color.black, Mathf.Infinity);
-            Debug.DrawLine(Vector3.zero, otherRoadSpawn.NextWaypoint(otherRoadSpawn.NextWaypoint(otherSh)).transform.position, Color.green, Mathf.Infinity);
 
             var nextOneToLink = otherRoadSpawn.NextWaypoint(otherSh);
 
