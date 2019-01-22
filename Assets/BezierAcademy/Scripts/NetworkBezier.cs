@@ -42,18 +42,25 @@ public class NetworkBezier : MonoBehaviour {
         // Testing
         if (spawn)
         {
-            Debug.Log(networkNodes.Count);
+            // checking for null node
             foreach (NodeStreet n in networkNodes)
-                Debug.DrawLine(Vector3.up*5, n.nodePosition, Color.red, Mathf.Infinity);
+                if (n.availableStreets.Count == 0)
+                {
+                    Instantiate(sphere, n.nodePosition + Vector3.up * 3f, Quaternion.identity);
+                } else
+                {
+                    foreach(ArcStreet a in n.availableStreets)
+                    Debug.DrawLine(n.nodePosition, a.arrivalNode.nodePosition + Vector3.up/2, Color.black, Mathf.Infinity);
+
+                }
+
+            spawn = false;
 
 
             //Debug.Log(prova.availableStreets.Count);
             startNode = GetNearestNode(testStart.position);
-            Instantiate(sphere, startNode.nodePosition + Vector3.up * 2f, Quaternion.identity);
-
 
             endNode = GetNearestNode(testDestination.position);
-            Instantiate(sphere, endNode.nodePosition + Vector3.up * 2f, Quaternion.identity);
 
             var pathFinder = new AStar(startNode, endNode);
             var found = pathFinder.PathFinder();
@@ -61,13 +68,16 @@ public class NetworkBezier : MonoBehaviour {
             foreach (NodeStreet n in pathFinder.path)
                 path.Add(n.nodePosition);
 
+            Debug.Log(found);
+            Debug.Log(path.Count);
+
 
             foreach (Vector3 v in path)
                 tripPlanner.SetPosition(++tripPlanner.positionCount-1, v + Vector3.up*2f);
 
-            carsManager.SpawnCar(startNode.nodePosition, path);
+            //carsManager.SpawnCar(startNode.nodePosition, path);
 
-            spawn = false;
+            
 
         }
     }
@@ -85,7 +95,7 @@ public class NetworkBezier : MonoBehaviour {
             var node = networkNodes[i];
 
             var dist = Vector3.Distance(node.nodePosition, pos);
-            if (dist < Vector3.Distance(minDistNode.nodePosition, pos) )
+            if (dist < Vector3.Distance(minDistNode.nodePosition, pos)  && node.availableStreets.Count > 0 )
                 minDistNode = node;
 
             if (dist < minDistFromNode)

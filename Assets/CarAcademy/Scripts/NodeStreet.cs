@@ -33,12 +33,14 @@ public class NodeStreet {
 
 
     // A* START
-    public List<NodeStreet> GetNeighbors()
+    public Dictionary<NodeStreet,float> GetNeighborsAndDistance()
     {
-        var list = new List<NodeStreet>();
+        var list = new Dictionary<NodeStreet, float>();
         foreach (ArcStreet a in availableStreets)
-            list.Add(a.arrivalNode);
-
+        {
+            list.Add(a.arrivalNode, a.lenght);
+        }
+         
         return list;
     }
     // A* END

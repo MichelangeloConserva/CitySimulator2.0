@@ -63,13 +63,16 @@ public class RoadsManager : MonoBehaviour {
 
                     // Instantiating the ball who represents the cross
                     var curCross = Instantiate(crossSphere, wayPoints[snap].transform.position+Vector3.up, Quaternion.identity);
-                    var colls = Physics.OverlapSphere(curCross.transform.position, 1, LayerMask.GetMask("cross"));
+                    curCross.GetComponent<CrossNodeHandler>().InitializeNode();
+                    var colls = Physics.OverlapSphere(curCross.transform.position, 1, LayerMask.GetMask("crossSphere"));
                     if (colls.Length > 0)
                         foreach(Collider c in colls)
                             if (c.gameObject != curCross)
                             {
                                 curCross.transform.position = (curCross.transform.position + c.gameObject.transform.position) / 2f;
                                 curCross.transform.position -= curCross.transform.position.y * Vector3.up;
+                                Debug.Log(c.gameObject.GetComponent<CrossNodeHandler>().crossNode);
+                                curCross.GetComponent<CrossNodeHandler>().crossNode = c.gameObject.GetComponent<CrossNodeHandler>().crossNode;
                                 Destroy(c.gameObject);
                             }
 
@@ -123,7 +126,7 @@ public class RoadsManager : MonoBehaviour {
 
         foreach (Vector3 v in curStreet)
         {
-            Instantiate(sferettaBlu, v, Quaternion.identity);
+            Instantiate(sferettaBlu, v, Quaternion.identity, transform);
         }
 
         curArray = new Vector3[curStreet.Count];
@@ -150,184 +153,122 @@ public class RoadsManager : MonoBehaviour {
             if (roads[g] && g)
                 g.GetComponent<RoadSpawn>().DisableSnaps();
 
+        // Creating the network
+        CreateNetwork();
+
+
+        // A* calculation
+        nb.spawn = true;
+
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    /*          SECOND PART TO BE IMPLEMENTED AS SOON AS WE FINISH WITH THE NAV MESH           */
-
-    //public void CompleteNetwork()
-    //{
-
-    //    int k = 0;
-    //    foreach(GameObject g in roads.Keys)
-    //    {
-    //        var curSpawner = g.GetComponent<RoadSpawn>();
-    //        curSpawner.FillBack();
-    //        if (k++ == 0)
-    //            CrossMergeProva(curSpawner);
-    //    }
-
-
-    //    // calling the line render and A* calculation
-    //    nb.spawn = true;
-    //}
-
-
-    public void CrossMergeProva(RoadSpawn rs)
+    NodeStreet curStarter;
+    public void CreateNetwork()
     {
-        startNode = new NodeStreet(rs.snapPointList[0].transform.position);
-        LinkToNext(rs.snapPointList[0], startNode);
-    }
-
-    public void LinkToNext(GameObject waypoint, NodeStreet lastNode)
-    {
-        var curRs = waypoint.GetComponentInParent<RoadSpawn>();
-
-
-        // At the cross
-        if (waypoint.GetComponent<IsCollidingScript>().isColliding)
+        foreach (List<Vector3> street in listOfStreets)
         {
-            var otherSh = waypoint.GetComponent<IsCollidingScript>().otherSphere;
-            var otherRoadSpawn = otherSh.GetComponentInParent<RoadSpawn>();
+            curStarter = new NodeStreet(street[0]);
+            LinkToNext(curStarter,1,street);
+        }
+    }
 
-            var nextOneToLink = otherRoadSpawn.NextWaypoint(otherSh);
+    // TODO : Il problema è che le strade non si riescono a collegare bene con il nodo dell'incrocio
+    // Ricorda anche che le strade hanno gli ultimi punti in posizioni differenti a seconda se sono prima o dopo dell'incrocio
 
-            if (otherRoadSpawn.snapPointList.Count > 1 && nextOneToLink != null)  // at least two nodes to link
-            {
+    public void LinkToNext(NodeStreet lastNode, int index, List<Vector3> street)
+    {
+        if (index >= street.Count)
+            return;
 
-                // Creating network links
-                var newNode = new NodeStreet(nextOneToLink.transform.position);
-                var curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
+
+        if (index == (int)(street.Count / 2))
+            Instantiate(sferettaBlu, street[index] + Vector3.up, Quaternion.identity);
+
+
+        Collider[] checkForCross = new Collider[0];
+        if (index > 0)
+        {
+            Vector3 forward = street[index] - street[index - 1];
+            checkForCross = Physics.OverlapSphere(street[index] + forward, 0.1f, LayerMask.GetMask("crossSphere"));
+        }
+
+        // No cross found
+        if (checkForCross.Length == 0)
+        {
+            var newNode = new NodeStreet(street[index]);
+            var curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
+            curStreet.lenght = Vector3.Distance(lastNode.nodePosition, newNode.nodePosition);
+            curStreet.AddNode(newNode);
+            lastNode.AddStreet(curStreet);
+
+            // adding to the network
+            nb.networkNodes.Add(lastNode);
+            nb.arcStreets.Add(curStreet);
+
+
+            nb.networkNodes.Add(lastNode);
+            nb.arcStreets.Add(curStreet);
+
+            if (index + 1 < street.Count)
+                LinkToNext(newNode, index + 1, street);
+            else
+            {   // adding the last to the first
+                nb.networkNodes.Add(newNode);
+
+                lastNode = newNode;
+                newNode = curStarter;
+                curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
+                curStreet.lenght = Vector3.Distance(lastNode.nodePosition, newNode.nodePosition);
                 curStreet.AddNode(newNode);
                 lastNode.AddStreet(curStreet);
 
                 // adding to the network
-                nb.networkNodes.Add(lastNode);
                 nb.arcStreets.Add(curStreet);
 
-                curRs.snapPointList.Remove(waypoint); // removing the current waypoint
-                LinkToNext(nextOneToLink, newNode);  // making the next waypoint link
             }
-
-
-            // getting the next waypoint
-            nextOneToLink = curRs.NextWaypoint(waypoint);
-
-            if (curRs.snapPointList.Count > 1 && nextOneToLink != null)  // at least two nodes to link
-            {
-
-                // Creating network links
-                var newNode = new NodeStreet(nextOneToLink.transform.position);
-                var curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
-                curStreet.AddNode(newNode);
-                lastNode.AddStreet(curStreet);
-
-                // adding to the network
-                nb.networkNodes.Add(lastNode);
-                nb.arcStreets.Add(curStreet);
-
-
-                LinkToNext(nextOneToLink, newNode);  // making the next waypoint link
-            }
-
-        }  // just straight
+        }
         else
         {
 
-            // getting the next waypoint
-            var nextOneToLink = curRs.NextWaypoint(waypoint);
+            // Connecting the last one to the current node
+            var newNode = new NodeStreet(street[index]);
+            var curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
+            curStreet.lenght = Vector3.Distance(lastNode.nodePosition, newNode.nodePosition);
+            curStreet.AddNode(newNode);
+            lastNode.AddStreet(curStreet);
 
-            if (curRs.snapPointList.Count > 1 && nextOneToLink != null)  // at least two nodes to link
-            {
+            // adding to the network
+            nb.networkNodes.Add(lastNode);
+            nb.arcStreets.Add(curStreet);
 
-                // Creating network links
-                var newNode = new NodeStreet(nextOneToLink.transform.position);
-                var curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
-                curStreet.AddNode(newNode);
-                lastNode.AddStreet(curStreet);
-
-                // adding to the network
-                nb.networkNodes.Add(lastNode);
-                nb.arcStreets.Add(curStreet);
+            nb.networkNodes.Add(lastNode);
+            nb.arcStreets.Add(curStreet);
 
 
-                //waypoint.transform.position += Vector3.up;
-                curRs.snapPointList.Remove(waypoint); // removing the current waypoint
-                LinkToNext(nextOneToLink, newNode);  // making the next waypoint link
-            }
-            else if (curRs.snapPointList.Count > 0)
-            {
-                var curStreet = new ArcStreet(lastNode.nodePosition, startNode.nodePosition);
-                curStreet.AddNode(startNode);
-                lastNode.AddStreet(curStreet);
 
-                // adding to the network
-                nb.networkNodes.Add(lastNode);
-                nb.arcStreets.Add(curStreet);
+            // Connecting the current to the node in the cross
+            newNode = checkForCross[0].GetComponent<CrossNodeHandler>().crossNode;
+            curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
+            curStreet.lenght = Vector3.Distance(lastNode.nodePosition, newNode.nodePosition);
+            curStreet.AddNode(newNode);
+            lastNode.AddStreet(curStreet);
 
+            // adding to the network
+            nb.networkNodes.Add(lastNode);
+            nb.arcStreets.Add(curStreet);
 
-                //waypoint.transform.position += Vector3.up;
-                curRs.snapPointList.Remove(waypoint); // removing the current waypoint
+            nb.networkNodes.Add(lastNode);
+            nb.arcStreets.Add(curStreet);
 
-            }
+            // giving the reference of the node in the cross
+            LinkToNext(newNode, index + 1, street);
+            
+
         }
     }
 
 
 
-
-
-
-
-
-    /*var otherSh = waypoint.GetComponent<IsCollidingScript>().otherSphere;
-            var otherWaypoints = otherSh.GetComponent<IsCollidingScript>().BeforeAndAfterTheCollisionPoint();
-
-
-            if (curRs.snapPointList.Count > 1 && otherWaypoints!=null)  // at least two nodes to link
-            {
-
-                // getting the next waypoint
-                var nextOnesToLink = new List<GameObject>
-                {
-                    curRs.NextWaypoint(waypoint),
-                    //otherWaypoints[0],
-                    //otherWaypoints[1]
-                };
-
-                // Creating network links
-                foreach (GameObject nextOneToLink in nextOnesToLink)
-                {
-                    var newNode = new NodeStreet(nextOneToLink.transform.position);
-                    var curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
-                    curStreet.AddNode(lastNode);
-                    lastNode.AddStreet(curStreet);
-
-                    // adding to the network
-                    nb.networkNodes.Add(lastNode);
-                    nb.arcStreets.Add(curStreet);
-
-
-                    //waypoint.transform.position += Vector3.up;
-                    nextOneToLink.GetComponentInParent<RoadSpawn>().snapPointList.Remove(waypoint); // removing the current waypoint
-                    LinkToNext(nextOneToLink, newNode);  // making the next waypoint link
-                }
-
-            }
-            else if (curRs.snapPointList.Count > 0)
-            {
-                curRs.snapPointList.Remove(waypoint); // removing the current waypoint which is the last one
-            }*/
 
 
 

@@ -189,6 +189,7 @@ public class RoadSpawn : MonoBehaviour {
         {
             g.GetComponent<SphereCollider>().enabled = false;
             g.GetComponent<MeshRenderer>().enabled = false;
+            g.GetComponent<IsCollidingScript>().enabled = false;
         }
     }
 
