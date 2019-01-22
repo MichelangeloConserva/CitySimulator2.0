@@ -47,7 +47,6 @@ public class NetworkBezier : MonoBehaviour {
                 Debug.DrawLine(Vector3.up*5, n.nodePosition, Color.red, Mathf.Infinity);
 
 
-
             //Debug.Log(prova.availableStreets.Count);
             startNode = GetNearestNode(testStart.position);
             Instantiate(sphere, startNode.nodePosition + Vector3.up * 2f, Quaternion.identity);
@@ -62,13 +61,11 @@ public class NetworkBezier : MonoBehaviour {
             foreach (NodeStreet n in pathFinder.path)
                 path.Add(n.nodePosition);
 
-            
-
 
             foreach (Vector3 v in path)
                 tripPlanner.SetPosition(++tripPlanner.positionCount-1, v + Vector3.up*2f);
 
-            //carsManager.SpawnCar(startNode.nodePosition, path);
+            carsManager.SpawnCar(startNode.nodePosition, path);
 
             spawn = false;
 

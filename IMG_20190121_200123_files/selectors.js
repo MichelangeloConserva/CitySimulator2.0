@@ -1,0 +1,2 @@
+define(["require","exports","modules/clean/redux/types","modules/clean/redux/selectors"],function(e,t,r,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var u=function(e){return n.getStateAtNamespace(e,r.METADATA_UPLOAD_INFO_NAMESPACE_KEY)};t.getUploadInfo=function(e){return u(e)}});
+//# sourceMappingURL=selectors.min.js-vfl0F3G3a.map

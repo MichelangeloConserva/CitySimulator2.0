@@ -1,0 +1,359 @@
+/*! @generated */
+
+/* -- app_store_lite/app_row/index.web.css */
+/* Base styling that applies to all platforms. */
+.int-app-row {
+    font-family: 'AtlasGrotesk', sans-serif;
+    min-width: inherit;
+    width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+        justify-content: space-between;
+    -ms-flex-direction: row;
+        flex-direction: row;
+    margin-bottom: 24px;
+}
+.int-app-row-body {
+    margin-right: 24px;
+}
+.int-app-row-title {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+        flex-direction: row;
+}
+.int-app-row-app-name {
+    margin-top: 0;
+    margin-bottom: 4px;
+}
+.int-app-row-app-icon {
+    max-width: 16px;
+    min-width: 16px;
+
+    max-height: 16px;
+    min-height: 16px;
+    margin-right: 8px;
+}
+.int-app-row-description {
+    padding-left: 24px;
+}
+.int-app-row-actions {
+    min-width: 92px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    -ms-flex-direction: column;
+        flex-direction: column;
+    -ms-flex-pack: center;
+        justify-content: center;
+}
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.int-app-row-loading-anim {
+    animation: rotating 2s linear infinite;
+}
+/* web specific content */
+
+/* -- app_store_lite/categorized_apps_list/index.web.css */
+/* Base styling that applies to all platforms. */
+.int-categorized-apps {
+    font-family: 'AtlasGrotesk', sans-serif;
+}
+.int-categorized-apps-title {
+    margin: 32px 0 32px 0;
+}
+/* web specific content */
+
+/* -- avatar_popover_content/index.web.css */
+.int-avatar-popover-content {
+    font-family: 'Atlas Grotesk', sans-serif;
+}
+
+.int-section-container {
+    padding: 10px 12px;
+    border-bottom: 1px solid #E6E8EB;
+}
+
+.int-section-container:last-child {
+    border-bottom: 0;
+}
+
+/*content wrapper*/
+
+.int-avatar-popover-content-wrapper-container {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+        justify-content: center;
+    width: 100%;
+}
+
+.int-avatar-popover-content-wrapper-arrow {
+    border: 5px solid transparent;
+    border-bottom-color: #E6E8EB;
+    left: 50%;
+    margin-left: -5px;
+    position: absolute;
+}
+
+.int-avatar-popover-content-wrapper-content {
+    -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+    border-radius: 2px;
+    border: 1px solid #E6E8EB;
+    box-shadow: 0 8px 16px rgba(27, 39, 51, 0.08);
+    background-color: #FFF;
+    margin-top: 10px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+/*seen state section*/
+
+.int-seen-state-section {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+}
+
+.int-seen-state-section-avatar-container {
+}
+
+.int-seen-state-section-info-container {
+    margin-left: 7px;
+}
+
+.int-seen-state-section-display-name {
+    color: #1B2733;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.int-seen-state-section-seen-state {
+    color: #637282;
+    font-size: 12px;
+    line-height: 14px;
+
+}
+
+/*chat section*/
+
+.int-chat-section {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.int-chat-section-item {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    margin-bottom: 5px;
+}
+
+.int-chat-section-item:hover {
+    cursor: pointer;
+    background-color: rgb(247, 249, 250);
+}
+
+.int-chat-section-item:last-child {
+    margin-bottom: 0;
+}
+
+.int-chat-section-item-chat-message {
+    color: #1B2733;
+    font-size: 12px;
+    line-height: 19px;
+}
+
+.int-chat-section-item-image {
+    width: 16px;
+    height: 16px;
+    margin-right: 9px;
+}
+
+/* -- facepile/facepile/index.web.css */
+.int-facepile-members {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.int-facepile {
+  display: inline-block;
+}
+
+.int-facepile-inner {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row-reverse;
+      flex-direction: row-reverse;
+  font-weight: inherit;
+}
+
+.int-facepile-container {
+  display: inline-block;
+  font-weight: inherit;
+}
+
+.int-facepile-shadow-wrapper {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  text-align: center;
+  border-radius: 50%;
+  perspective: 1px;
+}
+
+.int-facepile-image {
+  display: block;
+  min-width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  font-weight: inherit;
+}
+
+/* web specific content */
+
+/* -- facepile/facepile_tooltip/index.web.css */
+.int-facepile-tooltip-container {
+  display: inline-block;
+}
+
+.int-facepile-tooltip-content-container {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+      justify-content: center;
+  width: 100%;
+}
+
+.int-facepile-tooltip-content {
+  border-radius: 2px;
+  color: #fff;
+  font-family: 'AtlasGrotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 10px;
+  padding: 5px 10px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.int-facepile-tooltip-content-arrow {
+  border: 5px solid transparent;
+  left: 50%;
+  margin-left: -5px;
+  position: absolute;
+}
+
+/* web specific content */
+
+/* -- facepile/positioned_portal/index.web.css */
+.int-positioned-portal-wrapper {
+  display: inline-block;
+}
+
+.int-positioned-portal-content {
+  position: fixed;
+  display: inline-block;
+  z-index: 10001;
+}
+
+/* web specific content */
+
+/* -- input_row/index.web.css */
+/* Base styling that applies to all platforms. */
+.int-input-row {
+    border: none;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+        flex-direction: row;
+    -ms-flex-pack: justify;
+        justify-content: space-between;
+}
+.int-input-row-label {
+    height: 32px;
+    float: left;
+    line-height: 32px;
+    font-size: 14px;
+    display: -ms-flexbox;
+    display: flex;
+}
+.int-input-row-input {
+    padding: 0px 0px 10px 10px;
+    width: 300px;
+}
+.int-input-row-input TextArea {
+    resize: none;
+}
+/* web specific content */
+
+/* -- link_with_message_text_box/index.web.css */
+/* Base styling that applies to all platforms. */
+.int-link-with-message {
+  width: 300px;
+  text-align: left;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+.int-link-with-message::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+.int-link-with-message-link-text {
+    padding-top: 5px;
+}
+.int-link-with-message-textarea {
+    width: 260px;
+    resize: none;
+    border: none;
+}
+/* web specific content */
+.int-link-with-message {
+    border: 1px solid #C1C7CD;
+    font-size: 14px;
+    line-height: 30px;
+    padding: 0 15px;
+}
+
+/* -- share_form_body/index.web.css */
+/* Base styling that applies to all platforms. */
+.int-share-form {
+    font-family: 'AtlasGrotesk', sans-serif;
+    padding: 10px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+        flex-direction: column;
+}
+.int-share-form-dropdown-menu {
+    width: 300px;
+}
+.int-share-form-title {
+    font-size: 24px;
+}
+.int-share-form-button {
+    margin: 5px;
+}
+.int-share-form-buttons {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction:row;
+        flex-direction:row;
+    -ms-flex-pack: end;
+        justify-content: flex-end;
+}
+/* web specific content */

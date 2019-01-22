@@ -1,0 +1,406 @@
+/*! @generated */
+
+/* -- annotation_creation_layer/index.web.css */
+.annotation-creation-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.created-annotations {
+  z-index: 1;
+}
+
+.placeholder-annotation-overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+/* -- create_signature_modal/index.web.css */
+.create-signature-modal {
+    height: 294px;
+    width: 560px;
+
+    display: -ms-flexbox;
+
+    display: flex;
+}
+
+.mc-modal-body {
+    height: 100%;
+}
+
+.create-signature-modal-header {
+    display: -ms-flexbox;
+    display: flex;
+
+    height: 58px;
+    width: 560px;
+
+    -ms-flex-pack: start;
+
+        justify-content: flex-start;
+    -ms-flex-align: center;
+        align-items: center;
+}
+
+.create-signature-modal-title {
+    display: -ms-flexbox;
+    display: flex;
+
+    color: #637282;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+
+    margin-left: 16px;
+}
+
+.create-signature-modal-overlay,
+.create-signature-modal-overlay.mc-modal-overlay {
+    z-index: 100000;
+}
+
+/* -- create_signature_modal_footer/index.web.css */
+.create-signature-modal-footer {
+    display: -ms-flexbox;
+    display: flex;
+
+    height: 58px;
+    width: 560px;
+
+    background-color: #f7f9fa;
+
+    -ms-flex-pack: end;
+
+        justify-content: flex-end;
+    -ms-flex-align: center;
+        align-items: center;
+}
+
+.create-signature-modal-done-button,
+.create-signature-modal-done-button.mc-button {
+    margin-right: 16px;
+}
+
+/* -- date_form_field/index.web.css */
+.date-form-field {
+  height: 100%;
+  width: 100%;
+}
+
+.date-form-field .date-form-field-button {
+  background: none;
+  height: 100%;
+  width: 100%;
+
+  color: #1b2733;
+  text-align: center;
+
+  border-radius: 0;
+}
+
+.date-form-field .date-form-field-button:hover {
+  background: none;
+}
+
+.date-form-field .date-form-field-button:focus {
+  box-shadow: none;
+}
+
+.date-form-field .date-form-field-picker {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* -- document_annotation/index.web.css */
+.document-annotation {
+    cursor: pointer;
+    position: absolute;
+    visibility: visible;
+    border: 1px solid;
+
+    &:focus {
+        box-shadow: 0 0 0 3px #99c6f3;
+    }
+}
+
+.document-annotation-body {
+    position: absolute;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    height: 100%;
+    width: 100%;
+}
+
+.document-annotation-handle {
+    position: absolute;
+    height: 8px;
+    width: 8px;
+    border: 1px;
+    border-radius: 100%;
+}
+
+.document-annotation-cancel {
+    cursor: pointer;
+    position: absolute;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    -ms-flex-pack: center;
+        justify-content: center;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    font-size: 10px;
+    height: 16px;
+    width: 16px;
+    top: calc(50% - 8px);
+    right: -30px;
+    border: 1px solid;
+    border-radius: 100%;
+    background-color: inherit;
+    border-color: inherit;
+}
+
+/* -- document_annotation_handles/index.web.css */
+.document-annotation-handle {
+  position: absolute;
+  height: 8px;
+  width: 8px;
+  border: 1px;
+  border-radius: 100%;
+  background-color: inherit;
+}
+
+/* -- document_annotation_placeholder/index.web.css */
+.document-annotation-placeholder {
+    cursor: crosshair;
+    position: absolute;
+    visibility: visible;
+    border: 1px solid;
+}
+
+/* -- field_tooltip/index.web.css */
+.esignature-field-tooltip {
+  position: absolute;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-align: center;
+      align-items: center;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 1;
+}
+
+.esignature-field-tooltip__content {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  padding: 20px 16px;
+  border-radius: 4px;
+  background-color: #536170;
+  color: #fff;
+  font-family: 'AtlasGrotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  white-space: nowrap;
+}
+
+.esignature-field-tooltip__arrow {
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+
+  border-top: 8px solid #536170;
+}
+
+.esignature-participant-dropdown .mc-dropdown-button {
+  min-width: 120px;
+  margin-left: 8px;
+  background-color: #637282;
+  color: #fff;
+  font-weight: 300;
+  border-color: transparent;
+}
+
+.esignature-participant-dropdown .mc-dropdown-button-content {
+  padding-right: 24px;
+}
+
+.esignature-participant-dropdown .mc-dropdown-button .mc-button-content::before {
+  border-top-color: #fff;
+}
+
+.esignature-participant-dropdown .mc-menu {
+  min-width: 120px;
+}
+
+.esignature-participant-dropdown-option {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.esignature-participant-dropdown-option__circle {
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* -- form_field_button/index.web.css */
+.signature-form-field-button.mc-button {
+    height: 100%;
+    width: 100%;
+}
+.signature-form-field-button.mc-button:focus {
+    outline: none;
+}
+.signature-form-field-button.mc-button .mc-button-content {
+    display: -ms-flexbox;
+    display: flex;
+}
+.signature-form-field-button.mc-button svg {
+    color: white;
+}
+
+/* -- signature_creation_text_field/index.web.css */
+@import url('https://fonts.googleapis.com/css?family=Kristi');
+
+.signature-creation-text-input,
+.signature-creation-text-input.mc-input {
+    height: 180px;
+    width: 100%;
+
+    border-width: 1px 0 1px 0;
+    border-radius: 0;
+    font-family: Kristi;
+    font-size: 48px;
+    text-align: center;
+
+    display: -ms-flexbox;
+
+    display: flex;
+
+    z-index: 1;
+}
+
+.signature-creation-text-input:-ms-input-placeholder {
+    font-size: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.signature-creation-text-input::placeholder {
+    font-size: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.signature-creation-text-canvas {
+    display: none;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 0;
+}
+
+/* -- signature_form_field/index.web.css */
+.signature-form-field {
+    height: 100%;
+    width: 100%;
+}
+
+/* Override to make sure mc-popover elements fill their container*/
+
+.signature-form-field .mc-popover {
+    height: 100%;
+    width: 100%;
+}
+
+.signature-form-field .mc-popover-trigger {
+    height: 100%;
+    width: 100%;
+}
+
+.signature-form-field .mc-popover-content-menu {
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.signature-form-field img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+/* -- static_field/index.web.css */
+.esignature-static-field {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    color: white;
+    height: 100%;
+    color: white;
+    border: 1px solid;
+    border-radius: 5px;
+}
+
+/* -- text_form_field/index.web.css */
+.text-form-field {
+    height: 100%;
+    width: 100%;
+
+    display: -ms-flexbox;
+
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    -ms-flex-pack: center;
+        justify-content: center;
+}
+
+.text-form-input {
+    display: -ms-flexbox;
+    display: flex;
+    height: 100%;
+    width: 100%;
+
+    border: none;
+    border-radius: 0;
+    text-align: center;
+}
+
+.text-form-input:focus {
+    border: none;
+    outline: none;
+}
+
+.text-form-canvas {
+    display: none;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 0;
+}
+
+.text-form-icon {
+    min-width: 32px;
+}

@@ -27,6 +27,11 @@ public class RoadSpawn : MonoBehaviour {
     public List<GameObject> snapPointList = new List<GameObject>();
 
 
+    // to get back in the network creation
+    public List<GameObject> backWaypoints;
+    public bool back = false;
+
+
 
 
     private void Start()
@@ -215,10 +220,15 @@ public class RoadSpawn : MonoBehaviour {
         for (int i = 0; i < snapPointList.Count-1; i++)  // TODO : Handle this in a better way
             if (snapPointList[i] == waypoint)
                 return snapPointList[i + 1];
-        Debug.Log("Next null");
+
         return null;
     }
 
+    public void FillBack()
+    {
+        for (int i = snapPointList.Count - 1; i >= 0; i--)
+            snapPointList.Add(snapPointList[i]);
+    }
 
 
 

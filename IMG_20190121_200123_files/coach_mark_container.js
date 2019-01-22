@@ -1,0 +1,2 @@
+define(["require","exports","react","classnames"],function(e,r,a,c){"use strict";function n(e){var r=c("sc-comment-editor-coach-mark-container",e.className);return a.createElement("div",{className:r},e.children)}Object.defineProperty(r,"__esModule",{value:!0}),r.CoachMarkContainer=n});
+//# sourceMappingURL=coach_mark_container.min.js-vflM7caPY.map

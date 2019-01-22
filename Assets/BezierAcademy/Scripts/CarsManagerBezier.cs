@@ -21,6 +21,8 @@ public class CarsManagerBezier : MonoBehaviour {
         Debug.Log("Spawned car");
         var curCar = Instantiate(car, startPos + Vector3.up, Quaternion.identity, garage.transform);
         curCar.GetComponent<CarAgent>().waypoints = wayPoints;
+        for (int i = wayPoints.Count - 1; i >= 0; i--)
+            curCar.GetComponent<CarAgent>().waypoints.Add(wayPoints[i]);
     }
 
 }

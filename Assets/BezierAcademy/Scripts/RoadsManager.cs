@@ -4,9 +4,28 @@ using UnityEngine;
 
 public class RoadsManager : MonoBehaviour {
 
+
+    public GameObject sferettaBlu;
+    public GameObject crossSphere;
+
+
     public GameObject road;
     Dictionary<GameObject, bool> roads = new Dictionary<GameObject, bool>();
     GameObject toRemove;
+
+    NodeStreet startNode;
+
+    int lenghtCurStreet;
+    Vector3[] curArray;
+    List<Vector3> curList = new List<Vector3>();
+    List<List<Vector3>> listOfStreets = new List<List<Vector3>>();
+    List<Vector3> curStreet = new List<Vector3>();
+
+    List<NodeStreet> nodes = new List<NodeStreet>();
+
+
+
+
 
 
     public NetworkBezier nb;
@@ -30,26 +49,136 @@ public class RoadsManager : MonoBehaviour {
         }
     }
 
-    public void CompleteNetwork()
+    public void CreateNavMeshPoints()
     {
-
-        int k = 0;
-        foreach(GameObject g in roads.Keys)
+        listOfStreets = new List<List<Vector3>>();
+        curStreet = new List<Vector3>();
+        foreach (GameObject road in roads.Keys)
         {
-            var curSpawner = g.GetComponent<RoadSpawn>();
-            if (k++ == 0)
-                CrossMergeProva(curSpawner);
+            var wayPoints = road.GetComponent<RoadSpawn>().snapPointList;
+            for (int snap = 0; snap < wayPoints.Count; snap++)
+            {
+                if (wayPoints[snap].GetComponent<IsCollidingScript>().isColliding)
+                {
+
+                    // Instantiating the ball who represents the cross
+                    var curCross = Instantiate(crossSphere, wayPoints[snap].transform.position+Vector3.up, Quaternion.identity);
+                    var colls = Physics.OverlapSphere(curCross.transform.position, 1, LayerMask.GetMask("cross"));
+                    if (colls.Length > 0)
+                        foreach(Collider c in colls)
+                            if (c.gameObject != curCross)
+                            {
+                                curCross.transform.position = (curCross.transform.position + c.gameObject.transform.position) / 2f;
+                                curCross.transform.position -= curCross.transform.position.y * Vector3.up;
+                                Destroy(c.gameObject);
+                            }
+
+
+                    FinishCurStreet();
+                }
+                else
+                {
+                    if (snap + 1 < wayPoints.Count)
+                    {
+                        Vector3 forward = wayPoints[snap + 1].transform.position - wayPoints[snap].transform.position;
+                        Vector3 left = new Vector3(-forward.z, 0, forward.x);
+                        curStreet.Add(wayPoints[snap].transform.position - left.normalized / 2);
+                    }
+                    else
+                    {
+                        Vector3 forward = wayPoints[snap].transform.position - wayPoints[snap - 1].transform.position;
+                        Vector3 left = new Vector3(-forward.z, 0, forward.x);
+                        curStreet.Add(wayPoints[snap].transform.position - left.normalized / 2);
+                    }
+                }
+            }
+            FinishCurStreet();
+        }
+    }
+
+
+    public void FinishCurStreet()
+    {
+        var wayPoints = road.GetComponent<RoadSpawn>().snapPointList;
+        lenghtCurStreet = curStreet.Count;
+        for (int i = lenghtCurStreet - 1; i >= 0; i--)
+        {
+            curStreet.Add(curStreet[i]);
+        }
+        for (int i = lenghtCurStreet; i < curStreet.Count; i++)
+        {
+            if (i + 1 < curStreet.Count)
+            {
+                Vector3 forward = curStreet[i + 1] - curStreet[i];
+                Vector3 left = new Vector3(-forward.z, 0, forward.x);
+                curStreet[i] = curStreet[i] - left.normalized;
+            }
+            else
+            {
+                Vector3 forward = curStreet[i - 1] - curStreet[i - 2];
+                Vector3 left = new Vector3(-forward.z, 0, forward.x);
+                Debug.DrawLine(curStreet[i], curStreet[i] - left.normalized, Color.red, Mathf.Infinity);
+                curStreet[i] = curStreet[i] - left.normalized;
+            }
         }
 
+        foreach (Vector3 v in curStreet)
+        {
+            Instantiate(sferettaBlu, v, Quaternion.identity);
+        }
 
-        // calling the line render and A* calculation
-        nb.spawn = true;
+        curArray = new Vector3[curStreet.Count];
+        curStreet.CopyTo(curArray);
+        curList = new List<Vector3>();
+        foreach (Vector3 v in curArray)
+        {
+            curList.Add(v);
+        }
+        listOfStreets.Add(curList);
+        curStreet.Clear();
     }
+
+
+
+    public void CompleteNetwork()
+    {
+       CreateNavMeshPoints();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /*          SECOND PART TO BE IMPLEMENTED AS SOON AS WE FINISH WITH THE NAV MESH           */
+
+    //public void CompleteNetwork()
+    //{
+
+    //    int k = 0;
+    //    foreach(GameObject g in roads.Keys)
+    //    {
+    //        var curSpawner = g.GetComponent<RoadSpawn>();
+    //        curSpawner.FillBack();
+    //        if (k++ == 0)
+    //            CrossMergeProva(curSpawner);
+    //    }
+
+
+    //    // calling the line render and A* calculation
+    //    nb.spawn = true;
+    //}
 
 
     public void CrossMergeProva(RoadSpawn rs)
     {
-        var startNode = new NodeStreet(rs.snapPointList[0].transform.position);
+        startNode = new NodeStreet(rs.snapPointList[0].transform.position);
         LinkToNext(rs.snapPointList[0], startNode);
     }
 
@@ -66,7 +195,6 @@ public class RoadsManager : MonoBehaviour {
             Debug.DrawLine(Vector3.zero, otherRoadSpawn.NextWaypoint(otherSh).transform.position, Color.black, Mathf.Infinity);
             Debug.DrawLine(Vector3.zero, otherRoadSpawn.NextWaypoint(otherRoadSpawn.NextWaypoint(otherSh)).transform.position, Color.green, Mathf.Infinity);
 
-            // getting the next waypoint
             var nextOneToLink = otherRoadSpawn.NextWaypoint(otherSh);
 
             if (otherRoadSpawn.snapPointList.Count > 1 && nextOneToLink != null)  // at least two nodes to link
@@ -82,17 +210,9 @@ public class RoadsManager : MonoBehaviour {
                 nb.networkNodes.Add(lastNode);
                 nb.arcStreets.Add(curStreet);
 
-
-                //waypoint.transform.position += Vector3.up;
+                curRs.snapPointList.Remove(waypoint); // removing the current waypoint
                 LinkToNext(nextOneToLink, newNode);  // making the next waypoint link
             }
-            else if (otherRoadSpawn.snapPointList.Count > 0)
-            {
-            }
-
-
-
-
 
 
             // getting the next waypoint
@@ -112,12 +232,7 @@ public class RoadsManager : MonoBehaviour {
                 nb.arcStreets.Add(curStreet);
 
 
-                //waypoint.transform.position += Vector3.up;
                 LinkToNext(nextOneToLink, newNode);  // making the next waypoint link
-            }
-            else if (curRs.snapPointList.Count > 0)
-            {
-                curRs.snapPointList.Remove(waypoint); // removing the current waypoint which is the last one
             }
 
         }  // just straight
@@ -147,7 +262,18 @@ public class RoadsManager : MonoBehaviour {
             }
             else if (curRs.snapPointList.Count > 0)
             {
-                curRs.snapPointList.Remove(waypoint); // removing the current waypoint which is the last one
+                var curStreet = new ArcStreet(lastNode.nodePosition, startNode.nodePosition);
+                curStreet.AddNode(startNode);
+                lastNode.AddStreet(curStreet);
+
+                // adding to the network
+                nb.networkNodes.Add(lastNode);
+                nb.arcStreets.Add(curStreet);
+
+
+                //waypoint.transform.position += Vector3.up;
+                curRs.snapPointList.Remove(waypoint); // removing the current waypoint
+
             }
         }
     }

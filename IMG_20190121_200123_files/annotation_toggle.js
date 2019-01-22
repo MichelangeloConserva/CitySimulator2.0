@@ -1,0 +1,2 @@
+define(["require","exports","react","spectrum_comments/comment/annotation_label"],function(e,t,n,a){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.AnnotationToggle=function(e){var t=e.disabled,l=e.label;return n.createElement("div",{className:"sc-annotation-toggle"},n.createElement("label",{className:"sc-annotation-toggle-inner"},n.createElement(a.AnnotationLabel,{disabled:t,label:l})))}});
+//# sourceMappingURL=annotation_toggle.min.js-vflvY0yOE.map

@@ -1,0 +1,2 @@
+define(["require","exports"],function(e,o){"use strict";Object.defineProperty(o,"__esModule",{value:!0});(function(e){e.FILE="file",e.FOLDER="folder",e.FILE_FOLDER="file_folder",e.UNKNOWN="unknown"})(o.ChooserType||(o.ChooserType={}));(function(e){e.CHOOSER="chooser",e.DRAG="drag"})(o.UploadMethod||(o.UploadMethod={}))});
+//# sourceMappingURL=types.min.js-vflvFmJ94.map
