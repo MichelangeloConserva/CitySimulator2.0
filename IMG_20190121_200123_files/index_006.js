@@ -1,2 +1,0 @@
-define(["require","exports","spectrum_comments/comment_editor/comment_editor","spectrum_comments/comment_editor/numbered_comment_editor","spectrum_comments/comment_editor/time_coded_comment_editor","spectrum_comments/comment_editor/coach_mark_container"],function(e,m,t,o,r,n){"use strict";Object.defineProperty(m,"__esModule",{value:!0}),m.CommentEditor=t.CommentEditor,m.NumberedCommentEditor=o.NumberedCommentEditor,m.TimeCodedCommentEditor=r.TimeCodedCommentEditor,m.CoachMarkContainer=n.CoachMarkContainer});
-//# sourceMappingURL=index.min.js-vflE-m-OS.map

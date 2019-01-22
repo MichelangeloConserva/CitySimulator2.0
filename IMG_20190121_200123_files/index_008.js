@@ -1,2 +1,0 @@
-define(["require","exports","tslib","spectrum-integrations/share_form_body/share_form_body","spectrum-integrations/share_form_body/stateful_share_form_body"],function(e,r,t,o,_){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),t.__exportStar(o,r),t.__exportStar(_,r)});
-//# sourceMappingURL=index.min.js-vflppeT0w.map

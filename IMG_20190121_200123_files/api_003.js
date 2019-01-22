@@ -1,2 +1,0 @@
-define(["require","exports","modules/clean/api_v2/user_client"],function(e,r,i){"use strict";function n(e){var r=e.fileId,n=e.user,t=e.sharedLinkUrl,l={file_path_or_id:r,url:t};return(new i.UserApiV2Client).ns("files").rpc("get_upload_info",l,{subjectUserId:n.id})}Object.defineProperty(r,"__esModule",{value:!0}),r.fetchUploadInfo=n});
-//# sourceMappingURL=api.min.js-vflco1N8U.map

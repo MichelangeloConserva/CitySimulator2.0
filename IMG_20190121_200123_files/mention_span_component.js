@@ -1,2 +1,0 @@
-define(["require","exports","react"],function(e,t,n){"use strict";function i(e){return n.createElement("span",{className:"sc-comment-editor-mention","data-entity-key":e.entityKey,"data-editor":e.editorKey},e.children)}Object.defineProperty(t,"__esModule",{value:!0}),t.MentionSpanComponent=i});
-//# sourceMappingURL=mention_span_component.min.js-vflhNslJ9.map

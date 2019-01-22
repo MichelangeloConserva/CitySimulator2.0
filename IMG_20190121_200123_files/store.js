@@ -1,2 +1,0 @@
-define(["require","exports","tslib","external/lodash","modules/clean/redux/types","modules/clean/redux/store","modules/clean/react/file_metadata/data/reducer"],function(e,t,r,a,d,o,u){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),a=r.__importStar(a),t.getStoreForUploadInfo=a.once(function(){return o.getStoreAndRegisterReducers((e={},e[d.METADATA_UPLOAD_INFO_NAMESPACE_KEY]=u.fileMetadataReducer,e));var e})});
-//# sourceMappingURL=store.min.js-vflImPn_G.map

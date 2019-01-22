@@ -1,2 +1,0 @@
-define(["require","exports","tslib","react","modules/clean/react/css","modules/clean/react/file_metadata/component/metadata_details"],function(e,t,a,r,s,i){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),r=a.__importDefault(r);var l=function(e){var t=e.file,a=e.user,s=e.sharedLinkInfo;return r.default.createElement("div",null,r.default.createElement(i.MetadataDetails,{file:t,user:a,sharedLinkInfo:s}))};t.MetadataTab=s.requireCssWithComponent(l,["/static/css/file_metadata-vflmkMMG2.css"])});
-//# sourceMappingURL=metadata_tab.min.js-vflBMMCwY.map

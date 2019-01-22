@@ -1,2 +1,0 @@
-define(["require","exports","react"],function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.LoadingSection=function(){return n.createElement("span",{style:{color:"black"}},"Loading...")}});
-//# sourceMappingURL=loading_section.min.js-vflmURF7Z.map

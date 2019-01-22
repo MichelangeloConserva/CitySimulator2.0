@@ -1,2 +1,0 @@
-define(["require","exports","spectrum_comments/comment_editor/core/types/scaffold"],function(e,r,t){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.BaseLayer=t.BaseLayer});
-//# sourceMappingURL=index.min.js-vflX19t-D.map

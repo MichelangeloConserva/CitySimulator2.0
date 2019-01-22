@@ -1,2 +1,0 @@
-define(["require","exports","react"],function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.CalendarEventSection=function(e){return t.createElement("pre",null,"CALENDAR EVENT","\n\n",JSON.stringify(e,null,2))}});
-//# sourceMappingURL=calendar_section.min.js-vflZvQPbZ.map
