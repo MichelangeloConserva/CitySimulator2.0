@@ -75,7 +75,7 @@ public class NetworkBezier : MonoBehaviour {
             foreach (Vector3 v in path)
                 tripPlanner.SetPosition(++tripPlanner.positionCount-1, v + Vector3.up*2f);
 
-            //carsManager.SpawnCar(startNode.nodePosition, path);
+            carsManager.SpawnCar(startNode.nodePosition, path);
 
             
 

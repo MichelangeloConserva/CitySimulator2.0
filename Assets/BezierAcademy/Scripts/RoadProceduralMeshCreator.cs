@@ -14,8 +14,8 @@ public class RoadProceduralMeshCreator : MonoBehaviour {
 
     public int textureRepeat;
 
-    public float roadWidth = 1;
-    public float tiling = -10;
+    float roadWidth = 14;
+    float tiling = -3;
 
     public bool isCreated;
     public bool autoUpdate;

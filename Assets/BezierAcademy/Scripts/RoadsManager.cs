@@ -24,7 +24,9 @@ public class RoadsManager : MonoBehaviour {
     List<NodeStreet> nodes = new List<NodeStreet>();
 
 
-
+    float outLanesWidth = 10f;
+    float innerLanesWidth = 4f;
+    
 
 
 
@@ -85,13 +87,15 @@ public class RoadsManager : MonoBehaviour {
                     {
                         Vector3 forward = wayPoints[snap + 1].transform.position - wayPoints[snap].transform.position;
                         Vector3 left = new Vector3(-forward.z, 0, forward.x);
-                        curStreet.Add(wayPoints[snap].transform.position - left.normalized / 2);
+                        left *= outLanesWidth;
+                        curStreet.Add(wayPoints[snap].transform.position - left / 2);
                     }
                     else
                     {
                         Vector3 forward = wayPoints[snap].transform.position - wayPoints[snap - 1].transform.position;
                         Vector3 left = new Vector3(-forward.z, 0, forward.x);
-                        curStreet.Add(wayPoints[snap].transform.position - left.normalized / 2);
+                        left *= outLanesWidth;
+                        curStreet.Add(wayPoints[snap].transform.position - left / 2);
                     }
                 }
             }
@@ -114,13 +118,15 @@ public class RoadsManager : MonoBehaviour {
             {
                 Vector3 forward = curStreet[i + 1] - curStreet[i];
                 Vector3 left = new Vector3(-forward.z, 0, forward.x);
-                curStreet[i] = curStreet[i] - left.normalized;
+                left *= outLanesWidth;
+                curStreet[i] = curStreet[i] - left;
             }
             else
             {
                 Vector3 forward = curStreet[i - 1] - curStreet[i - 2];
                 Vector3 left = new Vector3(-forward.z, 0, forward.x);
-                curStreet[i] = curStreet[i] - left.normalized;
+                left *= outLanesWidth;
+                curStreet[i] = curStreet[i] - left;
             }
         }
 
@@ -172,24 +178,32 @@ public class RoadsManager : MonoBehaviour {
         }
     }
 
-    // TODO : Il problema è che le strade non si riescono a collegare bene con il nodo dell'incrocio
-    // Ricorda anche che le strade hanno gli ultimi punti in posizioni differenti a seconda se sono prima o dopo dell'incrocio
-
     public void LinkToNext(NodeStreet lastNode, int index, List<Vector3> street)
     {
         if (index >= street.Count)
+        {
+            var newNode = curStarter;
+            var curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
+            curStreet.lenght = Vector3.Distance(lastNode.nodePosition, newNode.nodePosition);
+            curStreet.AddNode(newNode);
+            lastNode.AddStreet(curStreet);
+
+            // adding to the network
+            nb.networkNodes.Add(lastNode);
+            nb.arcStreets.Add(curStreet);
+
+            nb.networkNodes.Add(lastNode);
+            nb.arcStreets.Add(curStreet);
             return;
-
-
-        if (index == (int)(street.Count / 2))
-            Instantiate(sferettaBlu, street[index] + Vector3.up, Quaternion.identity);
+        }
+    
 
 
         Collider[] checkForCross = new Collider[0];
         if (index > 0)
         {
             Vector3 forward = street[index] - street[index - 1];
-            checkForCross = Physics.OverlapSphere(street[index] + forward, 0.1f, LayerMask.GetMask("crossSphere"));
+            checkForCross = Physics.OverlapSphere(street[index] + forward.normalized/2, 0.5f, LayerMask.GetMask("crossSphere"));
         }
 
         // No cross found
@@ -247,21 +261,19 @@ public class RoadsManager : MonoBehaviour {
 
 
             // Connecting the current to the node in the cross
-            newNode = checkForCross[0].GetComponent<CrossNodeHandler>().crossNode;
-            curStreet = new ArcStreet(lastNode.nodePosition, newNode.nodePosition);
-            curStreet.lenght = Vector3.Distance(lastNode.nodePosition, newNode.nodePosition);
-            curStreet.AddNode(newNode);
-            lastNode.AddStreet(curStreet);
+            var crossNode = checkForCross[0].GetComponent<CrossNodeHandler>().crossNode;
+            curStreet = new ArcStreet(newNode.nodePosition, crossNode.nodePosition);
+            curStreet.lenght = Vector3.Distance(newNode.nodePosition, crossNode.nodePosition);
+            curStreet.AddNode(crossNode);
+            newNode.AddStreet(curStreet);
 
             // adding to the network
-            nb.networkNodes.Add(lastNode);
+            nb.networkNodes.Add(newNode);
             nb.arcStreets.Add(curStreet);
 
-            nb.networkNodes.Add(lastNode);
-            nb.arcStreets.Add(curStreet);
 
             // giving the reference of the node in the cross
-            LinkToNext(newNode, index + 1, street);
+            LinkToNext(crossNode, index + 1, street);
             
 
         }

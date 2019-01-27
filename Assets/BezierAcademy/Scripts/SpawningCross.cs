@@ -115,10 +115,22 @@ public class SpawningCross : MonoBehaviour {
            allCrossPoints[15].y + ((allCrossPoints[11].y - allCrossPoints[15].y) * incavoIncrocio),
            allCrossPoints[15].z + ((allCrossPoints[11].z - allCrossPoints[15].z) * incavoIncrocio)));
 
-            /*foreach(Vector3 v in allCrossPoints)
-            {
-                Instantiate(ducetto, v, Quaternion.identity);
-            }*/
+            var midPos = Vector3.zero;
+            for (int i = 16; i < allCrossPoints.Count; i++)
+                midPos += allCrossPoints[i];
+            midPos /= allCrossPoints.Count - 16;
+            midPos += Vector3.up / 5;
+                
+            foreach(GameObject s in road.GetComponent<RoadSpawn>().snapPointList)
+                if (s.GetComponent<IsCollidingScript>().isColliding)
+                {
+                    s.transform.position = midPos;
+                    s.GetComponent<IsCollidingScript>().otherSphere.transform.position = midPos;
+                    break;
+                }
+
+
+
 
             allCrossPointsArray = allCrossPoints.ToArray();
             meshFilterCrossWalk.mesh = BuildCrosswalk(allCrossPointsArray);
