@@ -20,7 +20,7 @@ public class RoadSpawn : MonoBehaviour {
     RoadProceduralMeshCreator roadCreator;
 
 
-    private float snapSpacing = 1f;
+    private float snapSpacing = 20f;
     private BoxCollider bCol;
 
     public GameObject snapPoint;            //sferette rosse
