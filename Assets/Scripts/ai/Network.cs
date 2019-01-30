@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(RoadSpawn))]
-public class Network : MonoBehaviour {
+public class Network : MonoBehaviour
+{
 
     [Header("Testing variables")]
     public Transform testDestination;
@@ -27,7 +28,8 @@ public class Network : MonoBehaviour {
     public NodeStreet endNode;
 
 
-	void Start () {
+    void Start()
+    {
         nodeStreets = new List<NodeStreet>();
         arcStreets = new List<ArcStreet>();
 
@@ -59,7 +61,7 @@ public class Network : MonoBehaviour {
                 path.Add(n.nodePosition);
 
             foreach (Vector3 v in path)
-                tripPlanner.SetPosition(++tripPlanner.positionCount-1, v + Vector3.up*2f);
+                tripPlanner.SetPosition(++tripPlanner.positionCount - 1, v + Vector3.up * 2f);
 
             Debug.Log(path.Count);
 
@@ -70,7 +72,7 @@ public class Network : MonoBehaviour {
 
         }
     }
-	
+
     /// <summary>
     /// Called by button "Done This chunk" to store the nodes and arc of the street
     /// </summary>
@@ -81,7 +83,7 @@ public class Network : MonoBehaviour {
         // Destroy streetPoint which collide with a cross
         var toRemove = new List<GameObject>();
         var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
-        foreach(GameObject cross in crosses)
+        foreach (GameObject cross in crosses)
         {
             // Destroying overlapping streetPoint  TODO : they shouldn't be there
             var colls = Physics.OverlapSphere(cross.transform.position, 4f, LayerMask.GetMask("network"));
@@ -118,7 +120,7 @@ public class Network : MonoBehaviour {
                 }
             else
             {
-                colls = Physics.OverlapSphere(g.transform.position - 2 * g.transform.right, 2f, LayerMask.GetMask("network"));
+                colls = Physics.OverlapSphere(g.transform.position - 4 * g.transform.right, 3f, LayerMask.GetMask("network"));
                 foreach (Collider c in colls)
                 {
                     if (c.gameObject == g)
@@ -156,7 +158,7 @@ public class Network : MonoBehaviour {
             }
             nodeStreets.Add(curNode);
 
-            checkPos = cross.transform.position + ( - Vector3.forward * 14 - Vector3.right * 3f);
+            checkPos = cross.transform.position + (-Vector3.forward * 14 - Vector3.right * 3f);
             Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
             colls = Physics.OverlapSphere(checkPos, 2f, LayerMask.GetMask("network"));
             foreach (Collider c in colls)
@@ -171,7 +173,7 @@ public class Network : MonoBehaviour {
             nodeStreets.Add(curNode);
 
 
-            checkPos = cross.transform.position + ( - Vector3.forward * 3 + Vector3.right * 14f);
+            checkPos = cross.transform.position + (-Vector3.forward * 3 + Vector3.right * 14f);
             Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
             colls = Physics.OverlapSphere(checkPos, 2f, LayerMask.GetMask("network"));
             foreach (Collider c in colls)
@@ -232,7 +234,7 @@ public class Network : MonoBehaviour {
     public NodeStreet GetNearestNode(Vector3 pos)
     {
         NodeStreet minDistNode = nodeStreets[0];
-        for(int i=1; i<nodeStreets.Count; i++) 
+        for (int i = 1; i < nodeStreets.Count; i++)
         {
             var node = nodeStreets[i];
 
@@ -243,7 +245,7 @@ public class Network : MonoBehaviour {
             if (dist < minDistFromNode)
                 break;
         }
-        if (minDistNode == null) { Debug.LogError("No node found",this.gameObject); }
+        if (minDistNode == null) { Debug.LogError("No node found", this.gameObject); }
 
         return minDistNode;
     }
