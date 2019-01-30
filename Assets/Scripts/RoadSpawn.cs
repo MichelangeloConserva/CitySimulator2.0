@@ -32,7 +32,7 @@ public class RoadSpawn : MonoBehaviour {
 
 
     float outLanesWidth = 4;
-    float innerLanesWidth = 1.2f;
+    float innerLanesWidth = 1.8f;
 
 
 
