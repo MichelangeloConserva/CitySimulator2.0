@@ -10,7 +10,11 @@ public class RoadSpawn : MonoBehaviour {
     public int block = 0;
 
     [Header("Links required")]
+    public GameObject Cross;
+    public GameObject StreetPoint;
+    public GameObject NetworkPoints;
     public GameObject roadChunk;
+    public GameObject crossChunk;
     public GameObject sphere;
     public Button chunkSpawner;
     public Button networkCompleter;
@@ -23,6 +27,14 @@ public class RoadSpawn : MonoBehaviour {
     public List<GameObject> allCrosses;
     public List<GameObject> curBlocks;
     public List<GameObject> spheres;
+
+
+
+
+    float outLanesWidth = 4;
+    float innerLanesWidth = 1.2f;
+
+
 
     void Start()
     {
@@ -87,8 +99,6 @@ public class RoadSpawn : MonoBehaviour {
             if (!allBlocks.Contains(curRoadChunk))
                 allBlocks.Add(curRoadChunk);
         }
-
-
     }
 
     IEnumerator DeleteIfColliding(GameObject curRoadChunk, int curBlock)
@@ -96,9 +106,7 @@ public class RoadSpawn : MonoBehaviour {
         yield return new WaitForFixedUpdate();
 
         if (curBlocks.Count != 1 & curRoadChunk.GetComponent<CollisionChecking>().isColliding)
-        {
             Destroy(curRoadChunk);
-        }
     }
 
     public void CompleteRoadNetwork()
@@ -108,6 +116,7 @@ public class RoadSpawn : MonoBehaviour {
         chunkSpawner.interactable = false;
         networkCompleter.interactable = false;
 
+
         foreach (GameObject g in allBlocks.ToArray())
         {
             if (g == null)
@@ -116,29 +125,73 @@ public class RoadSpawn : MonoBehaviour {
                 continue;
             }
 
-            // Setting up the node in the position
-            var pos = g.transform.position;
-            net.nodeStreets.Add(new NodeStreet(pos));
-            spheres.Add(Instantiate(sphere, pos + Vector3.up * 2f , Quaternion.identity));
-
-
             // checking for crosses
             var colls = Physics.OverlapSphere(g.transform.position, 0.1f, LayerMask.GetMask("street"));
             if (colls.Length >= 2)
             {
-                
+                var cross = Instantiate(Cross, g.transform.position + Vector3.up * 5f, Quaternion.identity, NetworkPoints.transform);
+                cross.GetComponent<NodeHandler>().InitializeNode();
+
                 // Destroying the chunks 
                 foreach (Collider c in colls)
+                {
+                    allBlocks.Remove(c.gameObject);
                     Destroy(c.gameObject);
+                }
+                allBlocks.Remove(g);
+                   
 
                 // Placing the cross prefab
                 // TODO : create the cross prefab
-                var curCross = Instantiate(roadChunk, pos, Quaternion.identity, crossGarage.transform);
+                var curCross = Instantiate(crossChunk, g.transform.position, Quaternion.identity, crossGarage.transform);
+
                 g.GetComponent<GridSnapping>().enabled = false;
-                //g.GetComponent<BoxCollider>().enabled = false;
+                g.GetComponent<BoxCollider>().enabled = false;
                 g.GetComponent<CollisionChecking>().enabled = false;
             } else
             {
+                // Vertical street
+                Vector3 dir;
+                if (g.transform.eulerAngles == Vector3.zero)
+                {
+                    dir = Vector3.right;
+                    var lane1 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f + dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
+                    lane1.GetComponent<NodeHandler>().InitializeNode();
+
+                    var lane2 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f + dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
+                    lane2.GetComponent<NodeHandler>().InitializeNode();
+
+                    var lane3 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f - dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
+                    lane3.transform.Rotate(Vector3.up * -180f);
+                    lane3.GetComponent<NodeHandler>().InitializeNode();
+
+                    var lane4 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f - dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
+                    lane4.transform.Rotate(Vector3.up * -180f);
+                    lane4.GetComponent<NodeHandler>().InitializeNode();
+
+                }
+                else // Horizontal street
+                {
+                    dir = Vector3.forward;
+
+                    var lane1 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f + dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
+                    lane1.transform.Rotate(Vector3.up * 270f);
+                    lane1.GetComponent<NodeHandler>().InitializeNode();
+
+                    var lane2 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f + dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
+                    lane2.transform.Rotate(Vector3.up * 270f);
+                    lane2.GetComponent<NodeHandler>().InitializeNode();
+
+                    var lane3 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f - dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
+                    lane3.transform.Rotate(Vector3.up * 90f);
+                    lane3.GetComponent<NodeHandler>().InitializeNode();
+
+                    var lane4 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f - dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
+                    lane4.transform.Rotate(Vector3.up * 90f);
+                    lane4.GetComponent<NodeHandler>().InitializeNode();
+
+                }
+
                 // deactivating the components used in construction mode
                 g.GetComponent<GridSnapping>().enabled = false;
                 g.GetComponent<BoxCollider>().enabled = false;
@@ -147,10 +200,6 @@ public class RoadSpawn : MonoBehaviour {
             }
         }
     }
-
-
-
-
 }
 
 

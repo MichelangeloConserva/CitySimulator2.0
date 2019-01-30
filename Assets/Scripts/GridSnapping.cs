@@ -82,9 +82,8 @@ public class GridSnapping : MonoBehaviour {
     {
         if (IsVertical())
         {
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
             {
                 var curToDelete = GameObject.FindGameObjectsWithTag("Trace");
                 foreach (GameObject g in curToDelete)
@@ -100,9 +99,8 @@ public class GridSnapping : MonoBehaviour {
         }
         else
         {
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
             {
                 var curToDelete = GameObject.FindGameObjectsWithTag("Trace");
                 foreach (GameObject g in curToDelete)
@@ -118,7 +116,6 @@ public class GridSnapping : MonoBehaviour {
         }
     }
 
-
     private void OnMouseUp()
     {
         roadSpawn.UpdateBlocks();
@@ -129,16 +126,11 @@ public class GridSnapping : MonoBehaviour {
     {
 		if (isDragging)
         {
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(ray, out hit, 100f))
-            {
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
                 GetNearestPointOnGrid(hit.point);
-            }
             if (Input.GetMouseButtonDown(1))
-            {
                 transform.Rotate(0, 90, 0);
-            }
         }
 	}
 }

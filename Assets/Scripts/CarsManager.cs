@@ -17,16 +17,10 @@ public class CarsManager : MonoBehaviour {
         cars = new List<GameObject>();
     }
 
-	
-	void Update () {
-
-    }
-
-
     public void SpawnCar(Vector3 startPos, List<Vector3> wayPoints)
     {
         Debug.Log("Spawned car");
-        var curCar = Instantiate(car, startPos + Vector3.up, Quaternion.identity, garage.transform);
+        var curCar = Instantiate(car, startPos + Vector3.up * 3, Quaternion.identity, garage.transform);
         curCar.GetComponent<CarAgent>().waypoints = wayPoints;
     }
 

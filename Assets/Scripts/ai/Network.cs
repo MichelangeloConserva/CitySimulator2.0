@@ -47,10 +47,10 @@ public class Network : MonoBehaviour {
         {
 
             startNode = GetNearestNode(testStart.position);
-            Instantiate(sphere, startNode.nodePosition + Vector3.up * 2f, Quaternion.identity);
+            Instantiate(sphere, startNode.nodePosition + Vector3.up * 10f, Quaternion.identity);
 
             endNode = GetNearestNode(testDestination.position);
-            Instantiate(sphere, endNode.nodePosition + Vector3.up * 2f, Quaternion.identity);
+            Instantiate(sphere, endNode.nodePosition + Vector3.up * 10f, Quaternion.identity);
 
             var pathFinder = new AStar(startNode, endNode);
             var found = pathFinder.PathFinder();
@@ -75,43 +75,69 @@ public class Network : MonoBehaviour {
     {
         roadSpawn.CompleteRoadNetwork();
 
-        // TODO : Setting the streets faster
-        foreach (NodeStreet node in nodeStreets)
+        // Destroy streetPoint which collide with a cross
+        var toRemove = new List<GameObject>();
+        var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
+        foreach(GameObject cross in crosses)
         {
-            var nearNodes = new List<NodeStreet>();
-            var colls = Physics.OverlapSphere(node.nodePosition + Vector3.up * 2f, 1.1f);
+            // Destroying overlapping streetPoint  TODO : they shouldn't be there
+            var colls = Physics.OverlapSphere(cross.transform.position, 4f, LayerMask.GetMask("network"));
+            for (int i = 0; i < colls.Length; i++)
+                if (colls[i].gameObject.tag == "streetPoint")
+                    Destroy(colls[i].gameObject);
+
+            // Finding the street I can reach from the cross
+            var firstCheck = (cross.transform.position + Vector3.forward * 14) - Vector3.right*5;
+            Debug.DrawLine(cross.transform.position, firstCheck, Color.blue, Mathf.Infinity);
+
+
+
+        }
+        StartCoroutine(NetworkCreation());
+
+    }
+
+    IEnumerator NetworkCreation()
+    {
+        yield return new WaitForFixedUpdate();
+
+        var pointsOfNetwork = GameObject.FindGameObjectsWithTag("streetPoint");
+        Debug.Log(pointsOfNetwork.Length);
+
+        foreach (GameObject g in pointsOfNetwork)
+        {
+            var curNode = g.GetComponent<NodeHandler>().node;
+
+            var colls = Physics.OverlapSphere(g.transform.position + g.transform.forward.normalized * 14f, 4f, LayerMask.GetMask("network"));
+
             foreach (Collider c in colls)
             {
-                if (c.gameObject.transform.position != node.nodePosition + Vector3.up * 2f)
-                {
-                    var near = GetNearestNode(c.gameObject.transform.position);
-                    var arc = new ArcStreet(node.nodePosition, near.nodePosition);
-                    arc.arrivalNode = near;
-                    node.availableStreets.Add(arc);
-                }
+                if (c.gameObject == g)
+                    continue;
+                var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
+                var curStreet = new ArcStreet(curNode.nodePosition, nextNode.nodePosition);
+                curStreet.AddNode(nextNode);
+                curNode.AddStreet(curStreet);
+
+                arcStreets.Add(curStreet);
+            }
+
+            nodeStreets.Add(curNode);
+        }
+
+
+        foreach (GameObject g in pointsOfNetwork)
+        {
+            var curNode = g.GetComponent<NodeHandler>().node;
+            foreach (ArcStreet a in curNode.availableStreets)
+            {
+                Debug.DrawLine(a.beginPos, a.endPos + Vector3.up, Color.red, Mathf.Infinity);
             }
         }
-        foreach (GameObject g in roadSpawn.spheres.ToArray())
-            Destroy(g);
-        
-
-        //// instantiating nodes and arc of the new street
-        //var nodeBegin = new NodeStreet(curRoad[0]);
-        //var nodeEnd = new NodeStreet(curRoad[1]);
-        //var arc = new ArcStreet(nodeBegin.nodePosition, nodeEnd.nodePosition);
-
-        //// Giving references to node and arc
-        //nodeBegin.AddStreet(arc);
-        //arc.AddNode(nodeEnd);
-
-        //// Storing the references
-        //nodeStreets.Add(nodeBegin);
-        //nodeStreets.Add(nodeEnd);
-        //arcStreets.Add(arc);
-
-        //Instantiate(sphere, nodeBegin.nodePosition + Vector3.up*2, Quaternion.identity);
-        //Instantiate(sphere, nodeEnd.nodePosition + Vector3.up * 2, Quaternion.identity);
     }
+
+
+
 
     /// <summary>
     /// Returns the nearest node with a simple loop search
