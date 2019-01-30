@@ -2,26 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridSnapping : MonoBehaviour
-{
+public class GridSnapping : MonoBehaviour {
 
 
     public bool isDragging;
     public bool isColliding;
     public GridProperties grid;
-    public RoadSpawnGrid roadSpawn;
+    public RoadSpawn roadSpawn;
     Quaternion rotate90Degrees;
     public GameObject roadChunkTrace;
     bool first = true;
 
 
-    // Use this for initialization
-    void Awake()
+	// Use this for initialization
+	void Awake ()
     {
         grid = FindObjectOfType<GridProperties>();
-        roadSpawn = FindObjectOfType<RoadSpawnGrid>();
+        roadSpawn = FindObjectOfType<RoadSpawn>();
         rotate90Degrees = Quaternion.Euler(0, 90, 0);
-    }
+	}
 
     public void GetNearestPointOnGrid(Vector3 mousePos)
     {
@@ -95,8 +94,8 @@ public class GridSnapping : MonoBehaviour
                 if (hit.point.z - transform.position.z > 0)
                     cur = 1;
 
-                for (int j = 0; j < Mathf.Abs(hit.point.z - transform.position.z); j += Mathf.RoundToInt(grid.gridSize))
-                    Instantiate<GameObject>(roadChunkTrace, GetNearestPointOnGrid(transform.position.z + j * cur, IsVertical()), transform.rotation, this.transform);
+                for(int j=0; j < Mathf.Abs(hit.point.z - transform.position.z); j+=Mathf.RoundToInt(grid.gridSize) )
+                    Instantiate<GameObject>(roadChunkTrace,GetNearestPointOnGrid(transform.position.z + j * cur, IsVertical()), transform.rotation, this.transform);
             }
         }
         else
@@ -126,13 +125,13 @@ public class GridSnapping : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    void Update()
+    void Update ()
     {
-        if (isDragging)
+		if (isDragging)
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100f))
+            if(Physics.Raycast(ray, out hit, 100f))
             {
                 GetNearestPointOnGrid(hit.point);
             }
@@ -141,5 +140,5 @@ public class GridSnapping : MonoBehaviour
                 transform.Rotate(0, 90, 0);
             }
         }
-    }
+	}
 }

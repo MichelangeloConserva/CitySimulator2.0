@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(RoadSpawnGrid))]
+[RequireComponent(typeof(RoadSpawn))]
 public class Network : MonoBehaviour {
 
     [Header("Testing variables")]
@@ -16,11 +16,11 @@ public class Network : MonoBehaviour {
 
     [Header("GAME OBJECTS REQUIRED")]
     public CarsManager carsManager;
-    public RoadSpawnGrid roadSpawn;
+    public RoadSpawn roadSpawn;
     public GameObject sphere;
 
     [Header("Storage for nodes and arcs")]
-    public List<NodeStreet> networkNodes;
+    public List<NodeStreet> nodeStreets;
     public List<ArcStreet> arcStreets;
 
     public NodeStreet startNode;
@@ -28,10 +28,10 @@ public class Network : MonoBehaviour {
 
 
 	void Start () {
-        networkNodes = new List<NodeStreet>();
+        nodeStreets = new List<NodeStreet>();
         arcStreets = new List<ArcStreet>();
 
-        roadSpawn = GetComponent<RoadSpawnGrid>();
+        roadSpawn = GetComponent<RoadSpawn>();
 
         // Testing
         tripPlanner.startColor = Color.green;
@@ -76,7 +76,7 @@ public class Network : MonoBehaviour {
         roadSpawn.CompleteRoadNetwork();
 
         // TODO : Setting the streets faster
-        foreach (NodeStreet node in networkNodes)
+        foreach (NodeStreet node in nodeStreets)
         {
             var nearNodes = new List<NodeStreet>();
             var colls = Physics.OverlapSphere(node.nodePosition + Vector3.up * 2f, 1.1f);
@@ -105,8 +105,8 @@ public class Network : MonoBehaviour {
         //arc.AddNode(nodeEnd);
 
         //// Storing the references
-        //networkNodes.Add(nodeBegin);
-        //networkNodes.Add(nodeEnd);
+        //nodeStreets.Add(nodeBegin);
+        //nodeStreets.Add(nodeEnd);
         //arcStreets.Add(arc);
 
         //Instantiate(sphere, nodeBegin.nodePosition + Vector3.up*2, Quaternion.identity);
@@ -120,10 +120,10 @@ public class Network : MonoBehaviour {
     /// <returns></returns>
     public NodeStreet GetNearestNode(Vector3 pos)
     {
-        NodeStreet minDistNode = networkNodes[0];
-        for(int i=1; i<networkNodes.Count; i++) 
+        NodeStreet minDistNode = nodeStreets[0];
+        for(int i=1; i<nodeStreets.Count; i++) 
         {
-            var node = networkNodes[i];
+            var node = nodeStreets[i];
 
             var dist = Vector3.Distance(node.nodePosition, pos);
             if (dist < Vector3.Distance(minDistNode.nodePosition, pos))

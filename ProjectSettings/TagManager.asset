@@ -8,9 +8,6 @@ TagManager:
   - Trace
   - waypoints
   - vehicle
-  - sferetta
-  - manager
-  - cross
   layers:
   - Default
   - TransparentFX
@@ -21,8 +18,8 @@ TagManager:
   - 
   - 
   - street
-  - cross
-  - crossSphere
+  - 
+  - 
   - 
   - 
   - 

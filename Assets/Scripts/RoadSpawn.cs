@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoadSpawnGrid : MonoBehaviour {
+public class RoadSpawn : MonoBehaviour {
 
     [Header("Useful Settings")]
     public bool editMode;
@@ -38,6 +38,20 @@ public class RoadSpawnGrid : MonoBehaviour {
         if (curBlocks.Count == 1)
         {
             var chunketto = curBlocks[0];
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                if (-0.5f <= chunketto.transform.rotation.eulerAngles.y && chunketto.transform.rotation.y <= 0.5f)
+                    chunketto.transform.Rotate(Vector3.up * 90f);
+                else if (89.5f <= chunketto.transform.rotation.eulerAngles.y && chunketto.transform.rotation.eulerAngles.y <= 90.5f)
+                    chunketto.transform.Rotate(Vector3.up * -90f);
+            }
+
+            //chunketto.GetComponent<BoxCollider>().enabled = false;
+            //var coll = Physics.OverlapSphere(chunketto.transform.position, 2f, LayerMask.GetMask("street"));
+            //if (coll.Length != 0 && chunketto.transform.position != Vector3.zero)
+            //    Debug.Log(coll[0].gameObject.name);
+            //chunketto.GetComponent<BoxCollider>().enabled = true;
         }
     }
 
@@ -104,7 +118,7 @@ public class RoadSpawnGrid : MonoBehaviour {
 
             // Setting up the node in the position
             var pos = g.transform.position;
-            net.networkNodes.Add(new NodeStreet(pos));
+            net.nodeStreets.Add(new NodeStreet(pos));
             spheres.Add(Instantiate(sphere, pos + Vector3.up * 2f , Quaternion.identity));
 
 

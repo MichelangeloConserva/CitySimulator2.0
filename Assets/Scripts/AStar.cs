@@ -52,15 +52,15 @@ public class AStar {
                 
 
             // Analyzing neighbors
-            var neighbours = currentNode.GetNeighborsAndDistance();
-            foreach (NodeStreet neighbour in neighbours.Keys)
+            var neighbours = currentNode.GetNeighbors();
+            foreach (NodeStreet neighbour in neighbours)
             {
 
                 // the neighbor has already been explored
                 if (closedNodes.Contains(neighbour))
                     continue;
 
-                float newMovementCostToNeighbour = currentNode.gCost + neighbours[neighbour];
+                float newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
                 if (newMovementCostToNeighbour < neighbour.gCost | !openedNodes.Contains(neighbour))
                 {
                     neighbour.gCost = newMovementCostToNeighbour;
@@ -91,6 +91,7 @@ public class AStar {
 
     private float GetDistance(NodeStreet a, NodeStreet b)
     {
+
         // Checking if nodes are connected
         ArcStreet connectingStreet = null;
         bool isConnected = false;

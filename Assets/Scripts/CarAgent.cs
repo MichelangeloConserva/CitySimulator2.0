@@ -147,6 +147,10 @@ public class CarAgent : MonoBehaviour {
         }
 
 
+
+
+
+
         // giving power to the car
         turningForce = turning * motor.turnPower ;
         frontForce = force * motor.enginePower ;
