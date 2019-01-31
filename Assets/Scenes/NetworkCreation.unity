@@ -1299,7 +1299,11 @@ MonoBehaviour:
     type: 3}
   NetworkPoints: {fileID: 1339503124}
   roadChunk: {fileID: 1039048826478846, guid: 3a9db4bc8f1a65c42be478917c1ec6bf, type: 3}
-  crossChunk: {fileID: 4788405717632135467, guid: 13d5bb96ede36a8409ae8b9e79a99e9d,
+  crossChunk: {fileID: 2658118806242560618, guid: 76daa7be1524e894f8e1ff35315c3e5b,
+    type: 3}
+  leftCrossChunk: {fileID: 2921929396629123792, guid: 2fe9e7a34c42c0541b12e00e05f499b2,
+    type: 3}
+  rightCrossChunk: {fileID: 5809418792525594884, guid: 3035c1ad46a841841a4f531ee7a98894,
     type: 3}
   sphere: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
   chunkSpawner: {fileID: 1250639342}
@@ -1459,6 +1463,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1820041444867684, guid: 32ea91e239371a04a84087ae8b356968, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 23035121137589280, guid: 32ea91e239371a04a84087ae8b356968,
         type: 2}
       propertyPath: m_Materials.Array.data[0]

@@ -15,6 +15,8 @@ public class RoadSpawn : MonoBehaviour {
     public GameObject NetworkPoints;
     public GameObject roadChunk;
     public GameObject crossChunk;
+    public GameObject leftCrossChunk;
+    public GameObject rightCrossChunk;
     public GameObject sphere;
     public Button chunkSpawner;
     public Button networkCompleter;
@@ -139,15 +141,39 @@ public class RoadSpawn : MonoBehaviour {
                     Destroy(c.gameObject);
                 }
                 allBlocks.Remove(g);
-                   
+
 
                 // Placing the cross prefab
-                // TODO : create the cross prefab
-                var curCross = Instantiate(crossChunk, g.transform.position, Quaternion.identity, crossGarage.transform);
+                // Checking number and direction of other roads
+                var leftColl = Physics.OverlapSphere(g.transform.position + Vector3.left * 14, 0.1f, LayerMask.GetMask("street"));
+                var forwardColl = Physics.OverlapSphere(g.transform.position + Vector3.forward * 14, 0.1f, LayerMask.GetMask("street"));
+                var rightColl = Physics.OverlapSphere(g.transform.position + Vector3.right * 14, 0.1f, LayerMask.GetMask("street"));
+                var backColl = Physics.OverlapSphere(g.transform.position + Vector3.back * 14, 0.1f, LayerMask.GetMask("street"));
 
-                g.GetComponent<GridSnapping>().enabled = false;
-                g.GetComponent<BoxCollider>().enabled = false;
-                g.GetComponent<CollisionChecking>().enabled = false;
+                if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
+                {
+                    var curCross = Instantiate(crossChunk, g.transform.position, Quaternion.identity, crossGarage.transform);
+                }
+
+                if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
+                {
+                    var leftCross = Instantiate(leftCrossChunk, g.transform.position, Quaternion.identity,crossGarage.transform);
+                }
+
+                if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 1)
+                {
+                    var leftCross = Instantiate(rightCrossChunk, g.transform.position, Quaternion.identity, crossGarage.transform);
+                }
+
+                if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
+                {
+                    var leftCross = Instantiate(leftCrossChunk, g.transform.position, Quaternion.Euler(0,90,0), crossGarage.transform);
+                }
+
+                if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
+                {
+                    var leftCross = Instantiate(rightCrossChunk, g.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+                }
             } else
             {
                 // Vertical street
@@ -194,7 +220,7 @@ public class RoadSpawn : MonoBehaviour {
 
                 // deactivating the components used in construction mode
                 g.GetComponent<GridSnapping>().enabled = false;
-                g.GetComponent<BoxCollider>().enabled = false;
+                //g.GetComponent<BoxCollider>().enabled = false;
                 g.GetComponent<CollisionChecking>().enabled = false;
 
             }
