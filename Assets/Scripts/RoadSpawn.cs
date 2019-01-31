@@ -29,10 +29,8 @@ public class RoadSpawn : MonoBehaviour {
     public List<GameObject> spheres;
 
 
-
-
-    float outLanesWidth = 4;
-    float innerLanesWidth = 1.8f;
+    public float outLanesWidth = 4;
+    public float innerLanesWidth = 1.8f;
 
 
 
@@ -112,24 +110,24 @@ public class RoadSpawn : MonoBehaviour {
     public void CompleteRoadNetwork()
     {
         // exiting edit mode
-        editMode = false;
-        chunkSpawner.interactable = false;
-        networkCompleter.interactable = false;
+        //editMode = false;
+        //chunkSpawner.interactable = false;
+        //networkCompleter.interactable = false;
 
 
-        foreach (GameObject g in allBlocks.ToArray())
+        foreach (GameObject block in allBlocks.ToArray())
         {
-            if (g == null)
+            if (block == null)
             {
-                allBlocks.Remove(g);
+                allBlocks.Remove(block);
                 continue;
             }
 
             // checking for crosses
-            var colls = Physics.OverlapSphere(g.transform.position, 0.1f, LayerMask.GetMask("street"));
+            var colls = Physics.OverlapSphere(block.transform.position, 0.1f, LayerMask.GetMask("street"));
             if (colls.Length >= 2)
             {
-                var cross = Instantiate(Cross, g.transform.position + Vector3.up * 5f, Quaternion.identity, NetworkPoints.transform);
+                var cross = Instantiate(Cross, block.transform.position + Vector3.up * 5f, Quaternion.identity, NetworkPoints.transform);
                 cross.GetComponent<NodeHandler>().InitializeNode();
 
                 // Destroying the chunks 
@@ -138,68 +136,56 @@ public class RoadSpawn : MonoBehaviour {
                     allBlocks.Remove(c.gameObject);
                     Destroy(c.gameObject);
                 }
-                allBlocks.Remove(g);
+                allBlocks.Remove(block);
                    
-
                 // Placing the cross prefab
-                // TODO : create the cross prefab
-                var curCross = Instantiate(crossChunk, g.transform.position, Quaternion.identity, crossGarage.transform);
+                var curCross = Instantiate(crossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
 
-                g.GetComponent<GridSnapping>().enabled = false;
-                g.GetComponent<BoxCollider>().enabled = false;
-                g.GetComponent<CollisionChecking>().enabled = false;
             } else
             {
                 // Vertical street
                 Vector3 dir;
-                if (g.transform.eulerAngles == Vector3.zero)
+                if (block.transform.eulerAngles == Vector3.zero)
                 {
                     dir = Vector3.right;
-                    var lane1 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f + dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
-                    lane1.GetComponent<NodeHandler>().InitializeNode();
-
-                    var lane2 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f + dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
-                    lane2.GetComponent<NodeHandler>().InitializeNode();
-
-                    var lane3 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f - dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
-                    lane3.transform.Rotate(Vector3.up * -180f);
-                    lane3.GetComponent<NodeHandler>().InitializeNode();
-
-                    var lane4 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f - dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
-                    lane4.transform.Rotate(Vector3.up * -180f);
-                    lane4.GetComponent<NodeHandler>().InitializeNode();
-
+                    float[] angles = { 0f, 180f };
+                    InstantiateStreetPoints(block, dir, angles);
                 }
                 else // Horizontal street
                 {
                     dir = Vector3.forward;
-
-                    var lane1 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f + dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
-                    lane1.transform.Rotate(Vector3.up * 270f);
-                    lane1.GetComponent<NodeHandler>().InitializeNode();
-
-                    var lane2 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f + dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
-                    lane2.transform.Rotate(Vector3.up * 270f);
-                    lane2.GetComponent<NodeHandler>().InitializeNode();
-
-                    var lane3 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f - dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
-                    lane3.transform.Rotate(Vector3.up * 90f);
-                    lane3.GetComponent<NodeHandler>().InitializeNode();
-
-                    var lane4 = Instantiate(StreetPoint, g.transform.position + Vector3.up * 5f - dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
-                    lane4.transform.Rotate(Vector3.up * 90f);
-                    lane4.GetComponent<NodeHandler>().InitializeNode();
-
+                    float[] angles = {270f, 90f};
+                    InstantiateStreetPoints(block, dir, angles);
                 }
-
-                // deactivating the components used in construction mode
-                g.GetComponent<GridSnapping>().enabled = false;
-                g.GetComponent<BoxCollider>().enabled = false;
-                g.GetComponent<CollisionChecking>().enabled = false;
-
             }
+            // deactivating the components used in construction mode
+            //block.GetComponent<GridSnapping>().enabled = false;
+            //block.GetComponent<BoxCollider>().enabled = false;
+            //block.GetComponent<CollisionChecking>().enabled = false;
         }
     }
+
+
+    private void InstantiateStreetPoints(GameObject block, Vector3 dir, float[] angles)
+    {
+        var lane1 = Instantiate(StreetPoint, block.transform.position + Vector3.up * 5f + dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
+        lane1.transform.Rotate(Vector3.up * angles[0]);
+        lane1.GetComponent<NodeHandler>().InitializeNode();
+
+        var lane2 = Instantiate(StreetPoint, block.transform.position + Vector3.up * 5f + dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
+        lane2.transform.Rotate(Vector3.up * angles[0]);
+        lane2.GetComponent<NodeHandler>().InitializeNode();
+
+        var lane3 = Instantiate(StreetPoint, block.transform.position + Vector3.up * 5f - dir * outLanesWidth, Quaternion.identity, NetworkPoints.transform);
+        lane3.transform.Rotate(Vector3.up * angles[1]);
+        lane3.GetComponent<NodeHandler>().InitializeNode();
+
+        var lane4 = Instantiate(StreetPoint, block.transform.position + Vector3.up * 5f - dir * innerLanesWidth, Quaternion.identity, NetworkPoints.transform);
+        lane4.transform.Rotate(Vector3.up * angles[1]);
+        lane4.GetComponent<NodeHandler>().InitializeNode();
+    }
+
+
 }
 
 

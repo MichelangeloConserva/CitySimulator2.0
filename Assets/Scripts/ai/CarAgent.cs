@@ -29,17 +29,12 @@ public class CarAgent : MonoBehaviour {
     public float frontForce;
     public float rbSpeed;
 
-
-
-
     void Start () {
 
         // **** testing start **
         isArrived = false;
 
         aboutToCrash = false;
-
-
         // **** testing end ****
     }
 
@@ -82,9 +77,8 @@ public class CarAgent : MonoBehaviour {
         var allCones = new Vector3[] { coneLeft, coneMiddleLeft, coneMiddle, coneMiddleRight, coneRight };
 
         RaycastHit[] hitsManual = new RaycastHit[5];
-        RaycastHit hit;
         foreach (Vector3 v in allCones)
-            if (Physics.Raycast(transform.position + transform.forward * 1.7f, v, out hit, distVision))
+            if (Physics.Raycast(transform.position + transform.forward * 1.7f, v, out RaycastHit hit, distVision))
             {
                 if (hit.collider.gameObject.tag == gameObject.tag && !aboutToCrash)
                 {
@@ -100,7 +94,7 @@ public class CarAgent : MonoBehaviour {
                     if (v == coneRight || v == coneMiddleRight)
                     {
                         Instantiate(debug, -left + hit.collider.gameObject.transform.position + Vector3.up, Quaternion.identity);
-                        waypoints.Insert(0,-left + hit.collider.gameObject.transform.position);
+                        waypoints.Insert(0, -left + hit.collider.gameObject.transform.position);
                     }
                     else if (v == coneMiddleLeft || v == coneLeft)
                     {
@@ -125,9 +119,6 @@ public class CarAgent : MonoBehaviour {
                 }
             }
 
-       
-        
-
 
         // braking before arriving to a waypoint where I need to turn
         if ((IsAboutToTurn() && distance < minDistanceForSlowingDown))
@@ -147,10 +138,6 @@ public class CarAgent : MonoBehaviour {
         }
 
 
-
-
-
-
         // giving power to the car
         turningForce = turning * motor.turnPower ;
         frontForce = force * motor.enginePower ;
@@ -163,9 +150,6 @@ public class CarAgent : MonoBehaviour {
 
 
     }
-
-
-
 
 
 
