@@ -22,20 +22,20 @@ public class Network : MonoBehaviour
 
     [Header("Storage for nodes and arcs")]
     public List<NodeStreet> nodeStreets;
-    public List<ArcStreet> arcStreets;
 
-    public NodeStreet startNode;
-    public NodeStreet endNode;
+    private NodeStreet startNode;
+    private NodeStreet endNode;
 
 
     void Start()
     {
+        // Initialize the List which A* uses to calculate the path
         nodeStreets = new List<NodeStreet>();
-        arcStreets = new List<ArcStreet>();
 
+        // Linking to the components
         roadSpawn = GetComponent<RoadSpawn>();
 
-        // Testing
+        // Testing for the line renderer
         tripPlanner.startColor = Color.green;
         tripPlanner.endColor = Color.cyan;
         tripPlanner.positionCount = 0;
@@ -69,7 +69,6 @@ public class Network : MonoBehaviour
                 carsManager.SpawnCar(startNode.nodePosition, path);
 
             spawn = false;
-
         }
     }
 
@@ -78,6 +77,7 @@ public class Network : MonoBehaviour
     /// </summary>
     public void GetCompletedRoad()
     {
+        // Complete the network on the side of the roads
         roadSpawn.CompleteRoadNetwork();
 
         // Destroy streetPoint which collide with a cross
@@ -91,6 +91,9 @@ public class Network : MonoBehaviour
                 if (colls[i].gameObject.tag == "streetPoint")
                     Destroy(colls[i].gameObject);
         }
+
+        // The creation of the network must be done a frame later since we are deleting the 
+        // unncessary streetPoints
         StartCoroutine(NetworkCreation());
 
     }
@@ -99,12 +102,13 @@ public class Network : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
 
-        var pointsOfNetwork = GameObject.FindGameObjectsWithTag("streetPoint");
 
+        var pointsOfNetwork = GameObject.FindGameObjectsWithTag("streetPoint");
         foreach (GameObject g in pointsOfNetwork)
         {
             var curNode = g.GetComponent<NodeHandler>().node;
 
+            // Checking for nodes in front of the current node
             var colls = Physics.OverlapSphere(g.transform.position + (g.transform.forward.normalized * 14f), 2f, LayerMask.GetMask("network"));
             if (colls.Length > 0)
                 foreach (Collider c in colls)
@@ -116,7 +120,6 @@ public class Network : MonoBehaviour
                     curStreet.AddNode(nextNode);
                     curNode.AddStreet(curStreet);
 
-                    arcStreets.Add(curStreet);
                 }
             else
             {
@@ -130,7 +133,6 @@ public class Network : MonoBehaviour
                     curStreet.AddNode(nextNode);
                     curNode.AddStreet(curStreet);
 
-                    arcStreets.Add(curStreet);
                 }
             }
 
@@ -144,85 +146,63 @@ public class Network : MonoBehaviour
             var curNode = cross.GetComponent<NodeHandler>().node;
 
             // Finding the street I can reach from the cross
-            var checkPos = cross.transform.position + (Vector3.forward * 14 + Vector3.right * 3f);
-            Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
-            var colls = Physics.OverlapSphere(checkPos, 2f, LayerMask.GetMask("network"));
-            foreach (Collider c in colls)
-            {
-                var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
-                var curStreet = new ArcStreet(curNode.nodePosition, nextNode.nodePosition);
-                curStreet.AddNode(nextNode);
-                curNode.AddStreet(curStreet);
-
-                arcStreets.Add(curStreet);
-            }
-            nodeStreets.Add(curNode);
-
-            checkPos = cross.transform.position + (-Vector3.forward * 14 - Vector3.right * 3f);
-            Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
-            colls = Physics.OverlapSphere(checkPos, 2f, LayerMask.GetMask("network"));
-            foreach (Collider c in colls)
-            {
-                var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
-                var curStreet = new ArcStreet(curNode.nodePosition, nextNode.nodePosition);
-                curStreet.AddNode(nextNode);
-                curNode.AddStreet(curStreet);
-
-                arcStreets.Add(curStreet);
-            }
-            nodeStreets.Add(curNode);
-
-
-            checkPos = cross.transform.position + (-Vector3.forward * 3 + Vector3.right * 14f);
-            Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
-            colls = Physics.OverlapSphere(checkPos, 2f, LayerMask.GetMask("network"));
-            foreach (Collider c in colls)
-            {
-                var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
-                var curStreet = new ArcStreet(curNode.nodePosition, nextNode.nodePosition);
-                curStreet.AddNode(nextNode);
-                curNode.AddStreet(curStreet);
-
-                arcStreets.Add(curStreet);
-            }
-            nodeStreets.Add(curNode);
-
-
-            checkPos = cross.transform.position + (Vector3.forward * 3 - Vector3.right * 14f);
-            Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
-            colls = Physics.OverlapSphere(checkPos, 2f, LayerMask.GetMask("network"));
-            foreach (Collider c in colls)
-            {
-                var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
-                var curStreet = new ArcStreet(curNode.nodePosition, nextNode.nodePosition);
-                curStreet.AddNode(nextNode);
-                curNode.AddStreet(curStreet);
-
-                arcStreets.Add(curStreet);
-            }
-            nodeStreets.Add(curNode);
-
+            FromCrossNodesCreation(cross, curNode);
         }
 
-
+        // Network Debbugging 
         foreach (GameObject g in pointsOfNetwork)
-        {
-            var curNode = g.GetComponent<NodeHandler>().node;
-            foreach (ArcStreet a in curNode.availableStreets)
-            {
-                Debug.DrawLine(a.beginPos, a.endPos + Vector3.up, Color.white, Mathf.Infinity);
-            }
-        }
+            foreach (ArcStreet a in g.GetComponent<NodeHandler>().node.availableStreets)
+                DrawArrow.ForDebug(a.beginPos + Vector3.up, 
+                                   (a.endPos + Vector3.up) - (a.beginPos + Vector3.up),
+                                   Color.white,
+                                   Mathf.Infinity);
         foreach (GameObject g in crosses)
-        {
-            var curNode = g.GetComponent<NodeHandler>().node;
-            foreach (ArcStreet a in curNode.availableStreets)
-            {
-                Debug.DrawLine(a.beginPos, a.endPos + Vector3.up, Color.white, Mathf.Infinity);
-            }
-        }
+            foreach (ArcStreet a in g.GetComponent<NodeHandler>().node.availableStreets)
+                DrawArrow.ForDebug(a.beginPos + Vector3.up,
+                                   (a.endPos + Vector3.up) - (a.beginPos + Vector3.up),
+                                   Color.white,
+                                   Mathf.Infinity);
     }
 
+
+    private void FromCrossNodesCreation(GameObject cross, NodeStreet curNode)
+    {
+        
+        Vector3 checkPos;
+
+        // First check
+        checkPos = cross.transform.position + (Vector3.forward * 14 + Vector3.right * 3f);
+        //Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
+        CheckAtPositionForNodes(checkPos, curNode);
+
+        // Second check
+        checkPos = cross.transform.position + (-Vector3.forward * 14 - Vector3.right * 3f);
+        //Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
+        CheckAtPositionForNodes(checkPos, curNode);
+
+        // Third check
+        checkPos = cross.transform.position + (-Vector3.forward * 3 + Vector3.right * 14f);
+        //Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
+        CheckAtPositionForNodes(checkPos, curNode);
+
+        // Forth check
+        checkPos = cross.transform.position + (Vector3.forward * 3 - Vector3.right * 14f);
+        //Debug.DrawLine(cross.transform.position, checkPos + Vector3.up, Color.blue, Mathf.Infinity);
+        CheckAtPositionForNodes(checkPos, curNode);
+    }
+
+    private void CheckAtPositionForNodes(Vector3 checkPos, NodeStreet curNode, float radius = 2f)
+    {
+        var colls = Physics.OverlapSphere(checkPos, radius, LayerMask.GetMask("network"));
+        foreach (Collider c in colls)
+        {
+            var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
+            var curStreet = new ArcStreet(curNode.nodePosition, nextNode.nodePosition);
+            curStreet.AddNode(nextNode);
+            curNode.AddStreet(curStreet);
+        }
+        nodeStreets.Add(curNode);
+    }
 
 
 
