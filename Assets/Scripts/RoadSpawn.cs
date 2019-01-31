@@ -138,48 +138,47 @@ public class RoadSpawn : MonoBehaviour {
                     allBlocks.Remove(c.gameObject);
                     Destroy(c.gameObject);
                 }
-<<<<<<< .merge_file_a04444
-                allBlocks.Remove(g);
+
+                allBlocks.Remove(block);
 
 
                 // Placing the cross prefab
                 // Checking number and direction of other roads
-                var leftColl = Physics.OverlapSphere(g.transform.position + Vector3.left * 14, 0.1f, LayerMask.GetMask("street"));
-                var forwardColl = Physics.OverlapSphere(g.transform.position + Vector3.forward * 14, 0.1f, LayerMask.GetMask("street"));
-                var rightColl = Physics.OverlapSphere(g.transform.position + Vector3.right * 14, 0.1f, LayerMask.GetMask("street"));
-                var backColl = Physics.OverlapSphere(g.transform.position + Vector3.back * 14, 0.1f, LayerMask.GetMask("street"));
+                var leftColl = Physics.OverlapSphere(block.transform.position + Vector3.left * 14, 0.1f, LayerMask.GetMask("street"));
+                var forwardColl = Physics.OverlapSphere(block.transform.position + Vector3.forward * 14, 0.1f, LayerMask.GetMask("street"));
+                var rightColl = Physics.OverlapSphere(block.transform.position + Vector3.right * 14, 0.1f, LayerMask.GetMask("street"));
+                var backColl = Physics.OverlapSphere(block.transform.position + Vector3.back * 14, 0.1f, LayerMask.GetMask("street"));
 
                 if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
                 {
-                    var curCross = Instantiate(crossChunk, g.transform.position, Quaternion.identity, crossGarage.transform);
+                    var curCross = Instantiate(crossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
                 }
 
                 if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
                 {
-                    var leftCross = Instantiate(leftCrossChunk, g.transform.position, Quaternion.identity,crossGarage.transform);
+                    var leftCross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.identity,crossGarage.transform);
                 }
 
                 if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 1)
                 {
-                    var leftCross = Instantiate(rightCrossChunk, g.transform.position, Quaternion.identity, crossGarage.transform);
+                    var leftCross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
                 }
 
                 if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
                 {
-                    var leftCross = Instantiate(leftCrossChunk, g.transform.position, Quaternion.Euler(0,90,0), crossGarage.transform);
+                    var leftCross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.Euler(0,90,0), crossGarage.transform);
                 }
 
                 if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
                 {
-                    var leftCross = Instantiate(rightCrossChunk, g.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+                    var leftCross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
                 }
-=======
+
                 allBlocks.Remove(block);
                    
-                // Placing the cross prefab
-                var curCross = Instantiate(crossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
 
->>>>>>> .merge_file_a04356
+
+
             } else
             {
                 // Vertical street
@@ -224,13 +223,6 @@ public class RoadSpawn : MonoBehaviour {
         lane4.GetComponent<NodeHandler>().InitializeNode();
     }
 
-<<<<<<< .merge_file_a04444
-                // deactivating the components used in construction mode
-                g.GetComponent<GridSnapping>().enabled = false;
-                //g.GetComponent<BoxCollider>().enabled = false;
-                g.GetComponent<CollisionChecking>().enabled = false;
-=======
->>>>>>> .merge_file_a04356
 
 }
 
