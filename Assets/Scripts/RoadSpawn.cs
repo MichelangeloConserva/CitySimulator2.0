@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class RoadSpawn : MonoBehaviour {
 
     [Header("Useful Settings")]
+    [Space]
     public bool editMode;
 
     [Header("Links required")]
+    [Space]
     public GameObject Cross;
     public GameObject StreetPoint;
     public GameObject NetworkPoints;
@@ -16,24 +18,26 @@ public class RoadSpawn : MonoBehaviour {
     public GameObject crossChunk;
     public GameObject leftCrossChunk;
     public GameObject rightCrossChunk;
+    public GameObject leftCurve;
+    public GameObject rightCurve;
     public Network net;
     public GameObject chunkGarage;
     public GameObject crossGarage;
 
     [Header("Storage for the network")]
+    [Space]
     public List<GameObject> allBlocks;
     public List<GameObject> allCrosses;
     public List<GameObject> curBlocks;
     public List<GameObject> spheres;
 
-
+    [Header("Settings for the lane size")]
+    [Space]
     public float outLanesWidth = 4;
     public float innerLanesWidth = 1.8f;
 
     private GameObject curPointer;
 
-
-    
     void Start()
     {
         allBlocks = new List<GameObject>();
@@ -49,11 +53,15 @@ public class RoadSpawn : MonoBehaviour {
         {
             var chunketto = curBlocks[0];
 
-            if (Input.GetKeyDown(KeyCode.R))
+            var scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll > 0)
             {
                 if (-0.5f <= chunketto.transform.rotation.eulerAngles.y && chunketto.transform.rotation.y <= 0.5f)
                     chunketto.transform.Rotate(Vector3.up * 90f);
-                else if (89.5f <= chunketto.transform.rotation.eulerAngles.y && chunketto.transform.rotation.eulerAngles.y <= 90.5f)
+            }
+            else if (scroll < 0)
+            {
+                if (89.5f <= chunketto.transform.rotation.eulerAngles.y && chunketto.transform.rotation.eulerAngles.y <= 90.5f)
                     chunketto.transform.Rotate(Vector3.up * -90f);
             }
         }
@@ -78,6 +86,7 @@ public class RoadSpawn : MonoBehaviour {
         curBlocks = new List<GameObject>();
         curPointer = Instantiate(roadChunk);
         curPointer.GetComponent<GridSnapping>().enabled = true;
+        curPointer.transform.position += Vector3.up;
         curBlocks.Add(curPointer);
     }
 
@@ -94,6 +103,9 @@ public class RoadSpawn : MonoBehaviour {
             if (!allBlocks.Contains(curRoadChunk))
                 allBlocks.Add(curRoadChunk);
         }
+
+        curPointer.transform.position -= Vector3.up;
+
 
         // Complete the road after the street is fully created
         StartCoroutine(CompleteRoad());
@@ -153,6 +165,7 @@ public class RoadSpawn : MonoBehaviour {
                 // Placing the cross prefab
                 InstantiateCrossPoint(block);
 
+                allBlocks.Remove(block);
             }
             else
             {
@@ -197,6 +210,20 @@ public class RoadSpawn : MonoBehaviour {
 
         if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
             Instantiate(rightCrossChunk, block.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+
+        //Curve
+        // back-left
+        if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 0 && backColl.Length == 1)
+            Instantiate(rightCurve, block.transform.position, Quaternion.Euler(0, 180, 0), crossGarage.transform);
+        //back-right
+        if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
+            Instantiate(leftCurve, block.transform.position, Quaternion.identity, crossGarage.transform);
+        //forward-left
+        if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 0)
+            Instantiate(leftCurve, block.transform.position, Quaternion.Euler(0, 180, 0), crossGarage.transform);
+        //forward-right
+        if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
+            Instantiate(rightCurve, block.transform.position, Quaternion.identity, crossGarage.transform);
     }
 
     private void InstantiateStreetPoints(GameObject block, Vector3 dir, float[] angles)

@@ -56,7 +56,6 @@ public class CameraController : MonoBehaviour {
     void Update()
     {
 
-
         //check that ony one mode is choosen
         if (RTSMode == true) FlyCameraMode = false;
         if (FlyCameraMode == true) RTSMode = false;
@@ -65,30 +64,17 @@ public class CameraController : MonoBehaviour {
         panMovement = Vector3.zero;
 
         if (Input.GetKey(KeyCode.W) )
-        {
             panMovement += Vector3.forward * panSpeed * Time.deltaTime;
-        }
         if (Input.GetKey(KeyCode.S))
-        {
             panMovement -= Vector3.forward * panSpeed * Time.deltaTime;
-        }
         if (Input.GetKey(KeyCode.A))
-        {
             panMovement += Vector3.left * panSpeed * Time.deltaTime;
-        }
         if (Input.GetKey(KeyCode.D))
-        {
             panMovement += Vector3.right * panSpeed * Time.deltaTime;
-            //pos.x += panSpeed * Time.deltaTime;
-        }
         if (Input.GetKey(KeyCode.Q))
-        {
             panMovement += Vector3.up * panSpeed * Time.deltaTime;
-        }
         if (Input.GetKey(KeyCode.E))
-        {
             panMovement += Vector3.down * panSpeed * Time.deltaTime;
-        }
 
         if (RTSMode) transform.Translate(panMovement, Space.World);
         else if (FlyCameraMode) transform.Translate(panMovement, Space.Self);
@@ -107,10 +93,6 @@ public class CameraController : MonoBehaviour {
             panIncrease = 0;
             panSpeed = minPanSpeed;
         }
-
-
-        Camera.main.fieldOfView -= Input.mouseScrollDelta.y * zoomSpeed;
-        Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView, zoomLimit.x, zoomLimit.y);
 
         if (rotationEnabled)
         {
@@ -144,10 +126,7 @@ public class CameraController : MonoBehaviour {
             }
 
             lastMousePosition = Input.mousePosition;
-
         }
-
-
 
         if (enableMovementLimits == true)
         {

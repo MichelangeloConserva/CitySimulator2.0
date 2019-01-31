@@ -3,7 +3,22 @@ guid: 99af1e85963f47946bec46b68f74b108
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - Cross: {instanceID: 0}
+  - StreetPoint: {instanceID: 0}
+  - NetworkPoints: {instanceID: 0}
+  - roadChunk: {instanceID: 0}
+  - crossChunk: {instanceID: 0}
+  - leftCrossChunk: {instanceID: 0}
+  - rightCrossChunk: {instanceID: 0}
+  - leftCurve: {instanceID: 0}
+  - rightCurve: {instanceID: 0}
+  - sphere: {instanceID: 0}
+  - chunkSpawner: {instanceID: 0}
+  - networkCompleter: {instanceID: 0}
+  - net: {instanceID: 0}
+  - chunkGarage: {instanceID: 0}
+  - crossGarage: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

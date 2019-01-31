@@ -699,7 +699,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1250639341
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1084,7 +1084,7 @@ Transform:
   m_LocalScale: {x: 200, y: 1, z: 200}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1580217267
 GameObject:
@@ -1159,8 +1159,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editMode: 0
-  block: 0
-  Pointer: {fileID: 3381313018794328978, guid: e9dd658e6a89303428024f9ba6caf660, type: 3}
   Cross: {fileID: 177792941250833130, guid: 970d71681fd3a6041a0308456597758d, type: 3}
   StreetPoint: {fileID: 1885658119120926, guid: 7b75d65f835155b4b889dc02ab15eab4,
     type: 3}
@@ -1172,9 +1170,10 @@ MonoBehaviour:
     type: 3}
   rightCrossChunk: {fileID: 5809418792525594884, guid: 3035c1ad46a841841a4f531ee7a98894,
     type: 3}
-  sphere: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
-  chunkSpawner: {fileID: 1250639342}
-  networkCompleter: {fileID: 0}
+  leftCurve: {fileID: 1128963817064237744, guid: 05ac5df74f11ac54bb5ee7a239ba65c8,
+    type: 3}
+  rightCurve: {fileID: 2174988968745369566, guid: 61d5a76cb8d50c54982980567ee41534,
+    type: 3}
   net: {fileID: 1580217268}
   chunkGarage: {fileID: 608208128}
   crossGarage: {fileID: 1407896187}
@@ -1304,7 +1303,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4762843873298822, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4762843873298822, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
       propertyPath: m_LocalScale.x

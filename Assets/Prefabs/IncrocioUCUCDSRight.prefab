@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 983150237152483071}
   - component: {fileID: 6484741642506805048}
   - component: {fileID: 2742072899533291926}
-  m_Layer: 0
+  - component: {fileID: 2828796761486095073}
+  m_Layer: 8
   m_Name: IncrocioUCUCDSRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,3 +101,16 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &2828796761486095073
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5809418792525594884}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.90029275, y: 0.209884, z: 0.99999976}
+  m_Center: {x: -0.049853493, y: 0.004942, z: -1.0973441e-18}

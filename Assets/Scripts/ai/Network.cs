@@ -81,16 +81,16 @@ public class Network : MonoBehaviour
         roadSpawn.CompleteRoadNetwork();
 
         // Destroy streetPoint which collide with a cross
-        var toRemove = new List<GameObject>();
-        var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
-        foreach (GameObject cross in crosses)
-        {
-            // Destroying overlapping streetPoint  TODO : they shouldn't be there
-            var colls = Physics.OverlapSphere(cross.transform.position, 4f, LayerMask.GetMask("network"));
-            for (int i = 0; i < colls.Length; i++)
-                if (colls[i].gameObject.tag == "streetPoint")
-                    Destroy(colls[i].gameObject);
-        }
+        //var toRemove = new List<GameObject>();
+        //var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
+        //foreach (GameObject cross in crosses)
+        //{
+        //    // Destroying overlapping streetPoint  TODO : they shouldn't be there
+        //    var colls = Physics.OverlapSphere(cross.transform.position, 7f, LayerMask.GetMask("network"));
+        //    for (int i = 0; i < colls.Length; i++)
+        //        if (colls[i].gameObject.tag == "streetPoint")
+        //            Destroy(colls[i].gameObject);
+        //}
 
         // The creation of the network must be done a frame later since we are deleting the 
         // unncessary streetPoints
