@@ -1305,6 +1305,10 @@ MonoBehaviour:
     type: 3}
   rightCrossChunk: {fileID: 5809418792525594884, guid: 3035c1ad46a841841a4f531ee7a98894,
     type: 3}
+  leftCurve: {fileID: 1128963817064237744, guid: 05ac5df74f11ac54bb5ee7a239ba65c8,
+    type: 3}
+  rightCurve: {fileID: 2174988968745369566, guid: 61d5a76cb8d50c54982980567ee41534,
+    type: 3}
   sphere: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
   chunkSpawner: {fileID: 1250639342}
   networkCompleter: {fileID: 955916039}
@@ -1315,6 +1319,8 @@ MonoBehaviour:
   allCrosses: []
   curBlocks: []
   spheres: []
+  outLanesWidth: 4
+  innerLanesWidth: 1.8
 --- !u!114 &1580217271
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -17,12 +17,15 @@ public class RoadSpawn : MonoBehaviour {
     public GameObject crossChunk;
     public GameObject leftCrossChunk;
     public GameObject rightCrossChunk;
+    public GameObject leftCurve;
+    public GameObject rightCurve;
     public GameObject sphere;
     public Button chunkSpawner;
     public Button networkCompleter;
     public Network net;
     public GameObject chunkGarage;
     public GameObject crossGarage;
+
 
     [Header("Storage for the network")]
     public List<GameObject> allBlocks;
@@ -149,29 +152,53 @@ public class RoadSpawn : MonoBehaviour {
                 var rightColl = Physics.OverlapSphere(block.transform.position + Vector3.right * 14, 0.1f, LayerMask.GetMask("street"));
                 var backColl = Physics.OverlapSphere(block.transform.position + Vector3.back * 14, 0.1f, LayerMask.GetMask("street"));
 
+                //Incrocio a X
                 if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
                 {
                     var curCross = Instantiate(crossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
                 }
 
+                //Incroci a T
                 if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
                 {
-                    var leftCross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.identity,crossGarage.transform);
+                    var curCross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.identity,crossGarage.transform);
                 }
 
                 if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 1)
                 {
-                    var leftCross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
+                    var curCross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
                 }
 
                 if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
                 {
-                    var leftCross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.Euler(0,90,0), crossGarage.transform);
+                    var curCross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.Euler(0,90,0), crossGarage.transform);
                 }
 
                 if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
                 {
-                    var leftCross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+                    var curCross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+                }
+
+                //Curve
+                // back-left
+                if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 0 && backColl.Length == 1)
+                {
+                    var curCross = Instantiate(rightCurve, block.transform.position, Quaternion.Euler(0, 180, 0), crossGarage.transform);
+                }
+                //back-right
+                if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
+                {
+                    var curCross = Instantiate(leftCurve, block.transform.position, Quaternion.identity, crossGarage.transform);
+                }
+                //forward-left
+                if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 0)
+                {
+                    var curCross = Instantiate(leftCurve, block.transform.position, Quaternion.Euler(0,180,0), crossGarage.transform);
+                }
+                //forward-right
+                if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
+                {
+                    var curCross = Instantiate(rightCurve, block.transform.position, Quaternion.identity, crossGarage.transform);
                 }
 
                 allBlocks.Remove(block);
