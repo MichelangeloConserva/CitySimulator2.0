@@ -11,7 +11,8 @@ public class GridSnapping : MonoBehaviour {
     public RoadSpawn roadSpawn;
     Quaternion rotate90Degrees;
     public GameObject roadChunkTrace;
-    bool first = true;
+
+    private bool first = true;
 
 
 	// Use this for initialization
@@ -129,8 +130,8 @@ public class GridSnapping : MonoBehaviour {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
                 GetNearestPointOnGrid(hit.point);
-            if (Input.GetMouseButtonDown(1))
-                transform.Rotate(0, 90, 0);
+            //if (Input.GetMouseButtonDown(1))
+            //    transform.Rotate(0, 90, 0);
         }
 	}
 }

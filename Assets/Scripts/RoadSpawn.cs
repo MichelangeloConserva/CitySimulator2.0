@@ -7,7 +7,6 @@ public class RoadSpawn : MonoBehaviour {
 
     [Header("Useful Settings")]
     public bool editMode;
-    public int block = 0;
 
     [Header("Links required")]
     public GameObject Cross;
@@ -17,9 +16,6 @@ public class RoadSpawn : MonoBehaviour {
     public GameObject crossChunk;
     public GameObject leftCrossChunk;
     public GameObject rightCrossChunk;
-    public GameObject sphere;
-    public Button chunkSpawner;
-    public Button networkCompleter;
     public Network net;
     public GameObject chunkGarage;
     public GameObject crossGarage;
@@ -34,8 +30,10 @@ public class RoadSpawn : MonoBehaviour {
     public float outLanesWidth = 4;
     public float innerLanesWidth = 1.8f;
 
+    private GameObject curPointer;
 
 
+    
     void Start()
     {
         allBlocks = new List<GameObject>();
@@ -58,13 +56,11 @@ public class RoadSpawn : MonoBehaviour {
                 else if (89.5f <= chunketto.transform.rotation.eulerAngles.y && chunketto.transform.rotation.eulerAngles.y <= 90.5f)
                     chunketto.transform.Rotate(Vector3.up * -90f);
             }
-
-            //chunketto.GetComponent<BoxCollider>().enabled = false;
-            //var coll = Physics.OverlapSphere(chunketto.transform.position, 2f, LayerMask.GetMask("street"));
-            //if (coll.Length != 0 && chunketto.transform.position != Vector3.zero)
-            //    Debug.Log(coll[0].gameObject.name);
-            //chunketto.GetComponent<BoxCollider>().enabled = true;
         }
+
+        // Spawning the initial chunk
+        if (Input.GetMouseButtonDown(1) && curBlocks.Count==0)
+            InitialSpawn();
     }
 
     void OnGUI()
@@ -80,9 +76,9 @@ public class RoadSpawn : MonoBehaviour {
     public void InitialSpawn()
     {
         curBlocks = new List<GameObject>();
-        var cur = Instantiate(roadChunk);
-        cur.GetComponent<GridSnapping>().enabled = true;
-        curBlocks.Add(cur);
+        curPointer = Instantiate(roadChunk);
+        curPointer.GetComponent<GridSnapping>().enabled = true;
+        curBlocks.Add(curPointer);
     }
 
     public void UpdateBlocks()
@@ -91,17 +87,28 @@ public class RoadSpawn : MonoBehaviour {
         var traces = GameObject.FindGameObjectsWithTag("Trace");
         foreach (GameObject g in traces)
         {
-            var curTransform = g.transform;
             Destroy(g);
-            var curRoadChunk = Instantiate(roadChunk, curTransform.position, curTransform.rotation, chunkGarage.transform);
-            StartCoroutine(DeleteIfColliding(curRoadChunk, block));
+            var curRoadChunk = Instantiate(roadChunk, g.transform.position, g.transform.rotation, chunkGarage.transform);
+            StartCoroutine(DeleteIfColliding(curRoadChunk));
             curBlocks.Add(curRoadChunk);
             if (!allBlocks.Contains(curRoadChunk))
                 allBlocks.Add(curRoadChunk);
         }
+
+        // Complete the road after the street is fully created
+        StartCoroutine(CompleteRoad());
+
+        // Cleaning
+        curBlocks.Clear();
     }
 
-    IEnumerator DeleteIfColliding(GameObject curRoadChunk, int curBlock)
+    IEnumerator CompleteRoad()
+    {
+        yield return new WaitForFixedUpdate();
+        net.GetCompletedRoad();
+    }
+
+    IEnumerator DeleteIfColliding(GameObject curRoadChunk)
     {
         yield return new WaitForFixedUpdate();
 
@@ -113,8 +120,6 @@ public class RoadSpawn : MonoBehaviour {
     {
         // exiting edit mode
         //editMode = false;
-        //chunkSpawner.interactable = false;
-        //networkCompleter.interactable = false;
 
 
         foreach (GameObject block in allBlocks.ToArray())
@@ -125,8 +130,17 @@ public class RoadSpawn : MonoBehaviour {
                 continue;
             }
 
+            // Checking for the presence of a cross or streetpoint
+            var colls = Physics.OverlapSphere(block.transform.position + Vector3.up * 5, 1f, LayerMask.GetMask("network"));
+            bool stop = false;
+            foreach (Collider c in colls)
+                if (c.gameObject.tag == "crossPoint")
+                    stop = true;
+            if (stop)
+                continue;
+
             // checking for crosses
-            var colls = Physics.OverlapSphere(block.transform.position, 0.1f, LayerMask.GetMask("street"));
+            colls = Physics.OverlapSphere(block.transform.position, 0.1f, LayerMask.GetMask("street"));
             if (colls.Length >= 2)
             {
                 var cross = Instantiate(Cross, block.transform.position + Vector3.up * 5f, Quaternion.identity, NetworkPoints.transform);
@@ -134,46 +148,13 @@ public class RoadSpawn : MonoBehaviour {
 
                 // Destroying the chunks 
                 foreach (Collider c in colls)
-                {
-                    allBlocks.Remove(c.gameObject);
                     Destroy(c.gameObject);
-                }
-
 
                 // Placing the cross prefab
-                // Checking number and direction of other roads
-                var leftColl = Physics.OverlapSphere(block.transform.position + Vector3.left * 14, 0.1f, LayerMask.GetMask("street"));
-                var forwardColl = Physics.OverlapSphere(block.transform.position + Vector3.forward * 14, 0.1f, LayerMask.GetMask("street"));
-                var rightColl = Physics.OverlapSphere(block.transform.position + Vector3.right * 14, 0.1f, LayerMask.GetMask("street"));
-                var backColl = Physics.OverlapSphere(block.transform.position + Vector3.back * 14, 0.1f, LayerMask.GetMask("street"));
+                InstantiateCrossPoint(block);
 
-                if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
-                {
-                    var curCross = Instantiate(crossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
-                }
-
-                if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
-                {
-                    var leftCross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.identity,crossGarage.transform);
-                }
-
-                if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 1)
-                {
-                    var leftCross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
-                }
-
-                if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
-                {
-                    var leftCross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.Euler(0,90,0), crossGarage.transform);
-                }
-
-                if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
-                {
-                    var leftCross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
-                }
-                allBlocks.Remove(block);
-                   
-            } else
+            }
+            else
             {
                 // Vertical street
                 Vector3 dir;
@@ -190,11 +171,32 @@ public class RoadSpawn : MonoBehaviour {
                     InstantiateStreetPoints(block, dir, angles);
                 }
             }
-            // deactivating the components used in construction mode
-            //block.GetComponent<GridSnapping>().enabled = false;
-            //block.GetComponent<BoxCollider>().enabled = false;
-            //block.GetComponent<CollisionChecking>().enabled = false;
+            allBlocks.Remove(block);
         }
+    }
+
+    private void InstantiateCrossPoint(GameObject block)
+    {
+        // Checking number and direction of other roads
+        var leftColl = Physics.OverlapSphere(block.transform.position + Vector3.left * 14, 0.1f, LayerMask.GetMask("street"));
+        var forwardColl = Physics.OverlapSphere(block.transform.position + Vector3.forward * 14, 0.1f, LayerMask.GetMask("street"));
+        var rightColl = Physics.OverlapSphere(block.transform.position + Vector3.right * 14, 0.1f, LayerMask.GetMask("street"));
+        var backColl = Physics.OverlapSphere(block.transform.position + Vector3.back * 14, 0.1f, LayerMask.GetMask("street"));
+
+        if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
+            Instantiate(crossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
+
+        if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
+            Instantiate(leftCrossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
+
+        if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 1)
+            Instantiate(rightCrossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
+
+        if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
+            Instantiate(leftCrossChunk, block.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+
+        if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
+            Instantiate(rightCrossChunk, block.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
     }
 
     private void InstantiateStreetPoints(GameObject block, Vector3 dir, float[] angles)

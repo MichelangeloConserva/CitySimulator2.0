@@ -107,6 +107,7 @@ public class Network : MonoBehaviour
             // Finding the street I can reach from the streetPoint
             FromStreetPointNodesCreation(streetPoint);
 
+
         var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
         foreach (GameObject cross in crosses)
             // Finding the street I can reach from the cross

@@ -7,8 +7,6 @@ public class CollisionChecking : MonoBehaviour {
 
     public bool isColliding;
 
-
-
     private void OnTriggerStay(Collider other)
     {
         if (other.tag != "Terrain" && other.tag != "Trace")
