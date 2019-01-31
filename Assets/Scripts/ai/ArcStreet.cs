@@ -4,24 +4,21 @@ using UnityEngine;
 
 public class ArcStreet {
 
+    public NodeStreet startNode;
     public NodeStreet arrivalNode;
 
-    public Vector3 beginPos;
-    public Vector3 endPos;
-
-    public float lenght;
-
-    public ArcStreet(Vector3 beginPos, Vector3 endPos)
+    public float lenght
     {
-        this.beginPos = beginPos;
-        this.endPos = endPos;
-
-        lenght = Vector3.Distance(beginPos, endPos);
+        get
+        {
+            return Vector3.Distance(startNode.nodePosition, arrivalNode.nodePosition);
+        }
     }
 
-    public void AddNode(NodeStreet node)
+    public ArcStreet(NodeStreet startNode, NodeStreet arrivalNode)
     {
-        arrivalNode = node;
+        this.startNode = startNode;
+        this.arrivalNode = arrivalNode;
     }
 
     public void RemoveNode(int index)

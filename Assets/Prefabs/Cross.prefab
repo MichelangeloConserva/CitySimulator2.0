@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6333318316271411047}
   - component: {fileID: 4678391323782293158}
   - component: {fileID: 1081859942899778948}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Cross
   m_TagString: crossPoint
   m_Icon: {fileID: 0}

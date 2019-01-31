@@ -180,10 +180,12 @@ public class RoadSpawn : MonoBehaviour {
                 else // Horizontal street
                 {
                     dir = Vector3.forward;
-                    float[] angles = {270f, 90f};
+                    float[] angles = { 270f, 90f };
                     InstantiateStreetPoints(block, dir, angles);
                 }
             }
+            
+
             allBlocks.Remove(block);
         }
     }

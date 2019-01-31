@@ -801,7 +801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe206e29a216de846a88bbd587dad916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enginePower: 500
+  enginePower: 300
   turnPower: 25
   humanControll: 0
   maxSpeed: 0

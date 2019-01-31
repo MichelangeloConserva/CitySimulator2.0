@@ -80,17 +80,61 @@ public class Network : MonoBehaviour
         // Complete the network on the side of the roads
         roadSpawn.CompleteRoadNetwork();
 
-        // Destroy streetPoint which collide with a cross
-        //var toRemove = new List<GameObject>();
-        //var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
-        //foreach (GameObject cross in crosses)
-        //{
-        //    // Destroying overlapping streetPoint  TODO : they shouldn't be there
-        //    var colls = Physics.OverlapSphere(cross.transform.position, 7f, LayerMask.GetMask("network"));
-        //    for (int i = 0; i < colls.Length; i++)
-        //        if (colls[i].gameObject.tag == "streetPoint")
-        //            Destroy(colls[i].gameObject);
-        //}
+        var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
+        foreach (GameObject cross in crosses)
+        { 
+            var colls = Physics.OverlapSphere(cross.transform.position, 7f, LayerMask.GetMask("network"));
+            for (int i = 0; i < colls.Length; i++)
+                if (colls[i].gameObject.tag == "streetPoint")
+                {
+                    var curG = colls[i].gameObject;
+                    curG.tag = cross.tag;
+
+                    switch (i)
+                    {
+                        case 0:
+                            Vector3 dir = cross.transform.localScale / 4f;
+                            curG.transform.position = cross.transform.position - dir + Vector3.up * dir.y;
+                            curG.transform.rotation = Quaternion.Euler(0, 180, 0);
+                            break;
+                        case 1:
+                            dir = cross.transform.localScale / 4f;
+                            curG.transform.position = cross.transform.position + dir - Vector3.up * dir.y;
+                            curG.transform.rotation = Quaternion.Euler(0, 0, 0);
+                            break;
+                        case 2:
+                            dir = cross.transform.localScale / 4f;
+                            dir.x *= -1;
+                            curG.transform.position = cross.transform.position + dir - Vector3.up * dir.y;
+                            curG.transform.rotation = Quaternion.Euler(0, -90, 0);
+                            break;
+                        case 3:
+                            dir = cross.transform.localScale / 4f;
+                            dir.z *= -1;
+                            curG.transform.rotation = Quaternion.Euler(0, 90, 0);
+                            curG.transform.position = cross.transform.position + dir - Vector3.up * dir.y;
+                            break;
+                    }
+                    curG.transform.localScale *= 5;
+                    curG.GetComponent<NodeHandler>().UpdateNodePos(curG.transform.position);
+                }
+
+            var toRecalculate = new List<GameObject>();
+            colls = Physics.OverlapSphere(cross.transform.position, 15f, LayerMask.GetMask("network"));
+            for (int i = 0; i < colls.Length; i++)
+            {
+                if (colls[i].gameObject.tag == "streetPoint")
+                {
+                    colls[i].gameObject.GetComponent<NodeHandler>().InitializeNode();
+                }
+            }
+        }
+
+
+        var toRemove = GameObject.Find("Cross(Clone)");
+        Destroy(toRemove);
+
+
 
         // The creation of the network must be done a frame later since we are deleting the 
         // unncessary streetPoints
@@ -113,19 +157,6 @@ public class Network : MonoBehaviour
             // Finding the street I can reach from the cross
             FromCrossNodesCreation(cross);
 
-        // Network Debbugging 
-        foreach (GameObject g in pointsOfNetwork)
-            foreach (ArcStreet a in g.GetComponent<NodeHandler>().node.availableStreets)
-                DrawArrow.ForDebug(a.beginPos + Vector3.up, 
-                                   (a.endPos + Vector3.up) - (a.beginPos + Vector3.up),
-                                   Color.white,
-                                   Mathf.Infinity);
-        foreach (GameObject g in crosses)
-            foreach (ArcStreet a in g.GetComponent<NodeHandler>().node.availableStreets)
-                DrawArrow.ForDebug(a.beginPos + Vector3.up,
-                                   (a.endPos + Vector3.up) - (a.beginPos + Vector3.up),
-                                   Color.white,
-                                   Mathf.Infinity);
     }
 
     private void FromStreetPointNodesCreation(GameObject streetPoint)
@@ -152,8 +183,7 @@ public class Network : MonoBehaviour
             if (c.gameObject == streetPoint)
                 continue;
             var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
-            var curStreet = new ArcStreet(curNode.nodePosition, nextNode.nodePosition);
-            curStreet.AddNode(nextNode);
+            var curStreet = new ArcStreet(curNode, nextNode);
             curNode.AddStreet(curStreet);
         }
     }
@@ -165,14 +195,14 @@ public class Network : MonoBehaviour
 
         // all the four positions to check from a cross
         Vector3[] checkPositions = {
-            cross.transform.position + (Vector3.forward * 14 + Vector3.right * 3f),  
-            cross.transform.position + (-Vector3.forward * 14 - Vector3.right * 3f),
-            cross.transform.position + (-Vector3.forward * 3 + Vector3.right * 14f),
-            cross.transform.position + (Vector3.forward * 3 - Vector3.right * 14f)
+            cross.transform.position + (cross.transform.forward * 10),  
+            cross.transform.position + (cross.transform.right  *  -7 ),
         };
-
         foreach (Vector3 checkPos in checkPositions)
+        {
+            DrawArrow.ForDebug(cross.transform.position, checkPos - cross.transform.position, Color.black, Mathf.Infinity);
             CheckAtPositionForNodesFromCross(checkPos, curNode);
+        }
     }
 
     private void CheckAtPositionForNodesFromCross(Vector3 checkPos, NodeStreet curNode, float radius = 2f)
@@ -181,8 +211,7 @@ public class Network : MonoBehaviour
         foreach (Collider c in colls)
         {
             var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
-            var curStreet = new ArcStreet(curNode.nodePosition, nextNode.nodePosition);
-            curStreet.AddNode(nextNode);
+            var curStreet = new ArcStreet(curNode, nextNode);
             curNode.AddStreet(curStreet);
         }
         nodeStreets.Add(curNode);

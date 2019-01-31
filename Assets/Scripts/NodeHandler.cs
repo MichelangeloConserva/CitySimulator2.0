@@ -16,5 +16,16 @@ public class NodeHandler : MonoBehaviour
     void Update()
     {
         conn = node.availableStreets.Count;
+        if (conn > 0)
+            foreach(ArcStreet a in node.availableStreets)
+            DrawArrow.ForDebug(a.startNode.nodePosition + Vector3.up,
+                                   (a.arrivalNode.nodePosition + Vector3.up) - (a.startNode.nodePosition + Vector3.up),
+                                   Color.white);
     }
+
+    public void UpdateNodePos(Vector3 pos)
+    {
+        node.nodePosition = pos - (Vector3.up * pos.y);
+    }
+
 }
