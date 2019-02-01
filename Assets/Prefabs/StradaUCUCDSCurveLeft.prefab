@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2531270200363800968}
   - component: {fileID: 1214959781115787651}
   - component: {fileID: 9063657236651993364}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: StradaUCUCDSCurveLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}

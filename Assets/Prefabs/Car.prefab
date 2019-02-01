@@ -642,7 +642,7 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
+  m_TargetDisplay: 1
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
@@ -801,8 +801,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe206e29a216de846a88bbd587dad916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enginePower: 300
-  turnPower: 25
+  enginePower: 200
+  turnPower: 50
   humanControll: 0
   maxSpeed: 0
   wheel:
@@ -827,8 +827,8 @@ MonoBehaviour:
   motor: {fileID: 114545910702199636}
   waypoints: []
   lastWaypoint: {x: 0, y: 0, z: 0}
-  minDistance: 5
-  minTurn: 0.15
+  minDistanceToCompleteCheck: 3
+  minTurn: 0.01
   minDistanceForSlowingDown: 15
   speed: 2
   distVision: 10

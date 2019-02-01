@@ -12,7 +12,6 @@ public class GridSnapping : MonoBehaviour {
     Quaternion rotate90Degrees;
     public GameObject roadChunkTrace;
 
-    private bool first = true;
 
 
 	// Use this for initialization
@@ -26,12 +25,11 @@ public class GridSnapping : MonoBehaviour {
     public void GetNearestPointOnGrid(Vector3 mousePos)
     {
         int xCount = Mathf.RoundToInt(mousePos.x / grid.gridSize);
-        int yCount = 0;   //Mathf.RoundToInt(mousePos.x / grid.gridSize);
         int zCount = Mathf.RoundToInt(mousePos.z / grid.gridSize);
 
         Vector3 result = new Vector3(
             (float)xCount * grid.gridSize,
-            (float)yCount * grid.gridSize,
+            transform.position.y,
             (float)zCount * grid.gridSize
             );
 

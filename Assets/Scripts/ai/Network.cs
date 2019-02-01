@@ -60,6 +60,7 @@ public class Network : MonoBehaviour
             foreach (NodeStreet n in pathFinder.path)
                 path.Add(n.nodePosition);
 
+            tripPlanner.SetPositions(new Vector3[] { });
             foreach (Vector3 v in path)
                 tripPlanner.SetPosition(++tripPlanner.positionCount - 1, v + Vector3.up * 2f);
 
@@ -82,65 +83,62 @@ public class Network : MonoBehaviour
 
         var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
         foreach (GameObject cross in crosses)
-        { 
-            var colls = Physics.OverlapSphere(cross.transform.position, 7f, LayerMask.GetMask("network"));
-            for (int i = 0; i < colls.Length; i++)
-                if (colls[i].gameObject.tag == "streetPoint")
-                {
-                    var curG = colls[i].gameObject;
-                    curG.tag = cross.tag;
+            CrossPointReordering(cross);
 
-                    switch (i)
-                    {
-                        case 0:
-                            Vector3 dir = cross.transform.localScale / 4f;
-                            curG.transform.position = cross.transform.position - dir + Vector3.up * dir.y;
-                            curG.transform.rotation = Quaternion.Euler(0, 180, 0);
-                            break;
-                        case 1:
-                            dir = cross.transform.localScale / 4f;
-                            curG.transform.position = cross.transform.position + dir - Vector3.up * dir.y;
-                            curG.transform.rotation = Quaternion.Euler(0, 0, 0);
-                            break;
-                        case 2:
-                            dir = cross.transform.localScale / 4f;
-                            dir.x *= -1;
-                            curG.transform.position = cross.transform.position + dir - Vector3.up * dir.y;
-                            curG.transform.rotation = Quaternion.Euler(0, -90, 0);
-                            break;
-                        case 3:
-                            dir = cross.transform.localScale / 4f;
-                            dir.z *= -1;
-                            curG.transform.rotation = Quaternion.Euler(0, 90, 0);
-                            curG.transform.position = cross.transform.position + dir - Vector3.up * dir.y;
-                            break;
-                    }
-                    curG.transform.localScale *= 5;
-                    curG.GetComponent<NodeHandler>().UpdateNodePos(curG.transform.position);
-                }
-
-            var toRecalculate = new List<GameObject>();
-            colls = Physics.OverlapSphere(cross.transform.position, 15f, LayerMask.GetMask("network"));
-            for (int i = 0; i < colls.Length; i++)
-            {
-                if (colls[i].gameObject.tag == "streetPoint")
-                {
-                    colls[i].gameObject.GetComponent<NodeHandler>().InitializeNode();
-                }
-            }
-        }
-
-
-        var toRemove = GameObject.Find("Cross(Clone)");
-        Destroy(toRemove);
-
+        foreach (GameObject g in crosses)
+            if (g.name == "Cross(Clone)")
+                Destroy(g);
 
 
         // The creation of the network must be done a frame later since we are deleting the 
         // unncessary streetPoints
         StartCoroutine(NetworkCreation());
-
     }
+
+    private void CrossPointReordering(GameObject cross)
+    {
+        var colls = Physics.OverlapSphere(cross.transform.position, 7f, LayerMask.GetMask("network"));
+        for (int i = 0; i < colls.Length; i++)
+            if (colls[i].gameObject.tag == "streetPoint")
+            {
+                Debug.Log(i);
+
+                var curG = colls[i].gameObject;
+                curG.tag = cross.tag;
+
+                var dir = cross.transform.localScale / 4f;
+                switch (i)
+                {
+                    case 0:
+                        curG.transform.position = cross.transform.position - dir + Vector3.up * dir.y;
+                        curG.transform.rotation = Quaternion.Euler(0, 180, 0);
+                        break;
+                    case 1:
+                        curG.transform.position = cross.transform.position + dir - Vector3.up * dir.y;
+                        curG.transform.rotation = Quaternion.Euler(0, 0, 0);
+                        break;
+                    case 2:
+                        dir.x *= -1;
+                        curG.transform.position = cross.transform.position + dir - Vector3.up * dir.y;
+                        curG.transform.rotation = Quaternion.Euler(0, -90, 0);
+                        break;
+                    case 3:
+                        dir.z *= -1;
+                        curG.transform.rotation = Quaternion.Euler(0, 90, 0);
+                        curG.transform.position = cross.transform.position + dir - Vector3.up * dir.y;
+                        break;
+                }
+                curG.transform.localScale *= 4;
+                curG.GetComponent<NodeHandler>().InitializeNode();
+            }
+
+        var toRecalculate = new List<GameObject>();
+        colls = Physics.OverlapSphere(cross.transform.position, 15f, LayerMask.GetMask("network"));
+        for (int i = 0; i < colls.Length; i++)
+            if (colls[i].gameObject.tag == "streetPoint")
+                colls[i].gameObject.GetComponent<NodeHandler>().InitializeNode();
+    }
+
 
     IEnumerator NetworkCreation()
     {
@@ -153,6 +151,7 @@ public class Network : MonoBehaviour
 
 
         var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
+        Debug.Log(crosses.Length);
         foreach (GameObject cross in crosses)
             // Finding the street I can reach from the cross
             FromCrossNodesCreation(cross);
@@ -199,10 +198,10 @@ public class Network : MonoBehaviour
             cross.transform.position + (cross.transform.right  *  -7 ),
         };
         foreach (Vector3 checkPos in checkPositions)
-        {
-            DrawArrow.ForDebug(cross.transform.position, checkPos - cross.transform.position, Color.black, Mathf.Infinity);
             CheckAtPositionForNodesFromCross(checkPos, curNode);
-        }
+
+        cross.tag = "Untagged";
+
     }
 
     private void CheckAtPositionForNodesFromCross(Vector3 checkPos, NodeStreet curNode, float radius = 2f)

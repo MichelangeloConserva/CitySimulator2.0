@@ -33,7 +33,7 @@ public class RoadSpawn : MonoBehaviour {
 
     [Header("Settings for the lane size")]
     [Space]
-    public float outLanesWidth = 4;
+    public float outLanesWidth = 4.2f;
     public float innerLanesWidth = 1.8f;
 
     private GameObject curPointer;
@@ -86,7 +86,7 @@ public class RoadSpawn : MonoBehaviour {
         curBlocks = new List<GameObject>();
         curPointer = Instantiate(roadChunk);
         curPointer.GetComponent<GridSnapping>().enabled = true;
-        curPointer.transform.position += Vector3.up;
+        curPointer.transform.position += Vector3.up * 1;
         curBlocks.Add(curPointer);
     }
 
@@ -97,7 +97,7 @@ public class RoadSpawn : MonoBehaviour {
         foreach (GameObject g in traces)
         {
             Destroy(g);
-            var curRoadChunk = Instantiate(roadChunk, g.transform.position, g.transform.rotation, chunkGarage.transform);
+            var curRoadChunk = Instantiate(roadChunk, g.transform.position - Vector3.up * g.transform.position.y, g.transform.rotation, chunkGarage.transform);
             StartCoroutine(DeleteIfColliding(curRoadChunk));
             curBlocks.Add(curRoadChunk);
             if (!allBlocks.Contains(curRoadChunk))
@@ -156,7 +156,6 @@ public class RoadSpawn : MonoBehaviour {
             if (colls.Length >= 2)
             {
                 var cross = Instantiate(Cross, block.transform.position + Vector3.up * 5f, Quaternion.identity, NetworkPoints.transform);
-                cross.GetComponent<NodeHandler>().InitializeNode();
 
                 // Destroying the chunks 
                 foreach (Collider c in colls)

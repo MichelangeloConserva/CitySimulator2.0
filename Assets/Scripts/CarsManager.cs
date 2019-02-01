@@ -21,6 +21,8 @@ public class CarsManager : MonoBehaviour {
     {
         Debug.Log("Spawned car");
         var curCar = Instantiate(car, startPos + Vector3.up * 3, Quaternion.identity, garage.transform);
+        curCar.transform.LookAt(wayPoints[1]);
+        cars.Add(curCar);
         curCar.GetComponent<CarAgent>().waypoints = wayPoints;
     }
 
