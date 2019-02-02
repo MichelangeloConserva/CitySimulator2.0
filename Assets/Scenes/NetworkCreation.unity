@@ -112,12 +112,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &145983376 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4762843873298822, guid: a5df08937f91f8a4daa51a25d7fc0287,
-    type: 3}
-  m_PrefabInstance: {fileID: 1932421538}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &532333464
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,7 +546,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1580217268}
+      - m_Target: {fileID: 1580217271}
         m_MethodName: SpawnCar
         m_Mode: 1
         m_Arguments:
@@ -674,12 +668,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1122230338 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4762843873298822, guid: a5df08937f91f8a4daa51a25d7fc0287,
-    type: 3}
-  m_PrefabInstance: {fileID: 1596668678}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1250639340
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,7 +750,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1580217268}
+      - m_Target: {fileID: 0}
         m_MethodName: DrawNetwork
         m_Mode: 4
         m_Arguments:
@@ -1097,7 +1085,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1580217269}
   - component: {fileID: 1580217270}
-  - component: {fileID: 1580217268}
   - component: {fileID: 1580217271}
   m_Layer: 5
   m_Name: Manager
@@ -1106,26 +1093,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1580217268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1580217267}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9228a0550c70e64798172410e637b4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testDestination: {fileID: 1122230338}
-  testStart: {fileID: 145983376}
-  tripPlanner: {fileID: 532333465}
-  spawn: 0
-  minDistFromNode: 0.5
-  carsManager: {fileID: 1580217271}
-  roadSpawn: {fileID: 1580217270}
-  sphere: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
 --- !u!224 &1580217269
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1159,22 +1126,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   editMode: 0
-  Cross: {fileID: 177792941250833130, guid: 970d71681fd3a6041a0308456597758d, type: 3}
-  StreetPoint: {fileID: 1885658119120926, guid: 7b75d65f835155b4b889dc02ab15eab4,
-    type: 3}
   NetworkPoints: {fileID: 1339503124}
-  roadChunk: {fileID: 1039048826478846, guid: 3a9db4bc8f1a65c42be478917c1ec6bf, type: 3}
-  crossChunk: {fileID: 2658118806242560618, guid: 76daa7be1524e894f8e1ff35315c3e5b,
+  roadChunk: {fileID: 1732159222385390371, guid: ce29a4bd98335334e93f704b9cbd5270,
     type: 3}
-  leftCrossChunk: {fileID: 2921929396629123792, guid: 2fe9e7a34c42c0541b12e00e05f499b2,
+  crossChunk: {fileID: 6441838841269052089, guid: ae65ec3b6b40067418383228a96738c0,
     type: 3}
-  rightCrossChunk: {fileID: 5809418792525594884, guid: 3035c1ad46a841841a4f531ee7a98894,
+  leftCrossChunk: {fileID: 2010366492179328438, guid: bc296f5417efc3a4a8df213f4df1e97b,
     type: 3}
-  leftCurve: {fileID: 1128963817064237744, guid: 05ac5df74f11ac54bb5ee7a239ba65c8,
+  rightCrossChunk: {fileID: 7626007585834677985, guid: 60cd94c3c3aab46468ec0ad1bdbd341f,
     type: 3}
-  rightCurve: {fileID: 2174988968745369566, guid: 61d5a76cb8d50c54982980567ee41534,
+  leftCurve: {fileID: 7734741144537616229, guid: 3db7c5dc4f5379144912380c2fdc95e3,
     type: 3}
-  net: {fileID: 1580217268}
+  rightCurve: {fileID: 5366439438071872824, guid: ae2f4a3484852a94c9c017fd681b6c46,
+    type: 3}
+  net: {fileID: 0}
   chunkGarage: {fileID: 608208128}
   crossGarage: {fileID: 1407896187}
   allBlocks: []
@@ -1183,6 +1148,8 @@ MonoBehaviour:
   spheres: []
   outLanesWidth: 4
   innerLanesWidth: 1.8
+  streetPointsToUpdate: []
+  crossPointsToUpdate: []
 --- !u!114 &1580217271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1199,7 +1166,7 @@ MonoBehaviour:
   garage: {fileID: 805434041}
   cars: []
   roadSpawn: {fileID: 1580217270}
-  net: {fileID: 1580217268}
+  net: {fileID: 0}
 --- !u!1001 &1596668678
 PrefabInstance:
   m_ObjectHideFlags: 0

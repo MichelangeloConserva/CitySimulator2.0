@@ -10,27 +10,41 @@ public class NodeHandler : MonoBehaviour
 
     public void InitializeNode()
     {
-        node = new NodeStreet(transform.position - (Vector3.up * transform.position.y));
+        if (node == null)
+            node = new NodeStreet(transform.position - (Vector3.up * transform.position.y));
+        else
+        {
+            node.nodePosition = transform.position - (Vector3.up * transform.position.y);
+            node.availableStreets.Clear();
+        }
     }
 
     void Start()
     {
         if (node == null)
             InitializeNode();
-
     }
 
     void Update()
     {
-        foreach (ArcStreet a in node.availableStreets)
-            DrawArrow.ForDebug(a.startNode.nodePosition + Vector3.up,
-                                (a.arrivalNode.nodePosition + Vector3.up) - (a.startNode.nodePosition + Vector3.up),
-                                Color.white);
+        conn = node.availableStreets.Count;
+        for (int i=0; i<conn; i++)
+            DrawArrow.ForDebug(node.availableStreets[i].startNode.nodePosition + Vector3.up,
+                    (node.availableStreets[i].arrivalNode.nodePosition + Vector3.up*(i+1)) - (node.availableStreets[i].startNode.nodePosition + Vector3.up),
+                    Color.white);
+
     }
 
     public void UpdateNodePos(Vector3 pos)
     {
         node.nodePosition = pos - (Vector3.up * pos.y);
     }
+
+
+    public void UpdateConnections()
+    {
+
+    }
+
 
 }

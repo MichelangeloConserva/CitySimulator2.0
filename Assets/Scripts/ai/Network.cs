@@ -90,7 +90,7 @@ public class Network : MonoBehaviour
     public void GetCompletedRoad()
     {
         // Complete the network on the side of the roads
-        roadSpawn.CompleteRoadNetwork();
+        //roadSpawn.CompleteRoadNetwork();
 
         var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
         foreach (GameObject cross in crosses)
@@ -110,7 +110,7 @@ public class Network : MonoBehaviour
     {
         var colls = Physics.OverlapSphere(cross.transform.position, 7f, LayerMask.GetMask("network"));
         for (int i = 0; i < colls.Length; i++)
-            if (colls[i].gameObject.tag == "streetPoint")
+            if (colls[i].gameObject.tag == "streetPoint" & i<4)
             {
                 var curG = colls[i].gameObject;
                 curG.tag = cross.tag;
@@ -139,6 +139,10 @@ public class Network : MonoBehaviour
                 }
                 curG.transform.localScale *= 4;
                 curG.GetComponent<NodeHandler>().InitializeNode();
+            }
+            else
+            {
+                colls[i].gameObject.transform.position += Vector3.up * 3;
             }
 
         var toRecalculate = new List<GameObject>();

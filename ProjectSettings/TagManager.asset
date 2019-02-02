@@ -11,6 +11,8 @@ TagManager:
   - sferetta
   - streetPoint
   - crossPoint
+  - street
+  - curvePoint
   layers:
   - Default
   - TransparentFX
