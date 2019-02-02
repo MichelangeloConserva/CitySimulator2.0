@@ -157,8 +157,12 @@ public class Network : MonoBehaviour
         var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
         Debug.Log(crosses.Length);
         foreach (GameObject cross in crosses)
+        {
             // Finding the street I can reach from the cross
             FromCrossNodesCreation(cross);
+            cross.tag = "Untagged";
+        }
+
 
     }
 
@@ -201,8 +205,6 @@ public class Network : MonoBehaviour
         };
         foreach (Vector3 checkPos in checkPositions)
             CheckAtPositionForNodesFromCross(checkPos, curNode);
-
-        cross.tag = "Untagged";
 
     }
 
