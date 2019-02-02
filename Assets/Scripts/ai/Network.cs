@@ -202,6 +202,7 @@ public class Network : MonoBehaviour
         Vector3[] checkPositions = {
             cross.transform.position + (cross.transform.forward * 10),  
             cross.transform.position + (cross.transform.right  *  -7 ),
+            cross.transform.position + (cross.transform.right  *  -7 - cross.transform.forward * 7),
         };
         foreach (Vector3 checkPos in checkPositions)
             CheckAtPositionForNodesFromCross(checkPos, curNode);
