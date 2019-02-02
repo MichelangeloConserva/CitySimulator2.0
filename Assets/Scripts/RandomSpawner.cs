@@ -20,7 +20,7 @@ public class RandomSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        timePassed = 0;
+        timePassed = waitUntilNextSpawn +1 ;
 
         carsManager = GetComponent<CarsManager>();
     }
@@ -42,12 +42,11 @@ public class RandomSpawner : MonoBehaviour
             foreach (NodeStreet n in pathFinder.path)
                 path.Add(n.nodePosition);
 
-            //tripPlanner.SetPositions(new Vector3[] { });
-            //foreach (Vector3 v in path)
-            //    tripPlanner.SetPosition(++tripPlanner.positionCount - 1, v + Vector3.up * 2f);
-
             if (path.Count > 10)
                 carsManager.SpawnCar(startNode.nodePosition, path);
+
+            // Testing
+            waitUntilNextSpawn = Mathf.Infinity;
         }
         
 

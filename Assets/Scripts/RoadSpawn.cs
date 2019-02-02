@@ -19,7 +19,6 @@ public class RoadSpawn : MonoBehaviour {
     public GameObject rightCrossChunk;
     public GameObject leftCurve;
     public GameObject rightCurve;
-    public Network net;
     public GameObject chunkGarage;
     public GameObject crossGarage;
 
@@ -266,10 +265,7 @@ public class RoadSpawn : MonoBehaviour {
         }
 
         foreach (Vector3 checkPos in checkPositions)
-        {
             CheckAtPositionForNodesFromCross(checkPos, curNode);
-            Debug.DrawLine(cross.transform.position, checkPos, Color.blue, Mathf.Infinity);
-        }
 
     }
 

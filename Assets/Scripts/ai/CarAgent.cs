@@ -72,55 +72,13 @@ public class CarAgent : MonoBehaviour {
 
 
 
-        // Raycast hit manual way
-        var coneLeft = Vector3.RotateTowards(transform.forward, -transform.right, Mathf.PI / 6, 2 * Mathf.PI) * distVision;
-        var coneMiddleLeft = Vector3.RotateTowards(transform.forward, -transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
-        var coneRight = Vector3.RotateTowards(transform.forward, transform.right, Mathf.PI / 6, 2 * Mathf.PI) * distVision;
-        var coneMiddleRight = Vector3.RotateTowards(transform.forward, transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
-        var coneMiddle = transform.forward * distVision;
-        var allCones = new Vector3[] { coneLeft, coneMiddleLeft, coneMiddle, coneMiddleRight, coneRight };
+        // Front Sensors
+        SensorActivation(transform.forward);        
+        // Back Sensors
+        SensorActivation(-transform.forward);
 
-        RaycastHit[] hitsManual = new RaycastHit[5];
-        foreach (Vector3 v in allCones)
-            if (Physics.Raycast(transform.position + transform.forward * 1.7f, v, out RaycastHit hit, distVision))
-            {
-                if (hit.collider.gameObject.tag == gameObject.tag && !aboutToCrash)
-                {
 
-                    // getting the position for the new waypoint
-                    var otherPos = hit.collider.gameObject.transform.position;
-                    var dir = otherPos - transform.position;
-                    var maxDist = Mathf.Max(hit.collider.gameObject.transform.localScale.z, hit.collider.gameObject.transform.localScale.x) / 2 + 2f;
-                    Vector3 left = Vector3.Cross(dir, Vector3.up).normalized * maxDist;
 
-                    // if the object is on the right i need to turn left
-                    if (v == coneRight || v == coneMiddleRight)
-                    {
-                        Instantiate(debug, -left + hit.collider.gameObject.transform.position + Vector3.up, Quaternion.identity);
-                        waypoints.Insert(0, -left + hit.collider.gameObject.transform.position);
-                    }
-                    else if (v == coneMiddleLeft || v == coneLeft)
-                    {
-                        Instantiate(debug, left + hit.collider.gameObject.transform.position + Vector3.up, Quaternion.identity);
-                        waypoints.Insert(0, left + hit.collider.gameObject.transform.position);
-                    }
-                    else if (v == coneMiddle)
-                    {
-                        if (Vector3.Distance(left + hit.collider.gameObject.transform.position, waypoints[0]) >
-                            Vector3.Distance(-left + hit.collider.gameObject.transform.position, waypoints[0]))
-                        {
-                            Instantiate(debug, -left + hit.collider.gameObject.transform.position + Vector3.up, Quaternion.identity);
-                            waypoints.Insert(0, -left + hit.collider.gameObject.transform.position);
-                        }
-                        else
-                        {
-                            Instantiate(debug, left + hit.collider.gameObject.transform.position + Vector3.up, Quaternion.identity);
-                            waypoints.Insert(0, left + hit.collider.gameObject.transform.position);
-                        }
-                    }
-                    aboutToCrash = true;
-                }
-            }
 
 
         // braking before arriving to a waypoint where I need to turn
@@ -148,6 +106,46 @@ public class CarAgent : MonoBehaviour {
             motor.MotorControlling(2 * frontForce, 0);
 
 
+    }
+
+
+
+    private void SensorActivation(Vector3 fromPos)
+    {
+        var coneMiddleLeft = Vector3.RotateTowards(fromPos, -transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
+        var coneMiddleRight = Vector3.RotateTowards(fromPos, transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
+        var coneMiddle = fromPos * distVision;
+        var allCones = new Vector3[] { coneMiddleLeft, coneMiddle, coneMiddleRight };
+
+        RaycastHit[] hitsManual = new RaycastHit[5];
+        foreach (Vector3 v in allCones)
+            if (Physics.Raycast(transform.position + transform.forward * 1.7f, v, out RaycastHit hit, distVision))
+            {
+                if (hit.collider.gameObject.tag == gameObject.tag && !aboutToCrash)
+                {
+
+                    // getting the position for the new waypoint
+                    var otherPos = hit.collider.gameObject.transform.position;
+                    var dir = otherPos - transform.position;
+                    var maxDist = Mathf.Max(hit.collider.gameObject.transform.localScale.z, hit.collider.gameObject.transform.localScale.x) / 2 + 2f;
+                    Vector3 left = Vector3.Cross(dir, Vector3.up).normalized * maxDist;
+
+                    // if the object is on the right i need to turn left
+                    if (v == coneMiddleRight)
+                    {
+                    }
+                    else if (v == coneMiddleLeft)
+                    {
+                    }
+                    else if (v == coneMiddle)
+                    {
+                    }
+                    aboutToCrash = true;
+                }
+            }
+
+        foreach (Vector3 v in allCones)
+            DrawArrow.ForDebug(transform.position + fromPos, v - fromPos, Color.green);
     }
 
 

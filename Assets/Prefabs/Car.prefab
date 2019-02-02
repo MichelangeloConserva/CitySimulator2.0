@@ -831,7 +831,7 @@ MonoBehaviour:
   minTurn: 0.01
   minDistanceForSlowingDown: 15
   speed: 2
-  distVision: 10
+  distVision: 5
   isArrived: 0
   aboutToCrash: 0
   debug: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
