@@ -21,7 +21,7 @@ public class Network : MonoBehaviour
     public GameObject sphere;
 
     [Header("Storage for nodes and arcs")]
-    public List<NodeStreet> nodeStreets;
+    public List<GameObject> nodeStreets;
 
     private NodeStreet startNode;
     private NodeStreet endNode;
@@ -30,7 +30,7 @@ public class Network : MonoBehaviour
     void Start()
     {
         // Initialize the List which A* uses to calculate the path
-        nodeStreets = new List<NodeStreet>();
+        nodeStreets = new List<GameObject>();
 
         // Linking to the components
         roadSpawn = GetComponent<RoadSpawn>();
@@ -146,8 +146,12 @@ public class Network : MonoBehaviour
 
         var pointsOfNetwork = GameObject.FindGameObjectsWithTag("streetPoint");
         foreach (GameObject streetPoint in pointsOfNetwork)
+        {
             // Finding the street I can reach from the streetPoint
             FromStreetPointNodesCreation(streetPoint);
+            nodeStreets.Add(streetPoint);
+        }
+
 
 
         var crosses = GameObject.FindGameObjectsWithTag("crossPoint");
@@ -171,8 +175,6 @@ public class Network : MonoBehaviour
             colls = Physics.OverlapSphere(streetPoint.transform.position - 4 * streetPoint.transform.right, 3f, LayerMask.GetMask("network"));
             CheckAtPositionForNodesFromStreetPoint(colls, streetPoint, curNode);
         }
-
-        nodeStreets.Add(curNode);
     }
 
     private void CheckAtPositionForNodesFromStreetPoint(Collider[] colls, GameObject streetPoint, NodeStreet curNode)
@@ -213,7 +215,6 @@ public class Network : MonoBehaviour
             var curStreet = new ArcStreet(curNode, nextNode);
             curNode.AddStreet(curStreet);
         }
-        nodeStreets.Add(curNode);
     }
 
 
@@ -224,10 +225,10 @@ public class Network : MonoBehaviour
     /// <returns></returns>
     public NodeStreet GetNearestNode(Vector3 pos)
     {
-        NodeStreet minDistNode = nodeStreets[0];
+        NodeStreet minDistNode = nodeStreets[0].GetComponent<NodeHandler>().node;
         for (int i = 1; i < nodeStreets.Count; i++)
         {
-            var node = nodeStreets[i];
+            var node = nodeStreets[i].GetComponent<NodeHandler>().node;
 
             var dist = Vector3.Distance(node.nodePosition, pos);
             if (dist < Vector3.Distance(minDistNode.nodePosition, pos))
