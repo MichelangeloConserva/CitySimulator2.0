@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4163875563138665654}
   m_Layer: 8
   m_Name: IncrocioUCUCDSLeft
-  m_TagString: Untagged
+  m_TagString: street
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

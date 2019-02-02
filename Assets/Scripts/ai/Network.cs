@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [RequireComponent(typeof(RoadSpawn))]
 public class Network : MonoBehaviour
@@ -39,6 +40,16 @@ public class Network : MonoBehaviour
         tripPlanner.startColor = Color.green;
         tripPlanner.endColor = Color.cyan;
         tripPlanner.positionCount = 0;
+
+
+        var streetsInScene = GameObject.FindGameObjectsWithTag("street");
+        if (streetsInScene.Length > 0)
+        {
+            roadSpawn.allBlocks = streetsInScene.ToList<GameObject>();
+            GetCompletedRoad();
+        }
+
+
     }
 
     void Update()
@@ -162,7 +173,6 @@ public class Network : MonoBehaviour
             FromCrossNodesCreation(cross);
             cross.tag = "Untagged";
         }
-
 
     }
 

@@ -13,14 +13,19 @@ public class NodeHandler : MonoBehaviour
         node = new NodeStreet(transform.position - (Vector3.up * transform.position.y));
     }
 
+    void Start()
+    {
+        if (node == null)
+            InitializeNode();
+
+    }
+
     void Update()
     {
-        conn = node.availableStreets.Count;
-        if (conn > 0)
-            foreach(ArcStreet a in node.availableStreets)
+        foreach (ArcStreet a in node.availableStreets)
             DrawArrow.ForDebug(a.startNode.nodePosition + Vector3.up,
-                                   (a.arrivalNode.nodePosition + Vector3.up) - (a.startNode.nodePosition + Vector3.up),
-                                   Color.white);
+                                (a.arrivalNode.nodePosition + Vector3.up) - (a.startNode.nodePosition + Vector3.up),
+                                Color.white);
     }
 
     public void UpdateNodePos(Vector3 pos)

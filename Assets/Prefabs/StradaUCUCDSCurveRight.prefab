@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2710810401547058901}
   m_Layer: 8
   m_Name: StradaUCUCDSCurveRight
-  m_TagString: Untagged
+  m_TagString: street
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
