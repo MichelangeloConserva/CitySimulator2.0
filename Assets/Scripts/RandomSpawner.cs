@@ -46,8 +46,6 @@ public class RandomSpawner : MonoBehaviour
             //foreach (Vector3 v in path)
             //    tripPlanner.SetPosition(++tripPlanner.positionCount - 1, v + Vector3.up * 2f);
 
-            Debug.Log(path.Count);
-
             if (path.Count > 10)
                 carsManager.SpawnCar(startNode.nodePosition, path);
         }

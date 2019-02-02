@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -47,6 +48,14 @@ public class RoadSpawn : MonoBehaviour {
         spheres = new List<GameObject>();
 
         editMode = true;
+
+
+        streetPointsToUpdate = GameObject.FindGameObjectsWithTag("streetPoint").ToList();
+        crossPointsToUpdate = GameObject.FindGameObjectsWithTag("crossPoint").ToList();
+        foreach(GameObject curvePoint in GameObject.FindGameObjectsWithTag("curvePoint"))
+            crossPointsToUpdate.Add(curvePoint);
+
+        UpdateNetwork();
     }
 
     void Update()

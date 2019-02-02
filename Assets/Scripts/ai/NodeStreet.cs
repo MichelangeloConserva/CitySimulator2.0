@@ -39,8 +39,6 @@ public class NodeStreet {
         foreach (ArcStreet a in availableStreets)
             list.Add(a.arrivalNode);
 
-        Debug.Log(list.Count);
-
         return list;
     }
     // A* END
