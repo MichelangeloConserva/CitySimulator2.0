@@ -112,8 +112,6 @@ public class Network : MonoBehaviour
         for (int i = 0; i < colls.Length; i++)
             if (colls[i].gameObject.tag == "streetPoint")
             {
-                Debug.Log(i);
-
                 var curG = colls[i].gameObject;
                 curG.tag = cross.tag;
 
