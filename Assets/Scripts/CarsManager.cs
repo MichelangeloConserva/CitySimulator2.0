@@ -26,7 +26,6 @@ public class CarsManager : MonoBehaviour {
 
     public void SpawnCar(Vector3 startPos, List<Vector3> wayPoints)
     {
-        Debug.Log("Spawned car");
         var curCar = Instantiate(car, startPos + Vector3.up * 3, Quaternion.identity, garage.transform);
         curCar.transform.LookAt(wayPoints[1]);
         cars.Add(curCar);
@@ -46,8 +45,6 @@ public class CarsManager : MonoBehaviour {
             var path = new List<Vector3>();
             foreach (NodeStreet n in pathFinder.path)
                 path.Add(n.nodePosition);
-
-            Debug.Log(path.Count);
 
             if (path.Count > 1)
                 SpawnCar(startNode.nodePosition, path);

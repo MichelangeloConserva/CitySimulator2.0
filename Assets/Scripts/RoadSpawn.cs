@@ -32,8 +32,6 @@ public class RoadSpawn : MonoBehaviour
     private List<GameObject> streetPointsToUpdate;
     private List<GameObject> crossPointsToUpdate;
 
-
-
     /// <summary>
     /// Check for the presence of streets and create the network for them
     /// </summary>

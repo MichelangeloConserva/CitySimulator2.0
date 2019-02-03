@@ -69,18 +69,25 @@ public class CarAgent : MonoBehaviour {
                 isArrived = true;
                 Destroy(this.gameObject);
             }
-            aboutToCrash = false;
         }
 
 
 
         // Front Sensors
-        SensorActivation(transform.forward);        
+        var otherInFront = SensorActivation(transform.forward);        
         // Back Sensors
-        SensorActivation(-transform.forward);
+        var otherBack = SensorActivation(-transform.forward);
 
-
-
+        if (aboutToCrash)
+        {
+            if (rbSpeed > 0f & otherInFront!=null)
+            {
+                force = -20000; // braking
+                Debug.Log("BRAKING HE S IN FRONT OF ME :" + force);
+                motor.MotorControlling(-20000, 0);
+                return;
+            }
+        }
 
 
         // braking before arriving to a waypoint where I need to turn
@@ -89,11 +96,8 @@ public class CarAgent : MonoBehaviour {
             if (rbSpeed > 20f)
             {
                 force = -(minDistanceForSlowingDown - distance)*Mathf.Sqrt(rbSpeed); // braking
+
             }
-        }
-        else
-        {
-            
         }
 
 
@@ -112,7 +116,7 @@ public class CarAgent : MonoBehaviour {
 
 
 
-    private void SensorActivation(Vector3 fromPos)
+    private GameObject SensorActivation(Vector3 fromPos)
     {
         var coneMiddleLeft = Vector3.RotateTowards(fromPos, -transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
         var coneMiddleRight = Vector3.RotateTowards(fromPos, transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
@@ -121,7 +125,7 @@ public class CarAgent : MonoBehaviour {
 
         RaycastHit[] hitsManual = new RaycastHit[5];
         foreach (Vector3 v in allCones)
-            if (Physics.Raycast(transform.position + transform.forward * 1.7f, v, out RaycastHit hit, distVision, LayerMask.GetMask("car")))
+            if (Physics.Raycast(transform.position + fromPos * 1.7f, v, out RaycastHit hit, distVision, LayerMask.GetMask("car")))
             {
                 if (!aboutToCrash && hit.collider.gameObject != gameObject)
                 {
@@ -134,22 +138,27 @@ public class CarAgent : MonoBehaviour {
                     // if the object is on the right i need to turn left
                     if (v == coneMiddleRight)
                     {
-                        //Time.timeScale = 0;
                     }
                     else if (v == coneMiddleLeft)
                     {
-                        //Time.timeScale = 0;
                     }
                     else if (v == coneMiddle)
                     {
-                        //Time.timeScale = 0;
+                        aboutToCrash = true;
+                        return hit.collider.gameObject;
                     }
                     aboutToCrash = true;
+                }
+                else if (hit.collider.gameObject == gameObject)
+                {
+                    Debug.Log("Colliding with myself");
                 }
             }
 
         foreach (Vector3 v in allCones)
             DrawArrow.ForDebug(transform.position + fromPos, v - fromPos, Color.green);
+
+        return null;
     }
 
 
