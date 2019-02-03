@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class RoadSpawn : MonoBehaviour {
-
-    [Header("Useful Settings")]
-    [Space]
-    public bool editMode;
+public class RoadSpawn : MonoBehaviour
+{
 
     [Header("Links required")]
     [Space]
-    public GameObject NetworkPoints;
     public GameObject roadChunk;
     public GameObject crossChunk;
     public GameObject leftCrossChunk;
@@ -34,10 +29,8 @@ public class RoadSpawn : MonoBehaviour {
 
     private GameObject curPointer;
 
-    public List<GameObject> streetPointsToUpdate;
-    public List<GameObject> crossPointsToUpdate;
-
-
+    private List<GameObject> streetPointsToUpdate;
+    private List<GameObject> crossPointsToUpdate;
 
 
 
@@ -48,8 +41,6 @@ public class RoadSpawn : MonoBehaviour {
     {
         allBlocks = new List<GameObject>();
 
-        //editMode = true;
-
         NetworkAtStart();
     }
 
@@ -59,6 +50,7 @@ public class RoadSpawn : MonoBehaviour {
         {
             var chunketto = curBlocks[0];
 
+            // Rotation
             var scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll > 0)
             {
@@ -135,9 +127,14 @@ public class RoadSpawn : MonoBehaviour {
         foreach (GameObject curvePoint in GameObject.FindGameObjectsWithTag("curvePoint"))
             crossPointsToUpdate.Add(curvePoint);
 
+        // First Initialising of the nodes
+        foreach (GameObject roadPart in streetPointsToUpdate)
+            roadPart.GetComponent<NodeHandler>().InitializeNode();
+        foreach (GameObject roadPart in crossPointsToUpdate)
+            roadPart.GetComponent<NodeHandler>().InitializeNode();
+        
         UpdateNetwork();
     }
-
 
     /// <summary>
     /// After the creation of the real roads it checks for intersections
@@ -153,17 +150,8 @@ public class RoadSpawn : MonoBehaviour {
                 continue;
             }
 
-            // Checking for the presence of a cross or streetpoint
-            var colls = Physics.OverlapSphere(block.transform.position + Vector3.up * 5, 1f, LayerMask.GetMask("network"));
-            bool stop = false;
-            foreach (Collider c in colls)
-                if (c.gameObject.tag == "crossPoint")
-                    stop = true;
-            if (stop)
-                continue;
-
             // checking for crosses
-            colls = Physics.OverlapSphere(block.transform.position, 0.1f, LayerMask.GetMask("street"));
+            var colls = Physics.OverlapSphere(block.transform.position, 0.1f, LayerMask.GetMask("street"));
             if (colls.Length >= 2)
             {
                 // Destroying the chunks 
@@ -183,7 +171,6 @@ public class RoadSpawn : MonoBehaviour {
                     if (colls[i].gameObject.tag == "streetPoint")
                         streetPointsToUpdate.Add(colls[i].gameObject);
             }
-
             allBlocks.Remove(block);
         }
         yield return new WaitForFixedUpdate();
@@ -273,6 +260,7 @@ public class RoadSpawn : MonoBehaviour {
     /// <param name="cross"></param>
     private void FromCrossNodesCreation(GameObject cross)
     {
+        cross.GetComponent<NodeHandler>().InitializeNode();
         var curNode = cross.GetComponent<NodeHandler>().node;
 
         // all the four positions to check from a cross
@@ -287,7 +275,6 @@ public class RoadSpawn : MonoBehaviour {
             checkPositions.RemoveAt(1);
             checkPositions.RemoveAt(1);
         }
-
         foreach (Vector3 checkPos in checkPositions)
             CheckAtPositionForNodesFromCross(checkPos, curNode);
     }
@@ -321,7 +308,6 @@ public class RoadSpawn : MonoBehaviour {
                 CheckAtPositionForNodesFromStreetPoint(colls, streetPoint, curNode);
             }
         }
-        
     }
 
     private void CheckAtPositionForNodesFromStreetPoint(Collider[] colls, GameObject streetPoint, NodeStreet curNode)
@@ -345,7 +331,6 @@ public class RoadSpawn : MonoBehaviour {
         }
     }
 
-    
     //void OnGUI()
     //{
     //    var style = new GUIStyle();

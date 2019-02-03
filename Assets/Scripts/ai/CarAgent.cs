@@ -5,25 +5,24 @@ using UnityEngine;
 
 public class CarAgent : MonoBehaviour {
 
-    public MotorSimulator motor;
 
-    public List<Vector3> waypoints;
-
-    public Vector3 lastWaypoint;
-
-
+    [Header("Settings")]
+    [Space]
     public float minDistanceToCompleteCheck;
     public float minTurn;
     public float minDistanceForSlowingDown;
     public float speed;
     public float distVision;
 
+    [Header("Path variables")]
+    [Space]
+    public List<Vector3> waypoints;
+    public Vector3 lastWaypoint;
     public bool isArrived;
     public bool aboutToCrash;
 
-    public GameObject debug;
-
     [Header("Debug variables")]
+    [Space]
     public float turning;
     public float distance;
     public float force;
@@ -31,13 +30,18 @@ public class CarAgent : MonoBehaviour {
     public float frontForce;
     public float rbSpeed;
 
+    [Header("Links required")]
+    [Space]
+    public MotorSimulator motor;
+    public GameObject debug;
+
+
+
     void Start () {
 
-        // **** testing start **
         isArrived = false;
 
         aboutToCrash = false;
-        // **** testing end ****
     }
 
     void FixedUpdate()
@@ -48,11 +52,9 @@ public class CarAgent : MonoBehaviour {
 
         force = speed;
         turning = AngleToTurn();
-        var car = transform.position;
-        var wayPos = waypoints[0];
-        wayPos.y = 0;
-        car.y = 0;
-        distance = Vector3.Distance(car, wayPos);
+        var carPos = transform.position - Vector3.up * transform.position.y;
+        var wayPos = waypoints[0]       - Vector3.up * waypoints[0].y;
+        distance = Vector3.Distance(carPos, wayPos);
 
 
         // Arriving to the waypoint and deleting it
@@ -119,11 +121,10 @@ public class CarAgent : MonoBehaviour {
 
         RaycastHit[] hitsManual = new RaycastHit[5];
         foreach (Vector3 v in allCones)
-            if (Physics.Raycast(transform.position + transform.forward * 1.7f, v, out RaycastHit hit, distVision))
+            if (Physics.Raycast(transform.position + transform.forward * 1.7f, v, out RaycastHit hit, distVision, LayerMask.GetMask("car")))
             {
-                if (hit.collider.gameObject.tag == gameObject.tag && !aboutToCrash)
+                if (!aboutToCrash && hit.collider.gameObject != gameObject)
                 {
-
                     // getting the position for the new waypoint
                     var otherPos = hit.collider.gameObject.transform.position;
                     var dir = otherPos - transform.position;
@@ -133,12 +134,15 @@ public class CarAgent : MonoBehaviour {
                     // if the object is on the right i need to turn left
                     if (v == coneMiddleRight)
                     {
+                        //Time.timeScale = 0;
                     }
                     else if (v == coneMiddleLeft)
                     {
+                        //Time.timeScale = 0;
                     }
                     else if (v == coneMiddle)
                     {
+                        //Time.timeScale = 0;
                     }
                     aboutToCrash = true;
                 }

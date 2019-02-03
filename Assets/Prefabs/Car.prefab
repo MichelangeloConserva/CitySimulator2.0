@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33552150355521862}
   - component: {fileID: 23623702651095212}
   - component: {fileID: 136347695174955134}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: rr tire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 33071317540620058}
   - component: {fileID: 23653655302079822}
   - component: {fileID: 136240092473960850}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: fl tire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 4517275493507858}
   - component: {fileID: 114739165892666030}
   - component: {fileID: 114205516083526406}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Wheel Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +261,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4486163650645130}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4934525479079118}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 33969978890136540}
   - component: {fileID: 23325686896188900}
   - component: {fileID: 65426571181069062}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CubeCar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,7 +420,7 @@ GameObject:
   - component: {fileID: 4878251198889750}
   - component: {fileID: 114901712041316100}
   - component: {fileID: 146557736382589350}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: fr Wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -497,7 +497,7 @@ GameObject:
   - component: {fileID: 33804241310939806}
   - component: {fileID: 23159433194121998}
   - component: {fileID: 136522895156525228}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: rl tire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -588,7 +588,7 @@ GameObject:
   - component: {fileID: 4131753098572026}
   - component: {fileID: 20342739659651820}
   - component: {fileID: 81621609340648036}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: CarCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -670,7 +670,7 @@ GameObject:
   - component: {fileID: 4597018280433888}
   - component: {fileID: 114407700306938368}
   - component: {fileID: 146758406685305268}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: fl Wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -747,7 +747,7 @@ GameObject:
   - component: {fileID: 54086444733138514}
   - component: {fileID: 114545910702199636}
   - component: {fileID: 114555581099218092}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Car
   m_TagString: vehicle
   m_Icon: {fileID: 0}
@@ -824,23 +824,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde97de8f19689b469900459cb8d54ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  motor: {fileID: 114545910702199636}
-  waypoints: []
-  lastWaypoint: {x: 0, y: 0, z: 0}
   minDistanceToCompleteCheck: 3
   minTurn: 0.01
   minDistanceForSlowingDown: 15
   speed: 2
   distVision: 5
+  waypoints: []
+  lastWaypoint: {x: 0, y: 0, z: 0}
   isArrived: 0
   aboutToCrash: 0
-  debug: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
   turning: 0
   distance: 0
   force: 0
   turningForce: 0
   frontForce: 0
   rbSpeed: 0
+  motor: {fileID: 114545910702199636}
+  debug: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
 --- !u!1 &1643457769791790
 GameObject:
   m_ObjectHideFlags: 0
@@ -852,7 +852,7 @@ GameObject:
   - component: {fileID: 4880928929833768}
   - component: {fileID: 114540026102908810}
   - component: {fileID: 146800204003211328}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: rl Wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -928,7 +928,7 @@ GameObject:
   - component: {fileID: 4796871153065580}
   - component: {fileID: 114409864118808518}
   - component: {fileID: 146886899187142192}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: rr Wheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1002,7 +1002,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4752331713313006}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: center of mass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1035,7 +1035,7 @@ GameObject:
   - component: {fileID: 33075678880801756}
   - component: {fileID: 23551517695078662}
   - component: {fileID: 65846251101450114}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1126,7 +1126,7 @@ GameObject:
   - component: {fileID: 33296045542337756}
   - component: {fileID: 23227845787530118}
   - component: {fileID: 136758524512751058}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: fr tire
   m_TagString: Untagged
   m_Icon: {fileID: 0}

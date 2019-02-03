@@ -39,7 +39,6 @@ public class CarsManager : MonoBehaviour {
         // Testing
         if (spawn)
         {
-
             PickRandomTrip();
 
             var pathFinder = new AStar(startNode, endNode);

@@ -55,7 +55,6 @@ public class AStar {
             var neighbours = currentNode.GetNeighbors();
             foreach (NodeStreet neighbour in neighbours)
             {
-
                 // the neighbor has already been explored
                 if (closedNodes.Contains(neighbour))
                     continue;

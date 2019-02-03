@@ -5,7 +5,7 @@ using UnityEngine;
 public class Settings
 {
 
-    public static readonly bool visualizeRoadNetwork = false;
+    public static readonly bool visualizeRoadNetwork = true;
 
 
 
