@@ -25,9 +25,7 @@ public class RoadSpawn : MonoBehaviour {
     [Header("Storage for the network")]
     [Space]
     public List<GameObject> allBlocks;
-    public List<GameObject> allCrosses;
     public List<GameObject> curBlocks;
-    public List<GameObject> spheres;
 
     [Header("Settings for the lane size")]
     [Space]
@@ -40,21 +38,19 @@ public class RoadSpawn : MonoBehaviour {
     public List<GameObject> crossPointsToUpdate;
 
 
+
+
+
+    /// <summary>
+    /// Check for the presence of streets and create the network for them
+    /// </summary>
     void Start()
     {
         allBlocks = new List<GameObject>();
-        allCrosses = new List<GameObject>();
-        spheres = new List<GameObject>();
 
-        editMode = true;
+        //editMode = true;
 
-
-        streetPointsToUpdate = GameObject.FindGameObjectsWithTag("streetPoint").ToList();
-        crossPointsToUpdate = GameObject.FindGameObjectsWithTag("crossPoint").ToList();
-        foreach(GameObject curvePoint in GameObject.FindGameObjectsWithTag("curvePoint"))
-            crossPointsToUpdate.Add(curvePoint);
-
-        UpdateNetwork();
+        NetworkAtStart();
     }
 
     void Update()
@@ -81,15 +77,8 @@ public class RoadSpawn : MonoBehaviour {
             InitialSpawn();
     }
 
-    void OnGUI()
-    {
-        var style = new GUIStyle();
-        style.normal.textColor = Color.red;
-        GUI.Label(new Rect(10, 10, 300, 100), string.Format("Edit mode: {0}", editMode), style);
-    }
-
     /// <summary>
-    /// Called by the "Spawn chunk" button to create a new chunk
+    /// Create a new chunk which is the pointer for the road creation
     /// </summary>
     public void InitialSpawn()
     {
@@ -100,6 +89,10 @@ public class RoadSpawn : MonoBehaviour {
         curBlocks.Add(curPointer);
     }
 
+    /// <summary>
+    /// Destroy the traces and replace them with real road blocks
+    /// Starts the coroutine to check for intersections
+    /// </summary>
     public void UpdateBlocks()
     {
         streetPointsToUpdate = new List<GameObject>();
@@ -116,10 +109,12 @@ public class RoadSpawn : MonoBehaviour {
             if (!allBlocks.Contains(curRoadChunk))
                 allBlocks.Add(curRoadChunk);
 
+            // The new chunks need to be updated for the net
             for (int i = 0; i < curRoadChunk.transform.childCount; i++)
                 streetPointsToUpdate.Add(curRoadChunk.transform.GetChild(i).gameObject);
         }
 
+        // It was up to be easily clicked
         curPointer.transform.position -= Vector3.up;
 
         // Complete the road after the street is fully created
@@ -129,7 +124,25 @@ public class RoadSpawn : MonoBehaviour {
         curBlocks.Clear();
     }
 
-    IEnumerator CompleteRoad()
+    /// <summary>
+    /// Check for the presence of streets and create the network for them
+    /// </summary>
+    private void NetworkAtStart()
+    {
+        streetPointsToUpdate = GameObject.FindGameObjectsWithTag("streetPoint").ToList();
+        crossPointsToUpdate = GameObject.FindGameObjectsWithTag("crossPoint").ToList();
+        // Curves are treated as cross 
+        foreach (GameObject curvePoint in GameObject.FindGameObjectsWithTag("curvePoint"))
+            crossPointsToUpdate.Add(curvePoint);
+
+        UpdateNetwork();
+    }
+
+
+    /// <summary>
+    /// After the creation of the real roads it checks for intersections
+    /// </summary>
+    private IEnumerator CompleteRoad()
     {
         yield return new WaitForFixedUpdate();
         foreach (GameObject block in allBlocks.ToArray())
@@ -162,27 +175,26 @@ public class RoadSpawn : MonoBehaviour {
                 }
 
                 // Placing the cross prefab
-                InstantiateCrossPoint(block);
+                InstantiateCrossPoint(block.transform.position);
 
                 // Updating the nodes surrounding the cross
                 colls = Physics.OverlapSphere(block.transform.position, 15f, LayerMask.GetMask("network"));
                 for (int i = 0; i < colls.Length; i++)
                     if (colls[i].gameObject.tag == "streetPoint")
                         streetPointsToUpdate.Add(colls[i].gameObject);
-
-
-                allBlocks.Remove(block);
             }
 
             allBlocks.Remove(block);
         }
-
         yield return new WaitForFixedUpdate();
 
+        // The roads are now ready to be analysized by the network
         UpdateNetwork();
-
     }
 
+    /// <summary>
+    /// For every road to be updated it calls the update function
+    /// </summary>
     private void UpdateNetwork()
     {
         foreach (GameObject streetPoint in streetPointsToUpdate)
@@ -193,8 +205,12 @@ public class RoadSpawn : MonoBehaviour {
                 FromCrossNodesCreation(crossPoint);
     }
 
-
-    IEnumerator DeleteIfColliding(GameObject curRoadChunk)
+    /// <summary>
+    /// It detects collisions for the given chunck and deletes it
+    /// </summary>
+    /// <param name="curRoadChunk"></param>
+    /// <returns></returns>
+    private IEnumerator DeleteIfColliding(GameObject curRoadChunk)
     {
         yield return new WaitForFixedUpdate();
 
@@ -202,52 +218,59 @@ public class RoadSpawn : MonoBehaviour {
             Destroy(curRoadChunk);
     }
 
-
-    private void InstantiateCrossPoint(GameObject block)
+    /// <summary>
+    /// Given a position it check for what intersection prefab is needed and instantiates it
+    /// It also add the cross points to the updateCrossPoints list
+    /// </summary>
+    /// <param name="pos"></param>
+    private void InstantiateCrossPoint(Vector3 pos)
     {
         // Checking number and direction of other roads
-        var leftColl = Physics.OverlapSphere(block.transform.position + Vector3.left * 14, 0.1f, LayerMask.GetMask("street"));
-        var forwardColl = Physics.OverlapSphere(block.transform.position + Vector3.forward * 14, 0.1f, LayerMask.GetMask("street"));
-        var rightColl = Physics.OverlapSphere(block.transform.position + Vector3.right * 14, 0.1f, LayerMask.GetMask("street"));
-        var backColl = Physics.OverlapSphere(block.transform.position + Vector3.back * 14, 0.1f, LayerMask.GetMask("street"));
+        var leftColl = Physics.OverlapSphere(pos + Vector3.left * 14, 0.1f, LayerMask.GetMask("street"));
+        var forwardColl = Physics.OverlapSphere(pos + Vector3.forward * 14, 0.1f, LayerMask.GetMask("street"));
+        var rightColl = Physics.OverlapSphere(pos + Vector3.right * 14, 0.1f, LayerMask.GetMask("street"));
+        var backColl = Physics.OverlapSphere(pos + Vector3.back * 14, 0.1f, LayerMask.GetMask("street"));
 
         GameObject cross = null;
 
         if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
-            cross = Instantiate(crossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
+            cross = Instantiate(crossChunk, pos, Quaternion.identity, crossGarage.transform);
 
         if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
-            cross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
+            cross = Instantiate(leftCrossChunk, pos, Quaternion.identity, crossGarage.transform);
 
         if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 1)
-            cross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.identity, crossGarage.transform);
+            cross = Instantiate(rightCrossChunk, pos, Quaternion.identity, crossGarage.transform);
 
         if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
-            cross = Instantiate(leftCrossChunk, block.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+            cross = Instantiate(leftCrossChunk, pos, Quaternion.Euler(0, 90, 0), crossGarage.transform);
 
         if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
-            cross = Instantiate(rightCrossChunk, block.transform.position, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+            cross = Instantiate(rightCrossChunk, pos, Quaternion.Euler(0, 90, 0), crossGarage.transform);
 
         //Curve
         // back-left
         if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 0 && backColl.Length == 1)
-            cross = Instantiate(rightCurve, block.transform.position, Quaternion.Euler(0, 180, 0), crossGarage.transform);
+            cross = Instantiate(rightCurve, pos, Quaternion.Euler(0, 180, 0), crossGarage.transform);
         //back-right
         if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
-            cross = Instantiate(leftCurve, block.transform.position, Quaternion.identity, crossGarage.transform);
+            cross = Instantiate(leftCurve, pos, Quaternion.identity, crossGarage.transform);
         //forward-left
         if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 0)
-            cross = Instantiate(leftCurve, block.transform.position, Quaternion.Euler(0, 180, 0), crossGarage.transform);
+            cross = Instantiate(leftCurve, pos, Quaternion.Euler(0, 180, 0), crossGarage.transform);
         //forward-right
         if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
-            cross = Instantiate(rightCurve, block.transform.position, Quaternion.identity, crossGarage.transform);
+            cross = Instantiate(rightCurve, pos, Quaternion.identity, crossGarage.transform);
 
         // Adding the cross point 
         for (int i = 0; i < cross.transform.childCount; i++)
             crossPointsToUpdate.Add(cross.transform.GetChild(i).gameObject);
     }
 
-
+    /// <summary>
+    /// Given a cross it takes its node and check in some check position for connections
+    /// </summary>
+    /// <param name="cross"></param>
     private void FromCrossNodesCreation(GameObject cross)
     {
         var curNode = cross.GetComponent<NodeHandler>().node;
@@ -258,7 +281,8 @@ public class RoadSpawn : MonoBehaviour {
             cross.transform.position + (cross.transform.right  *  -7 ),
             cross.transform.position + (cross.transform.right  *  -7 - cross.transform.forward * 7),
         };
-        if (cross.tag != "crossPoint")
+        // if the cross is actually a curve
+        if (cross.tag == "curvePoint")
         {
             checkPositions.RemoveAt(1);
             checkPositions.RemoveAt(1);
@@ -266,21 +290,13 @@ public class RoadSpawn : MonoBehaviour {
 
         foreach (Vector3 checkPos in checkPositions)
             CheckAtPositionForNodesFromCross(checkPos, curNode);
-
-    }
-
-    private void CheckAtPositionForNodesFromCross(Vector3 checkPos, NodeStreet curNode, float radius = 2f)
-    {
-        var colls = Physics.OverlapSphere(checkPos, radius, LayerMask.GetMask("network"));
-        foreach (Collider c in colls)
-        {
-            var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
-            var curStreet = new ArcStreet(curNode, nextNode);
-            curNode.AddStreet(curStreet);
-        }
     }
 
 
+    /// <summary>
+    /// Given a streetPoint it takes its node and check in some check position for connections
+    /// </summary>
+    /// <param name="streetPoint"></param>
     private void FromStreetPointNodesCreation(GameObject streetPoint)
     {
         streetPoint.GetComponent<NodeHandler>().InitializeNode();
@@ -318,7 +334,24 @@ public class RoadSpawn : MonoBehaviour {
         }
     }
 
+    private void CheckAtPositionForNodesFromCross(Vector3 checkPos, NodeStreet curNode, float radius = 2f)
+    {
+        var colls = Physics.OverlapSphere(checkPos, radius, LayerMask.GetMask("network"));
+        foreach (Collider c in colls)
+        {
+            var nextNode = c.gameObject.GetComponent<NodeHandler>().node;
+            var curStreet = new ArcStreet(curNode, nextNode);
+            curNode.AddStreet(curStreet);
+        }
+    }
 
+    
+    //void OnGUI()
+    //{
+    //    var style = new GUIStyle();
+    //    style.normal.textColor = Color.red;
+    //    GUI.Label(new Rect(10, 10, 300, 100), string.Format("Edit mode: {0}", editMode), style);
+    //}
 }
 
 

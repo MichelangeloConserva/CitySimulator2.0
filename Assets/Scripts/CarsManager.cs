@@ -10,8 +10,6 @@ public class CarsManager : MonoBehaviour {
     public List<GameObject> cars;
 
     public RoadSpawn roadSpawn;
-    public Network net;
-
 
     private NodeStreet startNode;
     private NodeStreet endNode;
