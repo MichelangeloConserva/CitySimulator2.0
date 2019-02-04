@@ -35,9 +35,13 @@ public class CarAgent : MonoBehaviour {
     public MotorSimulator motor;
     public GameObject debug;
 
+    public float[] sensors;
+
+
 
 
     void Start () {
+
 
         isArrived = false;
 
@@ -71,22 +75,40 @@ public class CarAgent : MonoBehaviour {
             }
         }
 
-
-
         // Front Sensors
-        var otherInFront = SensorActivation(transform.forward);        
+        SensorActivation(transform.forward);        
         // Back Sensors
-        var otherBack = SensorActivation(-transform.forward);
+        //var otherBack = SensorActivation(-transform.forward);
 
-        if (aboutToCrash)
+        if (rbSpeed > 30f & sensors[0] + sensors[1] + sensors[2] != 0)
         {
-            if (rbSpeed > 0f & otherInFront!=null)
-            {
-                force = -20000; // braking
-                Debug.Log("BRAKING HE S IN FRONT OF ME :" + force);
-                motor.MotorControlling(-20000, 0);
-                return;
-            }
+            force = -1000000000 * Mathf.Pow(rbSpeed + 1, 4); // emergency braking
+        }
+        else if (rbSpeed > 10f & sensors[0]+ sensors[1]+ sensors[2] != 0)
+        {
+            float dist = Mathf.Infinity;
+            foreach (float f in sensors)
+                if (f != 0)
+                {
+                    if (f < dist)
+                        dist = f;
+                }
+            force = -(minDistanceForSlowingDown - (dist-1)) * Mathf.Pow(rbSpeed+1,4); // braking
+        } else if (rbSpeed > 0f & sensors[0] + sensors[1] + sensors[2] != 0)
+        {
+            float dist = Mathf.Infinity;
+            foreach (float f in sensors)
+                if (f != 0)
+                {
+                    if(f<dist)
+                        dist = f;
+                }
+            if (dist < 3)
+                force = -Mathf.Pow(rbSpeed + 1, 4); // braking
+            else
+                force = 1;
+            Debug.Log("last step force " + force + " " + dist);
+
         }
 
 
@@ -96,14 +118,15 @@ public class CarAgent : MonoBehaviour {
             if (rbSpeed > 20f)
             {
                 force = -(minDistanceForSlowingDown - distance)*Mathf.Sqrt(rbSpeed); // braking
-
             }
         }
 
-
         // giving power to the car
+        if  (rbSpeed > 50) // speed limit TODO : set automatic speed limits
+            force = -Mathf.Sqrt(rbSpeed);
+
         turningForce = turning * motor.turnPower;
-        frontForce = force * motor.enginePower ;
+        frontForce = force * motor.enginePower;
         if (turning > minTurn)
             motor.MotorControlling(frontForce, turningForce);
         else if (turning < -minTurn)
@@ -111,23 +134,23 @@ public class CarAgent : MonoBehaviour {
         else
             motor.MotorControlling(2 * frontForce, 0);
 
-
     }
 
 
-
-    private GameObject SensorActivation(Vector3 fromPos)
+    private void SensorActivation(Vector3 fromPos)
     {
         var coneMiddleLeft = Vector3.RotateTowards(fromPos, -transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
         var coneMiddleRight = Vector3.RotateTowards(fromPos, transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
         var coneMiddle = fromPos * distVision;
         var allCones = new Vector3[] { coneMiddleLeft, coneMiddle, coneMiddleRight };
 
+        sensors = new float[3] { 0,0,0 }; 
+
         RaycastHit[] hitsManual = new RaycastHit[5];
         foreach (Vector3 v in allCones)
             if (Physics.Raycast(transform.position + fromPos * 1.7f, v, out RaycastHit hit, distVision, LayerMask.GetMask("car")))
             {
-                if (!aboutToCrash && hit.collider.gameObject != gameObject)
+                if (hit.collider.gameObject != gameObject)
                 {
                     // getting the position for the new waypoint
                     var otherPos = hit.collider.gameObject.transform.position;
@@ -135,19 +158,20 @@ public class CarAgent : MonoBehaviour {
                     var maxDist = Mathf.Max(hit.collider.gameObject.transform.localScale.z, hit.collider.gameObject.transform.localScale.x) / 2 + 2f;
                     Vector3 left = Vector3.Cross(dir, Vector3.up).normalized * maxDist;
 
+                    var dist = Vector3.Distance(transform.position, hit.point);
                     // if the object is on the right i need to turn left
                     if (v == coneMiddleRight)
                     {
+                        sensors[2] = dist;
                     }
                     else if (v == coneMiddleLeft)
                     {
+                        sensors[0] = dist;
                     }
                     else if (v == coneMiddle)
                     {
-                        aboutToCrash = true;
-                        return hit.collider.gameObject;
+                        sensors[1] = dist;
                     }
-                    aboutToCrash = true;
                 }
                 else if (hit.collider.gameObject == gameObject)
                 {
@@ -157,8 +181,6 @@ public class CarAgent : MonoBehaviour {
 
         foreach (Vector3 v in allCones)
             DrawArrow.ForDebug(transform.position + fromPos, v - fromPos, Color.green);
-
-        return null;
     }
 
 

@@ -828,7 +828,7 @@ MonoBehaviour:
   minTurn: 0.01
   minDistanceForSlowingDown: 15
   speed: 2
-  distVision: 5
+  distVision: 20
   waypoints: []
   lastWaypoint: {x: 0, y: 0, z: 0}
   isArrived: 0
@@ -841,6 +841,7 @@ MonoBehaviour:
   rbSpeed: 0
   motor: {fileID: 114545910702199636}
   debug: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
+  sensors: []
 --- !u!1 &1643457769791790
 GameObject:
   m_ObjectHideFlags: 0
