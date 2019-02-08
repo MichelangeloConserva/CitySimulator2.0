@@ -19,7 +19,6 @@ public class Wheel : MonoBehaviour {
             tire = transform.Find(TIRE_NAME);
     }
 
-
     public void Move(float torque)
     {
         wc.motorTorque = torque;

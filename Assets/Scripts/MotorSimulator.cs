@@ -45,13 +45,17 @@ public class MotorSimulator : MonoBehaviour {
             wheel[1].Brake(0);
 
             //front wheel drive
-            wheel[0].Move(torque);
-            wheel[1].Move(torque);
+            wheel[0].Move(Mathf.Abs(torque));
+            wheel[1].Move(Mathf.Abs(torque));
+            wheel[0].Brake(0);
+            wheel[1].Brake(0);
         } else
         {
             //front wheel drive
-            wheel[0].Brake(-torque);
-            wheel[1].Brake(-torque);
+            wheel[0].Brake(Mathf.Abs(torque));
+            wheel[1].Brake(Mathf.Abs(torque));
+            wheel[0].Move(0);
+            wheel[1].Move(0);
         }
 
         //front wheel steering

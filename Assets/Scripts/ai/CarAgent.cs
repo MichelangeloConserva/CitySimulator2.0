@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -35,8 +36,10 @@ public class CarAgent : MonoBehaviour {
     public MotorSimulator motor;
     public GameObject debug;
 
-    public float[] sensors;
+    public float[] frontSensors;
 
+
+    public NodeStreet endNode;
 
 
 
@@ -60,19 +63,12 @@ public class CarAgent : MonoBehaviour {
         var wayPos = waypoints[0]       - Vector3.up * waypoints[0].y;
         distance = Vector3.Distance(carPos, wayPos);
 
+        //DrawArrow.ForDebug(transform.position, waypoints[0] + Vector3.up*3 - transform.position, Color.blue);
 
         // Arriving to the waypoint and deleting it
         if (distance < minDistanceToCompleteCheck)
         {
-            lastWaypoint = waypoints[0];
-            waypoints.Remove(waypoints[0]);
-
-            // checking for destination
-            if (waypoints.Count == 0)
-            {
-                isArrived = true;
-                Destroy(this.gameObject);
-            }
+            StartCoroutine(Recalculating());
         }
 
         // Front Sensors
@@ -80,35 +76,23 @@ public class CarAgent : MonoBehaviour {
         // Back Sensors
         //var otherBack = SensorActivation(-transform.forward);
 
-        if (rbSpeed > 30f & sensors[0] + sensors[1] + sensors[2] != 0)
+        if ((rbSpeed > 30f & frontSensors[1] != 0) || (frontSensors[1] < 4 & frontSensors[1] > 0))
         {
-            force = -1000000000 * Mathf.Pow(rbSpeed + 1, 4); // emergency braking
+            force = -1000000000000 * Mathf.Pow(rbSpeed + 1, 4); // emergency braking
         }
-        else if (rbSpeed > 10f & sensors[0]+ sensors[1]+ sensors[2] != 0)
+        else if (rbSpeed > 10f & frontSensors[1] != 0)
         {
-            float dist = Mathf.Infinity;
-            foreach (float f in sensors)
-                if (f != 0)
-                {
-                    if (f < dist)
-                        dist = f;
-                }
-            force = -(minDistanceForSlowingDown - (dist-1)) * Mathf.Pow(rbSpeed+1,4); // braking
-        } else if (rbSpeed > 0f & sensors[0] + sensors[1] + sensors[2] != 0)
+            Debug.Log("braking");
+            float dist = frontSensors[1];
+            force = -Mathf.Pow(rbSpeed + 1, 4);
+            //force = -(minDistanceForSlowingDown - (dist-1)) * Mathf.Pow(rbSpeed+1,4); // braking
+        } else if (rbSpeed > 0f & frontSensors[1] != 0)
         {
-            float dist = Mathf.Infinity;
-            foreach (float f in sensors)
-                if (f != 0)
-                {
-                    if(f<dist)
-                        dist = f;
-                }
-            if (dist < 3)
-                force = -Mathf.Pow(rbSpeed + 1, 4); // braking
+            float dist = frontSensors[1];
+            if (dist < 8)
+                force = -999; // braking
             else
                 force = 1;
-            Debug.Log("last step force " + force + " " + dist);
-
         }
 
 
@@ -121,30 +105,77 @@ public class CarAgent : MonoBehaviour {
             }
         }
 
-        // giving power to the car
-        if  (rbSpeed > 50) // speed limit TODO : set automatic speed limits
-            force = -Mathf.Sqrt(rbSpeed);
+        if (rbSpeed > 30)
+        {
+            //smoothness of the slowdown is controlled by the 0.99f, 
+            //0.5f is less smooth, 0.9999f is more smooth
+            GetComponent<Rigidbody>().velocity *= 0.99f;
+        }
+
 
         turningForce = turning * motor.turnPower;
         frontForce = force * motor.enginePower;
-        if (turning > minTurn)
-            motor.MotorControlling(frontForce, turningForce);
-        else if (turning < -minTurn)
-            motor.MotorControlling(frontForce, turningForce);
-        else
-            motor.MotorControlling(2 * frontForce, 0);
+        motor.MotorControlling(frontForce, turningForce);
 
+
+    }
+
+    IEnumerator Recalculating()
+    {
+        lastWaypoint = waypoints[0];
+        waypoints.Remove(waypoints[0]);
+
+        // checking for destination
+        if (waypoints.Count == 0)
+        {
+            var streetPoints = GameObject.FindGameObjectsWithTag("streetPoint").ToList();
+            var startNode = endNode;
+            foreach (GameObject g in streetPoints)
+                if (g.GetComponent<NodeHandler>().node == startNode)
+                {
+                    streetPoints.Remove(g);
+                    break;
+                }
+            endNode = streetPoints[(int)Random.Range(0, streetPoints.Count - 1)].GetComponent<NodeHandler>().node;
+
+            int k = 0;
+            var path = new List<Vector3>();
+            do
+            {
+                var pathFinder = new AStar(startNode, endNode);
+                var found = pathFinder.PathFinder();
+                path = new List<Vector3>();
+                foreach (NodeStreet n in pathFinder.path)
+                    path.Add(n.nodePosition);
+                k++;
+                if (k > 10)
+                {
+                    break;
+                }
+            } while (path.Count < 10);
+
+            waypoints = path;
+        }
+        yield return new WaitForEndOfFrame();
+    }
+
+
+    IEnumerator DestructionTimer()
+    {
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        Destroy(this.gameObject);
     }
 
 
     private void SensorActivation(Vector3 fromPos)
     {
-        var coneMiddleLeft = Vector3.RotateTowards(fromPos, -transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
-        var coneMiddleRight = Vector3.RotateTowards(fromPos, transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision;
+        var coneMiddleLeft = Vector3.RotateTowards(fromPos, -transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision/6;
+        var coneMiddleRight = Vector3.RotateTowards(fromPos, transform.right, Mathf.PI / 6 / 2, 2 * Mathf.PI) * distVision/6;
         var coneMiddle = fromPos * distVision;
         var allCones = new Vector3[] { coneMiddleLeft, coneMiddle, coneMiddleRight };
 
-        sensors = new float[3] { 0,0,0 }; 
+        frontSensors = new float[3] { 0,0,0 }; 
 
         RaycastHit[] hitsManual = new RaycastHit[5];
         foreach (Vector3 v in allCones)
@@ -162,15 +193,15 @@ public class CarAgent : MonoBehaviour {
                     // if the object is on the right i need to turn left
                     if (v == coneMiddleRight)
                     {
-                        sensors[2] = dist;
+                        frontSensors[1] += dist;
                     }
                     else if (v == coneMiddleLeft)
                     {
-                        sensors[0] = dist;
+                        frontSensors[1] += dist;
                     }
                     else if (v == coneMiddle)
                     {
-                        sensors[1] = dist;
+                        frontSensors[1] += dist;
                     }
                 }
                 else if (hit.collider.gameObject == gameObject)

@@ -43,7 +43,7 @@ public class RandomSpawner : MonoBehaviour
                 path.Add(n.nodePosition);
 
             if (path.Count > 10)
-                carsManager.SpawnCar(startNode.nodePosition, path);
+                carsManager.SpawnCar(startNode.nodePosition, path, endNode);
 
             // Testing
             waitUntilNextSpawn = Mathf.Infinity;

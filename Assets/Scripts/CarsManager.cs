@@ -24,12 +24,13 @@ public class CarsManager : MonoBehaviour {
         cars = new List<GameObject>();
     }
 
-    public void SpawnCar(Vector3 startPos, List<Vector3> wayPoints)
+    public void SpawnCar(Vector3 startPos, List<Vector3> wayPoints, NodeStreet lastNode)
     {
         var curCar = Instantiate(car, startPos + Vector3.up * 3, Quaternion.identity, garage.transform);
         curCar.transform.LookAt(wayPoints[1]);
         cars.Add(curCar);
         curCar.GetComponent<CarAgent>().waypoints = wayPoints;
+        curCar.GetComponent<CarAgent>().endNode = lastNode;
     }
 
 
@@ -47,7 +48,7 @@ public class CarsManager : MonoBehaviour {
                 path.Add(n.nodePosition);
 
             if (path.Count > 1)
-                SpawnCar(startNode.nodePosition, path);
+                SpawnCar(startNode.nodePosition, path, endNode);
 
             spawn = false;
         }
@@ -64,5 +65,14 @@ public class CarsManager : MonoBehaviour {
     {
         spawn = true;
     }
+
+
+    void OnGUI()
+    {
+        var style = new GUIStyle();
+        style.normal.textColor = Color.red;
+        GUI.Label(new Rect(10, 10, 300, 100), string.Format("Number of cars: {0}", garage.transform.childCount), style);
+    }
+
 
 }
