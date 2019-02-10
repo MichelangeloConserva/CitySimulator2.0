@@ -13,6 +13,7 @@ TagManager:
   - crossPoint
   - street
   - curvePoint
+  - spawnPoint
   layers:
   - Default
   - TransparentFX

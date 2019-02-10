@@ -38,16 +38,12 @@ public class CarAgent : MonoBehaviour {
 
     public float[] frontSensors;
 
-
     public NodeStreet endNode;
 
 
-
-    void Start () {
-
-
+    void Start ()
+    {
         isArrived = false;
-
         aboutToCrash = false;
     }
 
@@ -128,33 +124,7 @@ public class CarAgent : MonoBehaviour {
         // checking for destination
         if (waypoints.Count == 0)
         {
-            var streetPoints = GameObject.FindGameObjectsWithTag("streetPoint").ToList();
-            var startNode = endNode;
-            foreach (GameObject g in streetPoints)
-                if (g.GetComponent<NodeHandler>().node == startNode)
-                {
-                    streetPoints.Remove(g);
-                    break;
-                }
-            endNode = streetPoints[(int)Random.Range(0, streetPoints.Count - 1)].GetComponent<NodeHandler>().node;
-
-            int k = 0;
-            var path = new List<Vector3>();
-            do
-            {
-                var pathFinder = new AStar(startNode, endNode);
-                var found = pathFinder.PathFinder();
-                path = new List<Vector3>();
-                foreach (NodeStreet n in pathFinder.path)
-                    path.Add(n.nodePosition);
-                k++;
-                if (k > 10)
-                {
-                    break;
-                }
-            } while (path.Count < 10);
-
-            waypoints = path;
+            Destroy(gameObject);
         }
         yield return new WaitForEndOfFrame();
     }

@@ -276,8 +276,7 @@ public class RoadSpawn : MonoBehaviour
         foreach (Vector3 checkPos in checkPositions)
             CheckAtPositionForNodesFromCross(checkPos, curNode);
     }
-
-
+    
     /// <summary>
     /// Given a streetPoint it takes its node and check in some check position for connections
     /// </summary>
@@ -328,13 +327,6 @@ public class RoadSpawn : MonoBehaviour
             curNode.AddStreet(curStreet);
         }
     }
-
-    //void OnGUI()
-    //{
-    //    var style = new GUIStyle();
-    //    style.normal.textColor = Color.red;
-    //    GUI.Label(new Rect(10, 10, 300, 100), string.Format("Edit mode: {0}", editMode), style);
-    //}
 }
 
 

@@ -28,26 +28,26 @@ public class RandomSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timePassed += Time.deltaTime;
+        //timePassed += Time.deltaTime;
 
-        if (timePassed >= waitUntilNextSpawn)
-        {
-            timePassed = 0;
+        //if (timePassed >= waitUntilNextSpawn)
+        //{
+        //    timePassed = 0;
 
-            PickRandomTrip();
+        //    PickRandomTrip();
 
-            var pathFinder = new AStar(startNode, endNode);
-            var found = pathFinder.PathFinder();
-            var path = new List<Vector3>();
-            foreach (NodeStreet n in pathFinder.path)
-                path.Add(n.nodePosition);
+        //    var pathFinder = new AStar(startNode, endNode);
+        //    var found = pathFinder.PathFinder();
+        //    var path = new List<Vector3>();
+        //    foreach (NodeStreet n in pathFinder.path)
+        //        path.Add(n.nodePosition);
 
-            if (path.Count > 10)
-                carsManager.SpawnCar(startNode.nodePosition, path, endNode);
+        //    if (path.Count > 10)
+        //        carsManager.SpawnCar(startNode.nodePosition, path, endNode);
 
-            // Testing
-            waitUntilNextSpawn = Mathf.Infinity;
-        }
+        //    // Testing
+        //    waitUntilNextSpawn = Mathf.Infinity;
+        //}
         
 
     }
@@ -58,5 +58,7 @@ public class RandomSpawner : MonoBehaviour
         startNode = streetPoints[(int)Random.Range(0, streetPoints.Length - 1)].GetComponent<NodeHandler>().node;
         endNode = streetPoints[(int)Random.Range(0, streetPoints.Length - 1)].GetComponent<NodeHandler>().node;
     }
+
+
 
 }
