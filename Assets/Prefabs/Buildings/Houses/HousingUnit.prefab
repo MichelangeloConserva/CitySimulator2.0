@@ -213,6 +213,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c002e1984afb96f4bb042b96be88d73a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  numberOfAdultsComponents: 0
+  numberOfChildrenComponents: 0
 --- !u!114 &363058711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,7 +227,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5206bb7e1fc278478974cfa13977e18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoint: {x: 0, y: 0, z: 0}
+  huInitFamily: {fileID: 0}
+  carsManager: {fileID: 0}
+  adultsAtWork: 
+  workingPlaces: []
 --- !u!114 &8414053997756857314
 MonoBehaviour:
   m_ObjectHideFlags: 0

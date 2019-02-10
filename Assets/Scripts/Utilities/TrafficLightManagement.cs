@@ -67,6 +67,9 @@ public class TrafficLightManagement : MonoBehaviour
                 luceGialla1_l2.gameObject.SetActive(false);
                 luceGialla2_l2.gameObject.SetActive(false);
 
+                luceRossa1_l1.gameObject.SetActive(false);
+                luceRossa2_l1.gameObject.SetActive(false);
+
                 luceVerde1_l1.gameObject.SetActive(true);
                 luceVerde2_l1.gameObject.SetActive(true);
 

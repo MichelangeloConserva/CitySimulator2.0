@@ -249,7 +249,8 @@ public class RoadSpawn : MonoBehaviour
 
         // Adding the cross point 
         for (int i = 0; i < cross.transform.childCount; i++)
-            crossPointsToUpdate.Add(cross.transform.GetChild(i).gameObject);
+            if (cross.transform.GetChild(i).gameObject.tag == "crossPoint")
+                crossPointsToUpdate.Add(cross.transform.GetChild(i).gameObject);
     }
 
     /// <summary>
@@ -258,6 +259,7 @@ public class RoadSpawn : MonoBehaviour
     /// <param name="cross"></param>
     private void FromCrossNodesCreation(GameObject cross)
     {
+        Debug.Log(cross);
         cross.GetComponent<NodeHandler>().InitializeNode();
         var curNode = cross.GetComponent<NodeHandler>().node;
 

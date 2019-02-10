@@ -17,7 +17,7 @@ public class HUInitFamily : MonoBehaviour
     [Header("Family settings")]
     public int numberOfAdultsComponents;
     public int numberOfChildrenComponents;
-
+    public List<float> possibleGoingToWorkHours;
 
 
 
@@ -51,6 +51,9 @@ public class HUInitFamily : MonoBehaviour
 
         numberOfAdultsComponents   = possibleNumberOfAdultsComponents  [Random.Range(0, possibleNumberOfAdultsComponents.Length-1)];
         numberOfChildrenComponents = possibleNumberOfChildrenComponents[Random.Range(0, possibleNumberOfChildrenComponents.Length-1)];
+
+
+        possibleGoingToWorkHours = new List<float> { 6f, 6.30f, 6.45f, 7f, 7.15f, 7.30f, 7.45f, 8, 8.15f, 8.30f };
     }
 
     private IEnumerator InitCarHandler()
@@ -63,37 +66,61 @@ public class HUInitFamily : MonoBehaviour
         huCarsHandler = GetComponent<HUCarsHandler>();
         huCarsHandler.huInitFamily = this;
 
+        if (huCarsHandler.carsManager == null)
+            huCarsHandler.carsManager = GameObject.Find("Manager").GetComponent<CarsManager>();
+
+
 
         // Setting spawn point for the cars
-        huCarsHandler.spawnPoint = GetComponentInChildren<SpawnPointHandler>().node.nodePosition;
+        huCarsHandler.spawnPoint = GetComponentInChildren<SpawnPointHandler>().node;
 
 
 
         // TODO : implements destinations, timing for spawning, type of car
-        float[] possibleGoingToWorkHours = new float[] { 6f, 6.30f, 6.45f, 7f, 7.15f, 7.30f, 7.45f, 8, 8.15f, 8.30f };
+        
 
 
-        // Initializing the variables of the CarsHandlers
+        // Initializing CarHandlers variables for the adults
         huCarsHandler.dtWorkingLeaving = new System.DateTime[numberOfAdultsComponents];
         huCarsHandler.adultsAtWork = new bool[numberOfAdultsComponents];
-        for (int i = 0; i < numberOfAdultsComponents; i++)
-            huCarsHandler.adultsAtWork[i] = false;
+        huCarsHandler.workingPlaces = new GameObject[numberOfAdultsComponents];
 
 
         for (int i=0; i<numberOfAdultsComponents; i++)
         {
-            System.DateTime dt = new System.DateTime();
-            var timeToGo = possibleGoingToWorkHours[Random.Range(0, possibleGoingToWorkHours.Length - 1)];
-            var hours = (int)timeToGo;
-            var minutes = (int)((timeToGo - hours) * 100);
-            dt = dt.AddHours(hours);
-            dt = dt.AddMinutes(minutes);
-            huCarsHandler.dtWorkingLeaving[i] = dt;
+            // None of the adults is at work
+            huCarsHandler.adultsAtWork[i] = false;
+
+            // Setting time for the adults to leave
+            SetWorkTime(i);
+
+
+            // Setting the working place
+            var possibleWorkingPlaces = GameObject.FindGameObjectsWithTag("workingPlace");
+            var workingPlace = possibleWorkingPlaces[Random.Range(0, possibleWorkingPlaces.Length - 1)];
+            huCarsHandler.workingPlaces[i] = workingPlace;
         }
 
 
-
     }
+
+    /// <summary>
+    /// From a prefedefined list of possibile time we choose a time for the adult
+    /// </summary>
+    /// <param name="indexOfAdult"></param>
+    private void SetWorkTime(int indexOfAdult)
+    {
+        System.DateTime dt = new System.DateTime();
+        var timeToGo = possibleGoingToWorkHours[Random.Range(0, possibleGoingToWorkHours.Count - 1)];
+        var hours = (int)timeToGo; var minutes = (int)((timeToGo - hours) * 100);
+
+        dt = dt.AddHours(hours); dt = dt.AddMinutes(minutes);
+
+        huCarsHandler.dtWorkingLeaving[indexOfAdult] = dt;
+        possibleGoingToWorkHours.Remove(timeToGo);
+    }
+
+
 
     private IEnumerator InitEconomy()
     {
