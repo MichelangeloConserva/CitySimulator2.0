@@ -747,6 +747,7 @@ GameObject:
   - component: {fileID: 54086444733138514}
   - component: {fileID: 114545910702199636}
   - component: {fileID: 114555581099218092}
+  - component: {fileID: 8468625166399914042}
   m_Layer: 10
   m_Name: Car
   m_TagString: vehicle
@@ -841,7 +842,21 @@ MonoBehaviour:
   rbSpeed: 0
   motor: {fileID: 114545910702199636}
   debug: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
-  sensors: []
+  frontSensors: []
+  stopAtTrafficLight: 0
+--- !u!65 &8468625166399914042
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533345945731994}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1643457769791790
 GameObject:
   m_ObjectHideFlags: 0

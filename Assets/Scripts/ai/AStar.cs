@@ -111,5 +111,17 @@ public class AStar {
     }
 
 
+    public static List<Vector3> PathFromTo(NodeStreet startNode, NodeStreet endNode)
+    {
+        // pathfinding
+        var pathFinder = new AStar(startNode, endNode);
+        var found = pathFinder.PathFinder();
+        var path = new List<Vector3>();
+        foreach (NodeStreet n in pathFinder.path)
+            path.Add(n.nodePosition);
+
+        return path;
+    }
+
 
 }

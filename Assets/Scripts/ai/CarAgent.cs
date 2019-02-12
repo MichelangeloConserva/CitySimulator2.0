@@ -40,6 +40,13 @@ public class CarAgent : MonoBehaviour {
 
     public NodeStreet endNode;
 
+    public bool stopAtTrafficLight = false;
+
+    bool passingCross = false;
+
+
+    Vector3 stopPos;
+
 
     void Start ()
     {
@@ -47,8 +54,9 @@ public class CarAgent : MonoBehaviour {
         aboutToCrash = false;
     }
 
-    void FixedUpdate()
+    void FixedUpdate() // TODO : refactor
     {
+
         // checking speed km/h
         rbSpeed = GetComponent<Rigidbody>().velocity.magnitude * 3.6f;
 
@@ -78,7 +86,6 @@ public class CarAgent : MonoBehaviour {
         }
         else if (rbSpeed > 10f & frontSensors[1] != 0)
         {
-            Debug.Log("braking");
             float dist = frontSensors[1];
             force = -Mathf.Pow(rbSpeed + 1, 4);
             //force = -(minDistanceForSlowingDown - (dist-1)) * Mathf.Pow(rbSpeed+1,4); // braking
@@ -89,6 +96,16 @@ public class CarAgent : MonoBehaviour {
                 force = -999; // braking
             else
                 force = 1;
+        }
+
+
+        // Cheking for traffic lights
+        if (stopAtTrafficLight)
+        {
+            if (Vector3.Distance(stopPos, transform.position) < 7)
+                force = -Mathf.Pow(rbSpeed + 1, 3);
+            else if (Vector3.Distance(stopPos, transform.position) < 2)
+                GetComponent<Rigidbody>().velocity *= 0; // braking
         }
 
 
@@ -113,8 +130,44 @@ public class CarAgent : MonoBehaviour {
         frontForce = force * motor.enginePower;
         motor.MotorControlling(frontForce, turningForce);
 
-
     }
+
+    public void StopAtTrafficLight(Vector3 stopPos)
+    {
+        stopAtTrafficLight = true;
+        this.stopPos = stopPos;
+    }
+
+    public void StopAtTrafficLight()
+    {
+        stopAtTrafficLight = false;
+    }
+
+
+
+    IEnumerator StoppingAtTrafficLight(GameObject trafficLight)
+    {
+        passingCross = true;
+        stopAtTrafficLight = true;
+        for (int i = 0; i < trafficLight.transform.childCount; i++)
+        {
+            if (trafficLight.transform.GetChild(i).gameObject.activeInHierarchy)
+                if (trafficLight.transform.GetChild(i).gameObject.name == "Rosso")
+                {
+                    yield return new WaitForSeconds(trafficLight.GetComponentInParent<TrafficLightManagement>().timeForLightChange);
+                    stopAtTrafficLight = false;
+                }
+                else if (trafficLight.transform.GetChild(i).gameObject.name == "Giallo")
+                {
+                    yield return new WaitForSeconds(trafficLight.GetComponentInParent<TrafficLightManagement>().timeForLightChange * 2);
+                    stopAtTrafficLight = false;
+                }
+        }
+
+        yield return new WaitForSeconds(20);
+        passingCross = false;
+    }
+
 
     IEnumerator Recalculating()
     {

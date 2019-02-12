@@ -23,29 +23,27 @@ public class HUCarsHandler : MonoBehaviour
         if (dtWorkingLeaving != null)
             for (int adult = 0; adult < huInitFamily.numberOfAdultsComponents; adult++)
                 if (!adultsAtWork[adult])
-                    if (dtWorkingLeaving[adult].Hour == CityManagementTime.realTime.Hour &
-                       (dtWorkingLeaving[adult].Minute > CityManagementTime.realTime.Minute  && dtWorkingLeaving[adult].Minute < CityManagementTime.realTime.Minute + 5))
-                    {
-
-                        adultsAtWork[adult] = true;
-
-                        // pathfinding
-                        var endNode = workingPlaces[adult].GetComponentInChildren<SpawnPointHandler>().node;
-                        var pathFinder = new AStar(spawnPoint, endNode);
-                        var found = pathFinder.PathFinder();
-                        var path = new List<Vector3>();
-                        foreach (NodeStreet n in pathFinder.path)
-                            path.Add(n.nodePosition);
-
-                        carsManager.SpawnCar(spawnPoint.nodePosition, path, endNode);
-                    }
+                {
+                    StartCoroutine(GoToWork(adult));
+                }
     }
 
-    public void SetGoingToWorkTime()
+    private IEnumerator GoToWork(int adult)
     {
 
-    }
+        if (dtWorkingLeaving[adult].Hour == CityManagementTime.realTime.Hour &
+                       (dtWorkingLeaving[adult].Minute > CityManagementTime.realTime.Minute && dtWorkingLeaving[adult].Minute < CityManagementTime.realTime.Minute + 5))
+        {
+            adultsAtWork[adult] = true;
 
+            var endNode = workingPlaces[adult].GetComponentInChildren<SpawnPointHandler>().node;
+            var path = AStar.PathFromTo(spawnPoint, endNode);
+
+            carsManager.SpawnCar(spawnPoint.nodePosition, path, endNode);
+        }
+
+        yield return null;
+    }
 
 
 

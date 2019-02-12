@@ -259,7 +259,6 @@ public class RoadSpawn : MonoBehaviour
     /// <param name="cross"></param>
     private void FromCrossNodesCreation(GameObject cross)
     {
-        Debug.Log(cross);
         cross.GetComponent<NodeHandler>().InitializeNode();
         var curNode = cross.GetComponent<NodeHandler>().node;
 

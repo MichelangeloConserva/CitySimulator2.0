@@ -55,9 +55,9 @@ public class CarsManager : MonoBehaviour {
 
     void PickRandomTrip()
     {
-        var streetPoints = GameObject.FindGameObjectsWithTag("spawnPoint");
-        startNode = streetPoints[0].GetComponent<SpawnPointHandler>().node;
-        endNode = streetPoints[1].GetComponent<SpawnPointHandler>().node;
+        var streetPoints = GameObject.FindGameObjectsWithTag("streetPoint");
+        startNode = streetPoints[(int)Random.Range(0, streetPoints.Length - 1)].GetComponent<NodeHandler>().node;
+        endNode = streetPoints[(int)Random.Range(0, streetPoints.Length - 1)].GetComponent<NodeHandler>().node;
     }
 
     public void SpawnCar()
