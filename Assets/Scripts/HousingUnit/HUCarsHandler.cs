@@ -18,6 +18,7 @@ public class HUCarsHandler : MonoBehaviour
     public bool[] adultsAtWork;
     public GameObject[] workingPlaces;
 
+
     void Update()
     {
         if (dtWorkingLeaving != null)
@@ -32,19 +33,26 @@ public class HUCarsHandler : MonoBehaviour
     {
 
         if (dtWorkingLeaving[adult].Hour == CityManagementTime.realTime.Hour &
-                       (dtWorkingLeaving[adult].Minute > CityManagementTime.realTime.Minute && dtWorkingLeaving[adult].Minute < CityManagementTime.realTime.Minute + 5))
+               (dtWorkingLeaving[adult].Minute > CityManagementTime.realTime.Minute && 
+               dtWorkingLeaving[adult].Minute < CityManagementTime.realTime.Minute + 5))
         {
             adultsAtWork[adult] = true;
 
-            var endNode = workingPlaces[adult].GetComponentInChildren<SpawnPointHandler>().node;
-            var path = AStar.PathFromTo(spawnPoint, endNode);
 
-            carsManager.SpawnCar(spawnPoint.nodePosition, path, endNode);
+            workingPlaces[adult].GetComponent<WHInit>().AddWorker(adult, huInitFamily.huEconomy, this);
+
+
+            var endNode = workingPlaces[adult].GetComponentInChildren<SpawnPointHandler>().node;
+            WorkerMoving(spawnPoint, endNode);
         }
 
         yield return null;
     }
 
-
+    public void WorkerMoving(NodeStreet startNode, NodeStreet endNode)
+    {
+        var path = AStar.PathFromTo(startNode, endNode);
+        carsManager.SpawnCar(spawnPoint.nodePosition, path, endNode);
+    }
 
 }

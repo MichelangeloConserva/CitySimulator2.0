@@ -52,6 +52,10 @@ public class CarAgent : MonoBehaviour {
     {
         isArrived = false;
         aboutToCrash = false;
+
+
+
+
     }
 
     void FixedUpdate() // TODO : refactor

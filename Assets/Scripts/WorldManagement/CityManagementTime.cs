@@ -18,7 +18,7 @@ public class CityManagementTime : MonoBehaviour
 
     void Update()
     {
-        realTime = realTime.AddSeconds(Time.deltaTime * 60 ); 
+        realTime = realTime.AddSeconds(Time.deltaTime * Settings.timeMultiplyer); 
     }
 
     void OnGUI()

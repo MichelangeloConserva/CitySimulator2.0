@@ -8,6 +8,8 @@ public class Settings
     public static readonly bool visualizeRoadNetwork = false;
 
 
+    public static int timeMultiplyer = 60;
+
 
 
 }

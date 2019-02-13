@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HUEconomy : MonoBehaviour
+public class HUGeneralManager : MonoBehaviour
 {
-
-    public float savings;
-
+    public int numberOfHU = 0;
 
 
 

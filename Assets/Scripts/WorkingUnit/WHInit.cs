@@ -4,5 +4,67 @@ using UnityEngine;
 
 public class WHInit : MonoBehaviour
 {
-    
+
+    public float retributionPerHour;
+
+    public List<WHWorker> workers;
+
+    public int actualWorker;
+
+
+
+
+    private int[] possibleHoursAtWork;
+
+
+
+    void Start()
+    {
+        actualWorker = 0;
+
+        possibleHoursAtWork = new int[] { 4, 6, 8 };
+
+
+        workers = new List<WHWorker>();
+
+        var possibleRetributionPerHour = new List<float> { 6f, 6.30f, 6.45f, 7f, 7.15f, 7.30f, 7.45f, 8, 8.15f, 8.30f };
+        retributionPerHour = possibleRetributionPerHour[Random.Range(0, possibleRetributionPerHour.Count - 1)];
+    }
+
+    void Update()
+    {
+        actualWorker = workers.Count;
+    }
+
+    public void AddWorker(int adultIndex, HUEconomy huE, HUCarsHandler huC)
+    {
+        int workingHours = possibleHoursAtWork[Random.Range(0, possibleHoursAtWork.Length - 1)];
+        var spawnPoint = gameObject.GetComponentInChildren<SpawnPointHandler>().node;
+        var worker = new WHWorker(adultIndex, huE, huC, System.DateTime.Now, workingHours, spawnPoint);
+        workers.Add(worker);
+        StartCoroutine(WorkingCoroutine(worker));
+    }
+
+    /// <summary>
+    /// Start the coroutine which takes care of all the process of working of the worker
+    /// </summary>
+    /// <param name="worker"></param>
+    /// <returns></returns>
+    private IEnumerator WorkingCoroutine(WHWorker worker)
+    {
+        Debug.Log(worker.workingHours);
+        for (int i=0; i<worker.workingHours; i++)
+        {
+            yield return new WaitForSeconds(3600 / Settings.timeMultiplyer);
+            worker.EarnMoney(retributionPerHour);
+        }
+       
+        worker.GoHome();
+        workers.Remove(worker);
+    }
+
+
+
+
+
 }
