@@ -53,9 +53,7 @@ public class CarAgent : MonoBehaviour {
         isArrived = false;
         aboutToCrash = false;
 
-
-
-
+        frontSensors = new float[] { 0,0,0};
     }
 
     void FixedUpdate() // TODO : refactor
@@ -88,18 +86,15 @@ public class CarAgent : MonoBehaviour {
         {
             force = -1000000000000 * Mathf.Pow(rbSpeed + 1, 4); // emergency braking
         }
-        else if (rbSpeed > 10f & frontSensors[1] != 0)
+        else if (rbSpeed > 5f & frontSensors[1] != 0 & frontSensors[1] > 5)
         {
             float dist = frontSensors[1];
-            force = -Mathf.Pow(rbSpeed + 1, 4);
+            force = 2;
             //force = -(minDistanceForSlowingDown - (dist-1)) * Mathf.Pow(rbSpeed+1,4); // braking
         } else if (rbSpeed > 0f & frontSensors[1] != 0)
         {
-            float dist = frontSensors[1];
-            if (dist < 8)
-                force = -999; // braking
-            else
-                force = 1;
+            Debug.Log("Braking");
+            GetComponent<Rigidbody>().velocity *= 0.3f;
         }
 
 
@@ -202,7 +197,6 @@ public class CarAgent : MonoBehaviour {
         var coneMiddle = fromPos * distVision;
         var allCones = new Vector3[] { coneMiddleLeft, coneMiddle, coneMiddleRight };
 
-        frontSensors = new float[3] { 0,0,0 }; 
 
         RaycastHit[] hitsManual = new RaycastHit[5];
         foreach (Vector3 v in allCones)
@@ -220,15 +214,24 @@ public class CarAgent : MonoBehaviour {
                     // if the object is on the right i need to turn left
                     if (v == coneMiddleRight)
                     {
-                        frontSensors[1] += dist;
+                        if (frontSensors[1] > dist + .5f)
+                            frontSensors[1] = dist;
+                        else
+                            frontSensors[1] = 0;
                     }
                     else if (v == coneMiddleLeft)
                     {
-                        frontSensors[1] += dist;
+                        if (frontSensors[1] > dist + .5f)
+                            frontSensors[1] = dist;
+                        else
+                            frontSensors[1] = 0;
                     }
                     else if (v == coneMiddle)
                     {
-                        frontSensors[1] += dist;
+                        if (frontSensors[1] > dist + .5f)
+                            frontSensors[1] = dist;
+                        else
+                            frontSensors[1] = 0;
                     }
                 }
                 else if (hit.collider.gameObject == gameObject)

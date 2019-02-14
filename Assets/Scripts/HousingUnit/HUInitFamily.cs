@@ -61,7 +61,7 @@ public class HUInitFamily : MonoBehaviour
         numberOfChildrenComponents = possibleNumberOfChildrenComponents[Random.Range(0, possibleNumberOfChildrenComponents.Length-1)];
 
         //possibleGoingToWorkHours = new List<float> { 6f, 6.30f, 6.45f, 7f, 7.15f, 7.30f, 7.45f, 8, 8.15f, 8.30f };
-        possibleGoingToWorkHours = new List<float> { 6f, 6.30f, 6.45f, 7f};
+        possibleGoingToWorkHours = new List<float> { 6.15f, 6.30f, 6.45f, 7f};
 
         
 

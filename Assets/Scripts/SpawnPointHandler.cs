@@ -11,7 +11,7 @@ public class SpawnPointHandler : MonoBehaviour
     void Start()
     {
         InitializeNode();
-        StartCoroutine(Connect(transform.position + transform.forward * 7));
+        StartCoroutine(Connect(transform.position + transform.forward * 7 + transform.right * 6));
     }
 
 
@@ -23,7 +23,7 @@ public class SpawnPointHandler : MonoBehaviour
         var colls = Physics.OverlapSphere(PosToCheck, 5f, LayerMask.GetMask("network"));
         if (colls.Length == 0)
         {
-            StartCoroutine(Connect(transform.position + transform.forward * 7 + transform.right * 5));
+            StartCoroutine(Connect(transform.position + transform.forward * 7 + transform.right * 3));
             yield return null;
         } else
         {

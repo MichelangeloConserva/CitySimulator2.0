@@ -746,7 +746,7 @@ GameObject:
   - component: {fileID: 4888966552768694}
   - component: {fileID: 54086444733138514}
   - component: {fileID: 114545910702199636}
-  - component: {fileID: 114555581099218092}
+  - component: {fileID: 1131797792142710819}
   - component: {fileID: 8468625166399914042}
   m_Layer: 10
   m_Name: Car
@@ -763,7 +763,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533345945731994}
   m_LocalRotation: {x: -0.000050246716, y: 0.07036819, z: 0.000005040318, w: 0.99752116}
-  m_LocalPosition: {x: -12.17, y: 6.04, z: -43.18}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4934525479079118}
@@ -802,7 +802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe206e29a216de846a88bbd587dad916, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enginePower: 200
+  enginePower: 400
   turnPower: 50
   humanControll: 0
   maxSpeed: 0
@@ -813,7 +813,7 @@ MonoBehaviour:
   - {fileID: 114409864118808518}
   centerOfMass: {fileID: 4752331713313006}
   rbody: {fileID: 0}
---- !u!114 &114555581099218092
+--- !u!114 &1131797792142710819
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -822,28 +822,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1533345945731994}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fde97de8f19689b469900459cb8d54ee, type: 3}
+  m_Script: {fileID: 11500000, guid: 87e37fb400eb023479c32e47bbe96e4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minDistanceToCompleteCheck: 3
-  minTurn: 0.01
-  minDistanceForSlowingDown: 15
-  speed: 2
-  distVision: 20
   waypoints: []
-  lastWaypoint: {x: 0, y: 0, z: 0}
-  isArrived: 0
-  aboutToCrash: 0
-  turning: 0
-  distance: 0
-  force: 0
-  turningForce: 0
-  frontForce: 0
-  rbSpeed: 0
-  motor: {fileID: 114545910702199636}
-  debug: {fileID: 1910678865028240, guid: a5df08937f91f8a4daa51a25d7fc0287, type: 3}
-  frontSensors: []
   stopAtTrafficLight: 0
+  rbSpeed: 0
+  turningForce: 40
+  frontForce: 300
+  minTurn: 0.2
+  minDistanceToCompleteCheck: 2
+  raySensorLength: 15
+  securityDistance: 6
 --- !u!65 &8468625166399914042
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -43,16 +43,16 @@ public class HUCarsHandler : MonoBehaviour
 
 
             var endNode = workingPlaces[adult].GetComponentInChildren<SpawnPointHandler>().node;
-            WorkerMoving(spawnPoint, endNode);
+            WorkerMoving(spawnPoint, endNode, transform.rotation);
         }
 
         yield return null;
     }
 
-    public void WorkerMoving(NodeStreet startNode, NodeStreet endNode)
+    public void WorkerMoving(NodeStreet startNode, NodeStreet endNode, Quaternion rot)
     {
         var path = AStar.PathFromTo(startNode, endNode);
-        carsManager.SpawnCar(spawnPoint.nodePosition, path, endNode);
+        carsManager.SpawnCar(spawnPoint.nodePosition, path, endNode, rot);
     }
 
 }

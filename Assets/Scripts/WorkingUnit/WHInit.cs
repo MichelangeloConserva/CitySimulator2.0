@@ -40,7 +40,7 @@ public class WHInit : MonoBehaviour
     {
         int workingHours = possibleHoursAtWork[Random.Range(0, possibleHoursAtWork.Length - 1)];
         var spawnPoint = gameObject.GetComponentInChildren<SpawnPointHandler>().node;
-        var worker = new WHWorker(adultIndex, huE, huC, System.DateTime.Now, workingHours, spawnPoint);
+        var worker = new WHWorker(adultIndex, huE, huC, System.DateTime.Now, workingHours, spawnPoint,transform.rotation);
         workers.Add(worker);
         StartCoroutine(WorkingCoroutine(worker));
     }

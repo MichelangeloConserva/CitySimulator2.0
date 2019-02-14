@@ -11,9 +11,10 @@ public class WHWorker
     private System.DateTime workingStart;
     private int adultIndex;
     private NodeStreet workSpawn;
+    private Quaternion rot;
 
 
-    public WHWorker(int adultIndex, HUEconomy myHUEconomy, HUCarsHandler myHUCarsHandler, System.DateTime workingStart, int workingHours, NodeStreet workSpawn)
+    public WHWorker(int adultIndex, HUEconomy myHUEconomy, HUCarsHandler myHUCarsHandler, System.DateTime workingStart, int workingHours, NodeStreet workSpawn, Quaternion rot)
     {
         this.myHUEconomy = myHUEconomy;
         this.myHUCarsHandler = myHUCarsHandler;
@@ -21,6 +22,7 @@ public class WHWorker
         this.workingHours = workingHours;
         this.adultIndex = adultIndex;
         this.workSpawn = workSpawn;
+        this.rot = rot;
     }
 
     public void EarnMoney(float retribution)
@@ -32,7 +34,7 @@ public class WHWorker
     {
         myHUCarsHandler.adultsAtWork[adultIndex] = false;
 
-        myHUCarsHandler.WorkerMoving(workSpawn, myHUCarsHandler.spawnPoint);
+        myHUCarsHandler.WorkerMoving(workSpawn, myHUCarsHandler.spawnPoint, rot);
     }
 
 

@@ -13,8 +13,13 @@ public class CarsManager : MonoBehaviour {
 
     private NodeStreet startNode;
     private NodeStreet endNode;
+    private Quaternion rot;
 
     private bool spawn;
+
+    public GameObject startPoint;
+    public GameObject endPoint;
+
 
 
     void Start()
@@ -23,23 +28,22 @@ public class CarsManager : MonoBehaviour {
         cars = new List<GameObject>();
     }
 
-    public void SpawnCar(Vector3 startPos, List<Vector3> wayPoints, NodeStreet lastNode)
+    public void SpawnCar(Vector3 startPos, List<Vector3> wayPoints, NodeStreet lastNode, Quaternion rot)
     {
-        var curCar = Instantiate(car, startPos + Vector3.up * 3, Quaternion.identity, garage.transform);
+        var curCar = Instantiate(car, startPos + Vector3.up * 3, rot, garage.transform);
         curCar.transform.LookAt(wayPoints[1]);
         cars.Add(curCar);
-        curCar.GetComponent<CarAgent>().waypoints = wayPoints;
-        curCar.GetComponent<CarAgent>().endNode = lastNode;
-    }
+        curCar.GetComponent<CarAIController>().waypoints = wayPoints;
 
+    }
 
     void Update()
     {
         // Testing
         if (spawn)
         {
-            PickRandomTrip();
-
+            //PickRandomTrip();
+            GO();
             var pathFinder = new AStar(startNode, endNode);
             var found = pathFinder.PathFinder();
             var path = new List<Vector3>();
@@ -47,16 +51,25 @@ public class CarsManager : MonoBehaviour {
                 path.Add(n.nodePosition);
 
             if (path.Count > 1)
-                SpawnCar(startNode.nodePosition, path, endNode);
+                SpawnCar(startNode.nodePosition, path, endNode, rot);
 
             spawn = false;
         }
     }
 
+    void GO()
+    {
+        startNode = startPoint.GetComponent<NodeHandler>().node;
+        endNode = endPoint.GetComponent<NodeHandler>().node;
+    }
+
+
     void PickRandomTrip()
     {
         var streetPoints = GameObject.FindGameObjectsWithTag("streetPoint");
-        startNode = streetPoints[(int)Random.Range(0, streetPoints.Length - 1)].GetComponent<NodeHandler>().node;
+        var start = streetPoints[(int)Random.Range(0, streetPoints.Length - 1)];
+        rot = start.transform.rotation;
+        startNode = start.GetComponent<NodeHandler>().node;
         endNode = streetPoints[(int)Random.Range(0, streetPoints.Length - 1)].GetComponent<NodeHandler>().node;
     }
 
