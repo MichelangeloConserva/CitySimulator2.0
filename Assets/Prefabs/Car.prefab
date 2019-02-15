@@ -470,13 +470,13 @@ WheelCollider:
     targetPosition: 0.1
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 0.1
-  m_Mass: 20
+  m_Mass: 50
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
+    m_AsymptoteValue: 1
     m_Stiffness: 1
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
@@ -720,13 +720,13 @@ WheelCollider:
     targetPosition: 0.1
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 0.1
-  m_Mass: 20
+  m_Mass: 50
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
+    m_AsymptoteValue: 1
     m_Stiffness: 1
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
@@ -782,7 +782,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533345945731994}
   serializedVersion: 2
-  m_Mass: 1000
+  m_Mass: 1200
   m_Drag: 0.2
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -826,12 +826,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypoints: []
-  stopAtTrafficLight: 0
   rbSpeed: 0
   turningForce: 40
   frontForce: 300
   minTurn: 0.2
-  minDistanceToCompleteCheck: 2
+  minDistanceToCompleteCheck: 3
   raySensorLength: 15
   securityDistance: 6
 --- !u!65 &8468625166399914042
@@ -845,8 +844,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1, z: 1.5}
+  m_Center: {x: 0, y: -1.06, z: -0.5}
 --- !u!1 &1643457769791790
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,13 +907,13 @@ WheelCollider:
     targetPosition: 0.1
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 0.1
-  m_Mass: 20
+  m_Mass: 50
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
+    m_AsymptoteValue: 1
     m_Stiffness: 1
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2
@@ -984,13 +983,13 @@ WheelCollider:
     targetPosition: 0.1
   m_SuspensionDistance: 0.5
   m_ForceAppPointDistance: 0.1
-  m_Mass: 20
+  m_Mass: 50
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
     m_ExtremumSlip: 0.4
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.8
-    m_AsymptoteValue: 0.5
+    m_AsymptoteValue: 1
     m_Stiffness: 1
   m_SidewaysFriction:
     m_ExtremumSlip: 0.2

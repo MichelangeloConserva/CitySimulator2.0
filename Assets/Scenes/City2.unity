@@ -748,6 +748,8 @@ MonoBehaviour:
   garage: {fileID: 726490352}
   cars: []
   roadSpawn: {fileID: 102788680}
+  startPoint: {fileID: 0}
+  endPoint: {fileID: 0}
 --- !u!114 &102788680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -761,15 +763,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roadChunk: {fileID: 1039048826478846, guid: 3a9db4bc8f1a65c42be478917c1ec6bf, type: 3}
-  crossChunk: {fileID: 2658118806242560618, guid: 76daa7be1524e894f8e1ff35315c3e5b,
+  crossChunk: {fileID: 8019521760113428019, guid: fd78f97feb621de4ca1c08702b9aec6c,
     type: 3}
-  leftCrossChunk: {fileID: 2921929396629123792, guid: 2fe9e7a34c42c0541b12e00e05f499b2,
+  CrossChunk3Lane: {fileID: 908152885588233732, guid: 4a78a416116c11343af5706b8ba01fb5,
     type: 3}
-  rightCrossChunk: {fileID: 5809418792525594884, guid: 3035c1ad46a841841a4f531ee7a98894,
-    type: 3}
-  leftCurve: {fileID: 1128963817064237744, guid: 05ac5df74f11ac54bb5ee7a239ba65c8,
-    type: 3}
-  rightCurve: {fileID: 2174988968745369566, guid: 61d5a76cb8d50c54982980567ee41534,
+  curveChunk: {fileID: 7734741144537616229, guid: 3db7c5dc4f5379144912380c2fdc95e3,
     type: 3}
   chunkGarage: {fileID: 1081233088}
   crossGarage: {fileID: 2016628456}

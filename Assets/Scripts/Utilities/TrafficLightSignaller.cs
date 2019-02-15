@@ -7,7 +7,6 @@ using static Settings;
 public class TrafficLightSignaller : MonoBehaviour
 {
 
-
     public TrafficLightLights curLight;
 
     void OnTriggerStay(Collider col)
@@ -16,7 +15,8 @@ public class TrafficLightSignaller : MonoBehaviour
         {
             if (curLight == TrafficLightLights.red || curLight == TrafficLightLights.yellow)
             {
-                col.gameObject.GetComponent<CarAIController>().StopAtTrafficLight(transform.parent.position + transform.parent.right * 3.5f, true);
+                var stopPos = transform.parent.position + transform.parent.right * 2f - transform.parent.up ;
+                col.gameObject.GetComponent<CarAIController>().StopAtTrafficLight(stopPos, true);
             }
             else if (curLight == TrafficLightLights.green)
             {
@@ -24,5 +24,13 @@ public class TrafficLightSignaller : MonoBehaviour
             }
         }
     }
+
+    void OnTriggerExit(Collider col)
+    {
+        if (col.gameObject.tag == "vehicle")
+            col.gameObject.GetComponent<CarAIController>().StopAtTrafficLight(Vector3.zero, false);
+    }
+
+
 
 }

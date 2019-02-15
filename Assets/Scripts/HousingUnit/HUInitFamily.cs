@@ -22,14 +22,17 @@ public class HUInitFamily : MonoBehaviour
 
 
     private List<float> possibleGoingToWorkHours;
-
+    private List<float> possibleInitialSavings;
+    int[] possibleNumberOfAdultsComponents;
+    int[] possibleNumberOfChildrenComponents;
+    GameObject[] possibleWorkingPlaces;
 
 
     // Start is called before the first frame update
     void Start()
     {
         huGeneralManager = GameObject.Find("Manager").GetComponent<HUGeneralManager>();
-        huGeneralManager.numberOfHU += 1;
+        huGeneralManager.HUs.Add(this);
 
         // Initliaze the family itself
         InitFamily();
@@ -42,29 +45,37 @@ public class HUInitFamily : MonoBehaviour
     }
 
     /// <summary>
-    /// Defing settings
+    /// Defining settings
     /// </summary>
     private void InitFamily()
     {
-        int[] possibleNumberOfAdultsComponents = new int[] {1,1,1,1,
+        /* 
+         *      INITIALIZATION OF POSSIBILITIES FOR VALUES
+         */
+        
+        // Family
+        possibleNumberOfAdultsComponents = new int[] {1,1,1,1,
                                                             2,2,2,2,2,2,2,2,2,2,2,2,2,
                                                             3,3,
                                                             4,4
                                                         };
-        int[] possibleNumberOfChildrenComponents = new int[] {1,1,1,1,
+        possibleNumberOfChildrenComponents = new int[] {1,1,1,1,
                                                               2,2,2,2,2,2,2,2,2,2,2,2,2,
                                                               3,3,3,3,
                                                               4,4,4
                                                           };
 
-        numberOfAdultsComponents   = possibleNumberOfAdultsComponents  [Random.Range(0, possibleNumberOfAdultsComponents.Length-1)];
-        numberOfChildrenComponents = possibleNumberOfChildrenComponents[Random.Range(0, possibleNumberOfChildrenComponents.Length-1)];
+        // Economy
+        possibleInitialSavings = new List<float> { 1000f, 2000f, 3000f };
+        possibleWorkingPlaces = possibleWorkingPlaces = GameObject.FindGameObjectsWithTag("workingPlace"); // TODO : eliminate places too far away
 
-        //possibleGoingToWorkHours = new List<float> { 6f, 6.30f, 6.45f, 7f, 7.15f, 7.30f, 7.45f, 8, 8.15f, 8.30f };
-        possibleGoingToWorkHours = new List<float> { 6.15f, 6.30f, 6.45f, 7f};
+        // Cars
+        possibleGoingToWorkHours = new List<float> { 6.15f, 6.30f, 6.45f, 7f }; // { 6f, 6.30f, 6.45f, 7f, 7.15f, 7.30f, 7.45f, 8, 8.15f, 8.30f };
 
-        
-
+        // Setting references
+        numberOfAdultsComponents = possibleNumberOfAdultsComponents[Random.Range(0, possibleNumberOfAdultsComponents.Length - 1)];
+        numberOfChildrenComponents = possibleNumberOfChildrenComponents[Random.Range(0, possibleNumberOfChildrenComponents.Length - 1)];
+        huGeneralManager.numAdults += numberOfAdultsComponents;
     }
 
     private IEnumerator InitCarHandler()
@@ -85,9 +96,6 @@ public class HUInitFamily : MonoBehaviour
         huCarsHandler.spawnPoint = GetComponentInChildren<SpawnPointHandler>().node;
 
 
-        // TODO : implements destinations, timing for spawning, type of car
-
-
         // Initializing CarHandlers variables for the adults
         huCarsHandler.dtWorkingLeaving = new System.DateTime[numberOfAdultsComponents];
         huCarsHandler.adultsAtWork = new bool[numberOfAdultsComponents];
@@ -103,13 +111,10 @@ public class HUInitFamily : MonoBehaviour
             SetWorkTime(i);
 
             // Setting the working place
-            var possibleWorkingPlaces = GameObject.FindGameObjectsWithTag("workingPlace");
             var workingPlace = possibleWorkingPlaces[Random.Range(0, possibleWorkingPlaces.Length - 1)];
             huCarsHandler.workingPlaces[i] = workingPlace;
 
         }
-
-
     }
 
     /// <summary>
@@ -120,13 +125,17 @@ public class HUInitFamily : MonoBehaviour
     {
         System.DateTime dt = new System.DateTime();
         var timeToGo = possibleGoingToWorkHours[Random.Range(0, possibleGoingToWorkHours.Count - 1)];
-        var hours = (int)timeToGo; var minutes = (int)((timeToGo - hours) * 100);
+        var hours = (int)timeToGo; var minutes = (int)((timeToGo - hours) * 100 + Random.Range(-5, 5)); // a little bit of noise
 
         dt = dt.AddHours(hours); dt = dt.AddMinutes(minutes);
 
         huCarsHandler.dtWorkingLeaving[indexOfAdult] = dt;
         possibleGoingToWorkHours.Remove(timeToGo);
     }
+
+
+
+
 
 
     private IEnumerator InitEconomy()
@@ -137,10 +146,8 @@ public class HUInitFamily : MonoBehaviour
 
         huEconomy = GetComponent<HUEconomy>();
 
-
-        var possibleInitialSavings = new List<float> { 1000f, 2000f, 3000f };
+        
         huEconomy.savings = possibleInitialSavings[Random.Range(0, possibleInitialSavings.Count - 1)];
-
 
         // TODO : Implements household economy mechanics
     }

@@ -19,12 +19,15 @@ public class CityManagementTime : MonoBehaviour
     void Update()
     {
         realTime = realTime.AddSeconds(Time.deltaTime * Settings.timeMultiplyer); 
+
+
+
     }
 
     void OnGUI()
     {
         var style = new GUIStyle();
         style.normal.textColor = Color.black;
-        GUI.Label(new Rect(10, 30, 400, 100), realTime.ToString("HH:mm:ss"), style);
+        GUI.Label(new Rect(10, 30, 400, 100), "Time: " + realTime.ToString("HH:mm:ss"), style);
     }
 }

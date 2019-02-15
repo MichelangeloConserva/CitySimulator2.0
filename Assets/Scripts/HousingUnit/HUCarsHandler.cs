@@ -52,7 +52,7 @@ public class HUCarsHandler : MonoBehaviour
     public void WorkerMoving(NodeStreet startNode, NodeStreet endNode, Quaternion rot)
     {
         var path = AStar.PathFromTo(startNode, endNode);
-        carsManager.SpawnCar(spawnPoint.nodePosition, path, endNode, rot);
+        carsManager.SpawnCar(startNode.nodePosition, path, endNode, rot);
     }
 
 }

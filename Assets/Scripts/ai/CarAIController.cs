@@ -12,6 +12,7 @@ public class CarAIController : MonoBehaviour
     [Header("Debug variables")]
     [Space]
     public float rbSpeed;
+    public bool stopAtTrafficLight;
 
     [Header("Settings")]
     [Space]
@@ -22,6 +23,7 @@ public class CarAIController : MonoBehaviour
     public float raySensorLength;
     public float securityDistance;
 
+    public float maxSpeed;
 
     public Dictionary<GameObject, bool> trafficLightInfo;
 
@@ -30,7 +32,6 @@ public class CarAIController : MonoBehaviour
     private List<GameObject> nearbyCars;
 
     private bool aboutToTurn;
-    private bool stopAtTrafficLight;
 
 
     void Start()
@@ -38,6 +39,7 @@ public class CarAIController : MonoBehaviour
         aboutToTurn = false;
         stopAtTrafficLight = false;
         nearbyCars = new List<GameObject>();
+        maxSpeed = Mathf.Infinity;
 
         motor = GetComponent<MotorSimulator>();
     }
@@ -47,6 +49,12 @@ public class CarAIController : MonoBehaviour
         bool goNoProblem = true;
         bool otherCarInFront = false;
         bool otherCarNearby= false;
+        var sensorLength = raySensorLength;
+
+        if (waypoints.Count == 0)
+        {
+            return;
+        }
 
         // Checking arrival at waypoint
         var carPos = transform.position - Vector3.up * transform.position.y;
@@ -65,17 +73,30 @@ public class CarAIController : MonoBehaviour
         var frontDirection = motor.wheel[0].transform.forward;
         var frontPos = transform.position + transform.forward;
 
+
+        // we have a situation to handle
+        aboutToTurn = IsAboutToTurn();
+        if (stopAtTrafficLight || aboutToTurn)
+            goNoProblem = false;
+
+
+        if (stopAtTrafficLight)
+            if (Vector3.Distance(transform.position, stopPosForTrafficLight) < securityDistance + 2)
+                sensorLength /= 3;
+
+
+
         // Debug sensors
-        DrawArrow.ForDebug(frontPos, frontDirection * raySensorLength, Color.blue);
-        DrawArrow.ForDebug(frontPos , frontDirection  * raySensorLength/4 + transform.right , Color.blue);
-        DrawArrow.ForDebug(frontPos , frontDirection  * raySensorLength/4 - transform.right , Color.blue);
+        DrawArrow.ForDebug(frontPos, frontDirection * sensorLength, Color.blue);
+        DrawArrow.ForDebug(frontPos , frontDirection  * sensorLength/4 + transform.right , Color.blue);
+        DrawArrow.ForDebug(frontPos , frontDirection  * sensorLength/4 - transform.right , Color.blue);
 
 
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(frontPos,
                            frontDirection,
                            out hit,
-                           raySensorLength,
+                           sensorLength,
                            LayerMask.GetMask("car")))
         {
             otherCarInFront = true;
@@ -83,9 +104,9 @@ public class CarAIController : MonoBehaviour
         }
         // checking cars at right
         else if (Physics.Raycast(frontPos,
-                                 frontDirection * raySensorLength / 4 + transform.right,
+                                 frontDirection * sensorLength / 4 + transform.right,
                                  out hit,
-                                 raySensorLength/4,
+                                 sensorLength/4,
                                  LayerMask.GetMask("car")))
         {
             otherCarNearby = true;
@@ -94,9 +115,9 @@ public class CarAIController : MonoBehaviour
         }
         // checking cars at left
         else if (Physics.Raycast(frontPos,
-                                 frontDirection * raySensorLength / 4 - transform.right,
+                                 frontDirection * sensorLength / 4 - transform.right,
                                  out hit,
-                                 raySensorLength / 4,
+                                 sensorLength / 4,
                                  LayerMask.GetMask("car")))
         {
             otherCarNearby = true;
@@ -108,11 +129,7 @@ public class CarAIController : MonoBehaviour
 
 
 
-        // we have a situation to handle
-        aboutToTurn = IsAboutToTurn();
-        if (stopAtTrafficLight || aboutToTurn)
-            goNoProblem = false;
-        
+
 
         // Moving forward
         if (goNoProblem)
@@ -140,7 +157,7 @@ public class CarAIController : MonoBehaviour
             else if (stopAtTrafficLight)
             {
                 var dist = Vector3.Distance(transform.position, stopPosForTrafficLight);
-                StoppingProcedure(dist, turning);
+                StoppingProcedure(dist-1, turning);
             }
 
             // Slowing since I'm about to turn
@@ -156,16 +173,19 @@ public class CarAIController : MonoBehaviour
                 var dist = Vector3.Distance(transform.position, hit.point);
                 SlowingProcedure(dist, turning);
             }
-
-
         }
+
+        // Checking for speed limit
+        if (rbSpeed > maxSpeed)
+            GetComponent<Rigidbody>().velocity *= 0.99f;
+
 
     }
 
     private void SlowingProcedure(float dist, float turning)
     {
         if (dist > securityDistance && rbSpeed > 20)
-            motor.Brake(dist * 100000 * Mathf.Pow(rbSpeed + 1, 6) + 3);
+            motor.Brake(dist * 100000 * Mathf.Pow(rbSpeed + 1, 10) + 3);
         else 
         {
             turningForce = turning * motor.turnPower;
@@ -183,7 +203,7 @@ public class CarAIController : MonoBehaviour
     private void StoppingProcedure(float dist, float turning)
     {
         if (dist > securityDistance && rbSpeed > 20)
-            motor.Brake(dist * 100000 * Mathf.Pow(rbSpeed + 1, 6) + 3);
+            motor.Brake(dist * 100000000 * Mathf.Pow(rbSpeed + 1, 6) + 3);
         else if (dist > securityDistance)
         {
             turningForce = turning * motor.turnPower;
@@ -192,7 +212,7 @@ public class CarAIController : MonoBehaviour
         }
         else
         {
-            motor.Brake(dist * 10000000 * Mathf.Pow(rbSpeed + 1, 6) + 3);
+            motor.Brake(dist * 100000000 * Mathf.Pow(rbSpeed + 1, 6) + 3);
         }
     }
 
@@ -209,7 +229,9 @@ public class CarAIController : MonoBehaviour
             stopPosForTrafficLight = stopPos;
         }
         else
+        {
             stopAtTrafficLight = false;
+        }
     }
 
     /// <summary>

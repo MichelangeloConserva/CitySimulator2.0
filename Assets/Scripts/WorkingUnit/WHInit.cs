@@ -52,7 +52,7 @@ public class WHInit : MonoBehaviour
     /// <returns></returns>
     private IEnumerator WorkingCoroutine(WHWorker worker)
     {
-        Debug.Log(worker.workingHours);
+
         for (int i=0; i<worker.workingHours; i++)
         {
             yield return new WaitForSeconds(3600 / Settings.timeMultiplyer);

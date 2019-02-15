@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NodeHandler : MonoBehaviour
 {
@@ -34,7 +32,6 @@ public class NodeHandler : MonoBehaviour
                 DrawArrow.ForDebug(node.availableStreets[i].startNode.nodePosition + Vector3.up,
                         (node.availableStreets[i].arrivalNode.nodePosition + Vector3.up*(i+1)) - (node.availableStreets[i].startNode.nodePosition + Vector3.up),
                         Color.white);
-
     }
 
     public void UpdateNodePos(Vector3 pos)

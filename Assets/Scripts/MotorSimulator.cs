@@ -59,6 +59,8 @@ public class MotorSimulator : MonoBehaviour {
         // Eliminating front force if present
         wheel[0].Move(0);
         wheel[1].Move(0);
+        wheel[2].Move(0);
+        wheel[3].Move(0);
 
         //front wheel drive
         wheel[0].Brake(brakeTorque);

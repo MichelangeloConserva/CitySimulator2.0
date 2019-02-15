@@ -27,9 +27,7 @@ public class TrafficLightManagement : MonoBehaviour
 
 
 
-
-
-    public float timeForLightChange;
+    private float timeForLightChange;
 
     private int numberOfTrafficLights;
     private Dictionary<GameObject,TrafficLightLights> precedentTrafficLightLights;
@@ -38,6 +36,8 @@ public class TrafficLightManagement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        timeForLightChange = Settings.timeForLightChange;
+
         numberOfTrafficLights = transform.childCount - 1;
         precedentTrafficLightLights = new Dictionary<GameObject, TrafficLightLights>();
         for (int i = 0; i < numberOfTrafficLights; i++)

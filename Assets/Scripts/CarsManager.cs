@@ -50,6 +50,9 @@ public class CarsManager : MonoBehaviour {
             foreach (NodeStreet n in pathFinder.path)
                 path.Add(n.nodePosition);
 
+
+
+
             if (path.Count > 1)
                 SpawnCar(startNode.nodePosition, path, endNode, rot);
 
@@ -82,7 +85,7 @@ public class CarsManager : MonoBehaviour {
     void OnGUI()
     {
         var style = new GUIStyle();
-        style.normal.textColor = Color.red;
+        style.normal.textColor = Color.black;
         GUI.Label(new Rect(10, 10, 300, 100), string.Format("Number of cars: {0}", garage.transform.childCount), style);
     }
 
