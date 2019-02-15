@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Settings;
 
 public class TrafficLightManagement : MonoBehaviour
 {
+
+
+
 
     List<Transform> lane_1 = new List<Transform>();
     List<Transform> lane_2 = new List<Transform>();
@@ -21,230 +25,136 @@ public class TrafficLightManagement : MonoBehaviour
     Transform luceRossa1_l2;
     Transform luceRossa2_l2;
 
+
+
+
+
     public float timeForLightChange;
+
+    private int numberOfTrafficLights;
+    private Dictionary<GameObject,TrafficLightLights> precedentTrafficLightLights;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        //c'è sempre almeno una lane
-        lane_1.Add(gameObject.transform.Find("Semaforo1_L1"));
-        luceVerde1_l1 = lane_1[0].gameObject.transform.Find("Verde");  //referenze per le luci
-        luceGialla1_l1 = lane_1[0].gameObject.transform.Find("Giallo");
-        luceRossa1_l1 = lane_1[0].gameObject.transform.Find("Rosso");
-        if (gameObject.transform.Find("Semaforo2_L1"))
-        {
-            lane_1.Add(gameObject.transform.Find("Semaforo2_L1"));
-            luceVerde2_l1 = lane_1[1].gameObject.transform.Find("Verde");
-            luceGialla2_l1 = lane_1[1].gameObject.transform.Find("Giallo");
-            luceRossa2_l1 = lane_1[1].gameObject.transform.Find("Rosso");
-        }
+        numberOfTrafficLights = transform.childCount - 1;
+        precedentTrafficLightLights = new Dictionary<GameObject, TrafficLightLights>();
+        for (int i = 0; i < numberOfTrafficLights; i++)
+            precedentTrafficLightLights[transform.GetChild(i).gameObject] = TrafficLightLights.yellow;
 
-        lane_2.Add(gameObject.transform.Find("Semaforo1_L2"));
-        luceVerde1_l2 = lane_2[0].gameObject.transform.Find("Verde");
-        luceGialla1_l2 = lane_2[0].gameObject.transform.Find("Giallo");
-        luceRossa1_l2 = lane_2[0].gameObject.transform.Find("Rosso");
-        if (gameObject.transform.Find("Semaforo2_L2"))
-        {
-            lane_2.Add(gameObject.transform.Find("Semaforo2_L2"));
-            luceVerde2_l2 = lane_2[1].gameObject.transform.Find("Verde");
-            luceGialla2_l2 = lane_2[1].gameObject.transform.Find("Giallo");
-            luceRossa2_l2 = lane_2[1].gameObject.transform.Find("Rosso");
-        }
 
         StartCoroutine("AlternateTrafficLights");
-        
     }
+    /*
+        luceVerde1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
+     */
+
 
     IEnumerator AlternateTrafficLights() // TODO : refactor
     {
-        if (lane_1.Count == 2 && lane_2.Count == 2) 
-            while (true)
+        // Starting condition
+        int index = 0;
+
+        while (true)
+        {
+            var increaseIndex = true;
+            var halfTime = false;
+            // if green lights are present then they need to be turned into yellow
+            for (int i = 0; i < numberOfTrafficLights; i++)
             {
-                //luce verde per lane 1 e luce rossa per lane 2
-                luceGialla1_l2.gameObject.SetActive(false);
-                luceGialla2_l2.gameObject.SetActive(false);
+                var curTrafficLight = transform.GetChild(i).gameObject;
 
-                luceRossa1_l1.gameObject.SetActive(false);
-                luceRossa2_l1.gameObject.SetActive(false);
-
-                luceVerde1_l1.gameObject.SetActive(true);
-                luceVerde1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-                luceVerde2_l1.gameObject.SetActive(true);
-                luceVerde2_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-
-                luceRossa1_l2.gameObject.SetActive(true);
-                luceRossa1_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
-                luceRossa2_l2.gameObject.SetActive(true);
-                luceRossa2_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
-
-
-                yield return new WaitForSeconds(timeForLightChange);
-
-                //luce gialla per lane 1 e luce rossa per lane 2
-
-                luceVerde1_l1.gameObject.SetActive(false);
-                luceVerde2_l1.gameObject.SetActive(false);
-
-                luceGialla1_l1.gameObject.SetActive(true);
-                luceGialla1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-                luceGialla2_l1.gameObject.SetActive(true);
-                luceGialla2_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-
-                yield return new WaitForSeconds(timeForLightChange / 2);
-
-                //luce rossa per lane 1 e luce verde per lane 2
-
-                luceGialla1_l1.gameObject.SetActive(false);
-                luceGialla2_l1.gameObject.SetActive(false);
-
-                luceRossa1_l1.gameObject.SetActive(true);
-                luceRossa1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
-                luceRossa2_l1.gameObject.SetActive(true);
-                luceRossa2_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
-
-                luceRossa1_l2.gameObject.SetActive(false);
-                luceRossa2_l2.gameObject.SetActive(false);
-
-                luceVerde1_l2.gameObject.SetActive(true);
-                luceVerde1_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-                luceVerde2_l2.gameObject.SetActive(true);
-                luceVerde2_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-
-
-                yield return new WaitForSeconds(timeForLightChange);
-
-                //luce rossa per lane 1 e luce gialla per lane 2
-
-                luceGialla1_l2.gameObject.SetActive(true);
-                luceGialla1_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-                luceGialla2_l2.gameObject.SetActive(true);
-                luceGialla2_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-
-                luceVerde1_l2.gameObject.SetActive(false);
-                luceVerde2_l2.gameObject.SetActive(false);
-
-                yield return new WaitForSeconds(timeForLightChange / 2);
+                if (i == index && precedentTrafficLightLights[curTrafficLight] == TrafficLightLights.green)
+                {
+                    LightChange(transform.GetChild(i).gameObject, TrafficLightLights.yellow);
+                    halfTime = true;
+                }
+                else if (i == index)
+                {
+                    LightChange(transform.GetChild(i).gameObject, TrafficLightLights.green);
+                    increaseIndex = false;
+                }
+                else
+                    LightChange(transform.GetChild(i).gameObject, TrafficLightLights.red);
             }
 
-        else if (lane_1.Count == 1 && lane_2.Count == 2)
-            while (true)
-            {
-                //luce verde per lane 1 e luce rossa per lane 2
-                luceGialla1_l2.gameObject.SetActive(false);
-                luceGialla2_l2.gameObject.SetActive(false);
-
-                luceRossa1_l1.gameObject.SetActive(false);
-
-                luceVerde1_l1.gameObject.SetActive(true);
-                luceVerde1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-
-                luceRossa1_l2.gameObject.SetActive(true);
-                luceRossa1_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
-                luceRossa2_l2.gameObject.SetActive(true);
-                luceRossa2_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
-
-                yield return new WaitForSeconds(timeForLightChange);
-
-                //luce gialla per lane 1 e luce rossa per lane 2
-
-                luceVerde1_l1.gameObject.SetActive(false);
-
-                luceGialla1_l1.gameObject.SetActive(true);
-                luceGialla1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-
-                yield return new WaitForSeconds(timeForLightChange / 2);
-
-                //luce rossa per lane 1 e luce verde per lane 2
-
-                luceGialla1_l1.gameObject.SetActive(false);
-
-                luceRossa1_l1.gameObject.SetActive(true);
-                luceRossa1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
-
-                luceRossa1_l2.gameObject.SetActive(false);
-                luceRossa2_l2.gameObject.SetActive(false);
-
-                luceVerde1_l2.gameObject.SetActive(true);
-                luceVerde1_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-                luceVerde2_l2.gameObject.SetActive(true);
-                luceVerde2_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-
-                yield return new WaitForSeconds(timeForLightChange);
-
-                //luce rossa per lane 1 e luce gialla per lane 2
-
-                luceGialla1_l2.gameObject.SetActive(true);
-                luceGialla1_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-                luceGialla2_l2.gameObject.SetActive(true);
-                luceGialla2_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-
-                luceVerde1_l2.gameObject.SetActive(false);
-                luceVerde2_l2.gameObject.SetActive(false);
-
-                yield return new WaitForSeconds(timeForLightChange / 2);
-            }
-
-        else if (lane_1.Count == 2 && lane_2.Count == 1)
-            while (true)
-            {
-                //luce verde per lane 1 e luce rossa per lane 2
-                luceGialla1_l2.gameObject.SetActive(false);
-
-                luceRossa1_l1.gameObject.SetActive(false);
-                luceRossa2_l1.gameObject.SetActive(false);
-
-                luceVerde1_l1.gameObject.SetActive(true);
-                luceVerde1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-                luceVerde2_l1.gameObject.SetActive(true);
-                luceVerde2_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-
-                luceRossa1_l2.gameObject.SetActive(true);
-                luceRossa1_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
+            
+            if(increaseIndex)
+                index = (index + 1) % numberOfTrafficLights;
 
 
-                yield return new WaitForSeconds(timeForLightChange);
-
-                //luce gialla per lane 1 e luce rossa per lane 2
-
-                luceVerde1_l1.gameObject.SetActive(false);
-                luceVerde2_l1.gameObject.SetActive(false);
-
-                luceGialla1_l1.gameObject.SetActive(true);
-                luceGialla1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-                luceGialla2_l1.gameObject.SetActive(true);
-                luceGialla2_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-
+            if (halfTime)
                 yield return new WaitForSeconds(timeForLightChange/2);
-
-                //luce rossa per lane 1 e luce verde per lane 2
-
-                luceGialla1_l1.gameObject.SetActive(false);
-                luceGialla2_l1.gameObject.SetActive(false);
-
-                luceRossa1_l1.gameObject.SetActive(true);
-                luceRossa1_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
-                luceRossa2_l1.gameObject.SetActive(true);
-                luceRossa2_l1.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 0;
-
-                luceRossa1_l2.gameObject.SetActive(false);
-
-                luceVerde1_l2.gameObject.SetActive(true);
-                luceVerde1_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 2;
-
+            else
                 yield return new WaitForSeconds(timeForLightChange);
-
-                //luce rossa per lane 1 e luce gialla per lane 2
-
-                luceGialla1_l2.gameObject.SetActive(true);
-                luceGialla1_l2.gameObject.transform.parent.gameObject.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = 1;
-
-                luceVerde1_l2.gameObject.SetActive(false);
-
-                yield return new WaitForSeconds(timeForLightChange / 2);
-            }
-
-
-        yield return null;
+        }
     }
+
+    /// <summary>
+    /// Change the light of a trafficlight with the selected one
+    /// </summary>
+    /// <param name="trafficLight"></param>
+    /// <param name="lightToLit"></param>
+    private void LightChange(GameObject trafficLight, TrafficLightLights lightToLit)
+    {
+        precedentTrafficLightLights[trafficLight] = GetTrafficLightLightActive(trafficLight);
+
+        for (int i=0; i< 3; i++)
+        {
+            if ( i == (int)lightToLit)
+            {
+                trafficLight.transform.GetChild(i).gameObject.SetActive(true);
+                trafficLight.transform.GetChild(3).GetComponent<TrafficLightSignaller>().curLight = lightToLit;
+            }
+            else
+                trafficLight.transform.GetChild(i).gameObject.SetActive(false);
+        }
+    }
+
+    private TrafficLightLights GetTrafficLightLightActive(GameObject trafficLight)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (trafficLight.transform.GetChild(i).gameObject.activeInHierarchy)
+                return (TrafficLightLights)i;
+        }
+        return (TrafficLightLights)0;
+    }
+
+
+
+
+    /*
+     
+                for (int i = 0; i < numberOfTrafficLights; i++)
+            {
+                
+
+                if (GetTrafficLightLightActive(curTrafficLight) == TrafficLightLights.red)
+                {
+                    if (precedentTrafficLightLights[curTrafficLight] == TrafficLightLights.red)
+                    {
+                        LightChange(curTrafficLight, TrafficLightLights.green);
+                    }
+                    else if (precedentTrafficLightLights[curTrafficLight] == TrafficLightLights.yellow)
+                    {
+                        precedentTrafficLightLights[curTrafficLight] = TrafficLightLights.red;
+                    }
+                }
+
+                else if (GetTrafficLightLightActive(curTrafficLight) == TrafficLightLights.yellow)
+                {
+                    LightChange(curTrafficLight, TrafficLightLights.red);
+                }
+
+                else if (GetTrafficLightLightActive(curTrafficLight) == TrafficLightLights.green)
+                {
+                    LightChange(curTrafficLight, TrafficLightLights.yellow);
+
+                }
+            }
+     
+     */
 
 }

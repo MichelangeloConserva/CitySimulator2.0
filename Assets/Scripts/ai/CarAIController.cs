@@ -46,6 +46,7 @@ public class CarAIController : MonoBehaviour
     {
         bool goNoProblem = true;
         bool otherCarInFront = false;
+        bool otherCarNearby= false;
 
         // Checking arrival at waypoint
         var carPos = transform.position - Vector3.up * transform.position.y;
@@ -60,17 +61,16 @@ public class CarAIController : MonoBehaviour
         // Checking how much to turn
         var turning = AngleToTurn();
 
-        // TODO : Checking for trafficlight
-
-        // TODO : Checking cars nearby
-        //nearbyCars = Physics.OverlapSphere(transform.position, 5)
-
         // Checking for cars in front 
         var frontDirection = motor.wheel[0].transform.forward;
         var frontPos = transform.position + transform.forward;
 
-        DrawArrow.ForDebug(frontPos,
-                            frontDirection * raySensorLength, Color.blue);
+        // Debug sensors
+        DrawArrow.ForDebug(frontPos, frontDirection * raySensorLength, Color.blue);
+        DrawArrow.ForDebug(frontPos , frontDirection  * raySensorLength/4 + transform.right , Color.blue);
+        DrawArrow.ForDebug(frontPos , frontDirection  * raySensorLength/4 - transform.right , Color.blue);
+
+
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(frontPos,
                            frontDirection,
@@ -81,6 +81,32 @@ public class CarAIController : MonoBehaviour
             otherCarInFront = true;
             goNoProblem = false;
         }
+        // checking cars at right
+        else if (Physics.Raycast(frontPos,
+                                 frontDirection * raySensorLength / 4 + transform.right,
+                                 out hit,
+                                 raySensorLength/4,
+                                 LayerMask.GetMask("car")))
+        {
+            otherCarNearby = true;
+            goNoProblem = false;
+            turning -= 0.1f;
+        }
+        // checking cars at left
+        else if (Physics.Raycast(frontPos,
+                                 frontDirection * raySensorLength / 4 - transform.right,
+                                 out hit,
+                                 raySensorLength / 4,
+                                 LayerMask.GetMask("car")))
+        {
+            otherCarNearby = true;
+            goNoProblem = false;
+            turning += 0.1f;
+        }
+
+
+
+
 
         // we have a situation to handle
         aboutToTurn = IsAboutToTurn();
@@ -117,11 +143,18 @@ public class CarAIController : MonoBehaviour
                 StoppingProcedure(dist, turning);
             }
 
+            // Slowing since I'm about to turn
             else if (aboutToTurn)
             {
                 var dist = Vector3.Distance(transform.position, wayPos);
-                Debug.DrawLine(Vector3.zero, wayPos, Color.red);
-                TurningProcedure(dist, turning);
+                SlowingProcedure(dist, turning);
+            }
+
+            // Slowing and little turning to avoid collision
+            else if (otherCarNearby)
+            {
+                var dist = Vector3.Distance(transform.position, hit.point);
+                SlowingProcedure(dist, turning);
             }
 
 
@@ -129,7 +162,7 @@ public class CarAIController : MonoBehaviour
 
     }
 
-    private void TurningProcedure(float dist, float turning)
+    private void SlowingProcedure(float dist, float turning)
     {
         if (dist > securityDistance && rbSpeed > 20)
             motor.Brake(dist * 100000 * Mathf.Pow(rbSpeed + 1, 6) + 3);
@@ -185,6 +218,7 @@ public class CarAIController : MonoBehaviour
     /// <returns></returns>
     private float AngleToTurn()
     {
+        if(waypoints.Count == 0) { return 0; }
         var heading = waypoints[0] - transform.position;
         var cross = Vector3.Cross(transform.forward, heading.normalized);
         return cross.y;

@@ -11,5 +11,12 @@ public class Settings
     public static int timeMultiplyer = 60;
 
 
+    public enum TrafficLightLights
+    {
+        red,
+        yellow,
+        green
+    }
+
 
 }

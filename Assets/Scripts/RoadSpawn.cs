@@ -10,10 +10,8 @@ public class RoadSpawn : MonoBehaviour
     [Space]
     public GameObject roadChunk;
     public GameObject crossChunk;
-    public GameObject leftCrossChunk;
-    public GameObject rightCrossChunk;
-    public GameObject leftCurve;
-    public GameObject rightCurve;
+    public GameObject CrossChunk3Lane;
+    public GameObject curveChunk;
     public GameObject chunkGarage;
     public GameObject crossGarage;
 
@@ -222,30 +220,30 @@ public class RoadSpawn : MonoBehaviour
             cross = Instantiate(crossChunk, pos, Quaternion.identity, crossGarage.transform);
 
         if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 1)
-            cross = Instantiate(leftCrossChunk, pos, Quaternion.identity, crossGarage.transform);
+            cross = Instantiate(CrossChunk3Lane, pos, Quaternion.identity, crossGarage.transform);
 
         if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 1)
-            cross = Instantiate(rightCrossChunk, pos, Quaternion.identity, crossGarage.transform);
+            cross = Instantiate(CrossChunk3Lane, pos, Quaternion.Euler(0, 180, 0), crossGarage.transform);
 
         if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
-            cross = Instantiate(leftCrossChunk, pos, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+            cross = Instantiate(CrossChunk3Lane, pos, Quaternion.Euler(0, 90, 0), crossGarage.transform);
 
         if (leftColl.Length == 1 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
-            cross = Instantiate(rightCrossChunk, pos, Quaternion.Euler(0, 90, 0), crossGarage.transform);
+            cross = Instantiate(CrossChunk3Lane, pos, Quaternion.Euler(0, 270, 0), crossGarage.transform);
 
         //Curve
         // back-left
         if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 0 && backColl.Length == 1)
-            cross = Instantiate(rightCurve, pos, Quaternion.Euler(0, 180, 0), crossGarage.transform);
+            cross = Instantiate(curveChunk, pos, Quaternion.Euler(0, 90, 0), crossGarage.transform);
         //back-right
         if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 0 && backColl.Length == 1)
-            cross = Instantiate(leftCurve, pos, Quaternion.identity, crossGarage.transform);
+            cross = Instantiate(curveChunk, pos, Quaternion.identity, crossGarage.transform);
         //forward-left
         if (leftColl.Length == 1 && rightColl.Length == 0 && forwardColl.Length == 1 && backColl.Length == 0)
-            cross = Instantiate(leftCurve, pos, Quaternion.Euler(0, 180, 0), crossGarage.transform);
+            cross = Instantiate(curveChunk, pos, Quaternion.Euler(0, 180, 0), crossGarage.transform);
         //forward-right
         if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
-            cross = Instantiate(rightCurve, pos, Quaternion.identity, crossGarage.transform);
+            cross = Instantiate(curveChunk, pos, Quaternion.Euler(0, 270, 0), crossGarage.transform);
 
         // Adding the cross point 
         for (int i = 0; i < cross.transform.childCount; i++)
