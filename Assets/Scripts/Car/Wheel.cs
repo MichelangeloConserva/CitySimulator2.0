@@ -27,7 +27,7 @@ public class Wheel : MonoBehaviour {
     public void Turn(float turnSpeed)
     {
         wc.steerAngle = turnSpeed;
-        tire.localEulerAngles = new Vector3(0f, wc.steerAngle, 90f);
+        tire.localEulerAngles = new Vector3(0f, wc.steerAngle, 0f);
     }
 
     public void Brake(float brake)
