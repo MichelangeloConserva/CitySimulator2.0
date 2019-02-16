@@ -120,8 +120,8 @@ GameObject:
   - component: {fileID: 3317631135151827336}
   - component: {fileID: 666194842446674952}
   m_Layer: 0
-  m_Name: HouseBlock1_allMesh 1
-  m_TagString: Untagged
+  m_Name: HouseBlock1_allMesh
+  m_TagString: housingUnit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -7,6 +7,6 @@ public class SpeedLimit : MonoBehaviour
     void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.tag == "vehicle")
-            col.gameObject.GetComponent<CarAIController>().maxSpeed = Settings.speedLimit;
+            col.gameObject.GetComponent<VehicleAIController>().maxSpeed = Settings.speedLimit;
     }
 }

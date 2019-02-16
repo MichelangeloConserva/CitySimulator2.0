@@ -33,7 +33,7 @@ public class CarsManager : MonoBehaviour {
         var curCar = Instantiate(car, startPos + Vector3.up * 3, rot, garage.transform);
         curCar.transform.LookAt(wayPoints[1]);
         cars.Add(curCar);
-        curCar.GetComponent<CarAIController>().waypoints = wayPoints;
+        curCar.GetComponent<VehicleAIController>().waypoints = wayPoints;
 
     }
 

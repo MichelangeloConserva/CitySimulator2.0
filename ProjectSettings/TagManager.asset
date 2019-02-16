@@ -15,6 +15,7 @@ TagManager:
   - curvePoint
   - spawnPoint
   - workingPlace
+  - housingUnit
   layers:
   - Default
   - TransparentFX
