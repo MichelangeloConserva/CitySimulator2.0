@@ -1,30 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Settings;
+using static Utils;
 
 public class TrafficLightManagement : MonoBehaviour
 {
-
-
-
-
-    List<Transform> lane_1 = new List<Transform>();
-    List<Transform> lane_2 = new List<Transform>();
-    //inizializzo referenze luci
-    Transform luceVerde1_l1;
-    Transform luceVerde2_l1;
-    Transform luceVerde1_l2;
-    Transform luceVerde2_l2;
-    Transform luceGialla1_l1;
-    Transform luceGialla2_l1;
-    Transform luceGialla1_l2;
-    Transform luceGialla2_l2;
-    Transform luceRossa1_l1;
-    Transform luceRossa2_l1;
-    Transform luceRossa1_l2;
-    Transform luceRossa2_l2;
-
 
 
     private float timeForLightChange;

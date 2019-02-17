@@ -23,6 +23,9 @@ public abstract class VehicleAIController : MonoBehaviour
     public float raySensorLength;
     public float securityDistance;
 
+    public bool stopped;
+
+
     public float maxSpeed;
 
     public Dictionary<GameObject, bool> trafficLightInfo;
@@ -36,6 +39,7 @@ public abstract class VehicleAIController : MonoBehaviour
 
     void Start()
     {
+        stopped = false;
         aboutToTurn = false;
         stopAtTrafficLight = false;
         nearbyCars = new List<GameObject>();
@@ -47,15 +51,20 @@ public abstract class VehicleAIController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (stopped)
+        {
+            motor.Brake(100000000 * Mathf.Pow(rbSpeed + 1, 6) + 5);
+            return;
+        }
+
+
         bool goNoProblem = true;
         bool otherCarInFront = false;
         bool otherCarNearby= false;
         var sensorLength = raySensorLength;
 
         if (waypoints.Count == 0)
-        {
             return;
-        }
 
         // Checking arrival at waypoint
         var carPos = transform.position - Vector3.up * transform.position.y;
@@ -82,15 +91,18 @@ public abstract class VehicleAIController : MonoBehaviour
 
 
         if (stopAtTrafficLight)
-            if (Vector3.Distance(transform.position, stopPosForTrafficLight) < securityDistance + 2)
-                sensorLength /= 3;
-
+            if (Vector3.Distance(transform.position, stopPosForTrafficLight) < securityDistance+3)
+                sensorLength /= 10;
 
 
         // Debug sensors
-        DrawArrow.ForDebug(frontPos, frontDirection * sensorLength, Color.blue);
-        DrawArrow.ForDebug(frontPos , frontDirection  * sensorLength/4 + transform.right , Color.blue);
-        DrawArrow.ForDebug(frontPos , frontDirection  * sensorLength/4 - transform.right , Color.blue);
+        if (Settings.visualizeVehicleSensors)
+        {
+            Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength, Color.blue);
+            Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 4 + transform.right, Color.blue);
+            Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 4 - transform.right, Color.blue);
+        }
+
 
 
         RaycastHit hit = new RaycastHit();
@@ -175,8 +187,10 @@ public abstract class VehicleAIController : MonoBehaviour
         if (rbSpeed > maxSpeed)
             GetComponent<Rigidbody>().velocity *= 0.99f;
 
-
     }
+
+
+
 
     /// <summary>
     /// A calibrated slowing procedure made to look realistic

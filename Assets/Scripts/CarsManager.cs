@@ -44,14 +44,7 @@ public class CarsManager : MonoBehaviour {
         {
             //PickRandomTrip();
             GO();
-            var pathFinder = new AStar(startNode, endNode);
-            var found = pathFinder.PathFinder();
-            var path = new List<Vector3>();
-            foreach (NodeStreet n in pathFinder.path)
-                path.Add(n.nodePosition);
-
-
-
+            var path = AStar.PathFromTo(startNode, endNode);
 
             if (path.Count > 1)
                 SpawnCar(startNode.nodePosition, path, endNode, rot);

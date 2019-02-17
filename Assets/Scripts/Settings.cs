@@ -6,20 +6,15 @@ public class Settings
 {
 
     public static readonly bool visualizeRoadNetwork = false;
+    public static readonly bool visualizeVehicleSensors = true;
 
-    public static float timeForLightChange = 7;
-    public static int timeMultiplyer = 60;
-
-
-    public static float speedLimit = 55;
+    public static readonly float timeForLightChange = 7;
+    public static readonly int timeMultiplyer = 60;
 
 
-    public enum TrafficLightLights
-    {
-        red,
-        yellow,
-        green
-    }
+    public static readonly float speedLimit = 55;
+
+
 
 
 }

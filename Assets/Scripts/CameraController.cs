@@ -24,14 +24,12 @@ public class CameraController : MonoBehaviour {
     public Vector2 heightLimit;
     public Vector2 lenghtLimit;
     public Vector2 widthLimit;
-    private Vector2 zoomLimit;
 
     private float panSpeed;
     private Vector3 initialPos;
     private Vector3 panMovement;
     private Vector3 pos;
     private Quaternion rot;
-    private bool rotationActive = false;
     private Vector3 lastMousePosition;
     private Quaternion initialRot;
     private float panIncrease = 0.0f;
@@ -48,8 +46,6 @@ public class CameraController : MonoBehaviour {
     {
         initialPos = transform.position;
         initialRot = transform.rotation;
-        zoomLimit.x = 15;
-        zoomLimit.y = 65;
     }
 
 
@@ -99,7 +95,6 @@ public class CameraController : MonoBehaviour {
             // Mouse Rotation
             if (Input.GetMouseButton(0))
             {
-                rotationActive = true;
                 Vector3 mouseDelta;
                 if (lastMousePosition.x >= 0 &&
                     lastMousePosition.y >= 0)
@@ -121,7 +116,6 @@ public class CameraController : MonoBehaviour {
 
             if (Input.GetMouseButtonUp(0))
             {
-                rotationActive = false;
                 if (RTSMode) transform.rotation = Quaternion.Slerp(transform.rotation, initialRot, 0.5f * Time.time);
             }
 

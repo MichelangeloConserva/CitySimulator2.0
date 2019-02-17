@@ -20,8 +20,10 @@ MonoBehaviour:
   minTurn: 0.2
   minDistanceToCompleteCheck: 5
   raySensorLength: 15
-  securityDistance: 8
+  securityDistance: 5
+  stopped: 0
   maxSpeed: 0
+  garbageCollectionTime: 5
 --- !u!1001 &4179241409660313287
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92,17 +94,17 @@ PrefabInstance:
     - target: {fileID: 8042658815591025301, guid: 3ce6b5f007435a24fb8f83de83d90685,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8042658815591025301, guid: 3ce6b5f007435a24fb8f83de83d90685,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8042658815591025301, guid: 3ce6b5f007435a24fb8f83de83d90685,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8042658815865267682, guid: 3ce6b5f007435a24fb8f83de83d90685,
         type: 3}
@@ -129,6 +131,36 @@ PrefabInstance:
       propertyPath: centerOfMass
       value: 
       objectReference: {fileID: 6555917604435458720}
+    - target: {fileID: 1356994017223500085, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1356994017223500085, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1356994017223500085, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555096774524185115, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555096774524185115, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555096774524185115, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 956126426098141119, guid: 3ce6b5f007435a24fb8f83de83d90685,
         type: 3}
       propertyPath: tire
@@ -169,6 +201,26 @@ PrefabInstance:
       propertyPath: wc
       value: 
       objectReference: {fileID: 5521023122638349804}
+    - target: {fileID: 5464467413093149285, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_TargetDisplay
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8042658815588599925, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9026e7d9056d59d4baf66a96a7d35f09, type: 2}
+    - target: {fileID: 8042658815588599925, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 30c47b2287420e349931f6101fb25ae9, type: 2}
+    - target: {fileID: 8042658815588599925, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fabf5809af62a5c4f85288aa7fa02960, type: 2}
     m_RemovedComponents:
     - {fileID: 1284771835929357931, guid: 3ce6b5f007435a24fb8f83de83d90685, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 3ce6b5f007435a24fb8f83de83d90685, type: 3}

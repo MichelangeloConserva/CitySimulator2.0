@@ -5,6 +5,8 @@ using UnityEngine;
 public class HUCarsHandler : MonoBehaviour
 {
 
+    public GameObject car;
+
     [HideInInspector]
     public HUInitFamily huInitFamily;
 
@@ -12,6 +14,8 @@ public class HUCarsHandler : MonoBehaviour
     public NodeStreet spawnPoint;
 
     public CarsManager carsManager;
+
+    public CityManagementTime cityManagementTime;
 
 
     public System.DateTime[] dtWorkingLeaving;
@@ -31,28 +35,32 @@ public class HUCarsHandler : MonoBehaviour
 
     private IEnumerator GoToWork(int adult)
     {
-
-        if (dtWorkingLeaving[adult].Hour == CityManagementTime.realTime.Hour &
-               (dtWorkingLeaving[adult].Minute > CityManagementTime.realTime.Minute && 
-               dtWorkingLeaving[adult].Minute < CityManagementTime.realTime.Minute + 5))
+        if (dtWorkingLeaving[adult].Hour == cityManagementTime.realTime.Hour &
+               (dtWorkingLeaving[adult].Minute > cityManagementTime.realTime.Minute && 
+               dtWorkingLeaving[adult].Minute < cityManagementTime.realTime.Minute + 5))
         {
             adultsAtWork[adult] = true;
 
 
-            workingPlaces[adult].GetComponent<WHInit>().AddWorker(adult, huInitFamily.huEconomy, this);
 
 
             var endNode = workingPlaces[adult].GetComponentInChildren<SpawnPointHandler>().node;
-            WorkerMoving(spawnPoint, endNode, transform.rotation);
+            var car =WorkerMoving(spawnPoint, endNode, transform.rotation);
+
+            workingPlaces[adult].GetComponent<WHInit>().AddWorker(adult, huInitFamily.huEconomy, this, car);
         }
 
         yield return null;
     }
 
-    public void WorkerMoving(NodeStreet startNode, NodeStreet endNode, Quaternion rot)
+    public GameObject WorkerMoving(NodeStreet startNode, NodeStreet endNode, Quaternion rot)
     {
-        var path = AStar.PathFromTo(startNode, endNode);
-        carsManager.SpawnCar(startNode.nodePosition, path, endNode, rot);
+        var worker = Instantiate(car, startNode.nodePosition, rot, carsManager.transform);
+        Utils.SendVehicleFromTo(startNode, endNode, worker);
+        return worker;
     }
+
+
+
 
 }

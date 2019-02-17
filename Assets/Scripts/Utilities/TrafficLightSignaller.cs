@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Settings;
+using static Utils;
 
 
 public class TrafficLightSignaller : MonoBehaviour
