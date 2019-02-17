@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Settings;
+using static Utils;
 
 
 public class TrafficLightSignaller : MonoBehaviour
@@ -16,11 +16,11 @@ public class TrafficLightSignaller : MonoBehaviour
             if (curLight == TrafficLightLights.red || curLight == TrafficLightLights.yellow)
             {
                 var stopPos = transform.parent.position + transform.parent.right * 2f - transform.parent.up ;
-                col.gameObject.GetComponent<CarAIController>().StopAtTrafficLight(stopPos, true);
+                col.gameObject.GetComponent<VehicleAIController>().StopAtTrafficLight(stopPos, true);
             }
             else if (curLight == TrafficLightLights.green)
             {
-                col.gameObject.GetComponent<CarAIController>().StopAtTrafficLight(Vector3.zero,false);
+                col.gameObject.GetComponent<VehicleAIController>().StopAtTrafficLight(Vector3.zero,false);
             }
         }
     }
@@ -28,7 +28,7 @@ public class TrafficLightSignaller : MonoBehaviour
     void OnTriggerExit(Collider col)
     {
         if (col.gameObject.tag == "vehicle")
-            col.gameObject.GetComponent<CarAIController>().StopAtTrafficLight(Vector3.zero, false);
+            col.gameObject.GetComponent<VehicleAIController>().StopAtTrafficLight(Vector3.zero, false);
     }
 
 

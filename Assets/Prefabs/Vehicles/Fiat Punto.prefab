@@ -464,9 +464,9 @@ GameObject:
   - component: {fileID: 8042658815591025301}
   - component: {fileID: 8042658815581185393}
   - component: {fileID: 8042658815865267683}
-  - component: {fileID: 8042658815865267693}
   - component: {fileID: 8042658815865267682}
   - component: {fileID: 2266747339110147181}
+  - component: {fileID: 1284771835929357931}
   m_Layer: 10
   m_Name: Fiat Punto
   m_TagString: vehicle
@@ -528,28 +528,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8042658815865267693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8042658815590536885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87e37fb400eb023479c32e47bbe96e4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waypoints: []
-  rbSpeed: 0
-  stopAtTrafficLight: 0
-  turningForce: 40
-  frontForce: 300
-  minTurn: 0.2
-  minDistanceToCompleteCheck: 3
-  raySensorLength: 15
-  securityDistance: 8
-  maxSpeed: 0
 --- !u!114 &8042658815865267682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586,6 +564,28 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.45, y: 1, z: 2.5}
   m_Center: {x: 0, y: -0.69, z: 0}
+--- !u!114 &1284771835929357931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8042658815590536885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 424ab901e39de5248a45423e5a84c8e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waypoints: []
+  rbSpeed: 0
+  stopAtTrafficLight: 0
+  turningForce: 40
+  frontForce: 300
+  minTurn: 0.2
+  minDistanceToCompleteCheck: 3
+  raySensorLength: 15
+  securityDistance: 5
+  maxSpeed: 0
 --- !u!1 &8042658815590536887
 GameObject:
   m_ObjectHideFlags: 0

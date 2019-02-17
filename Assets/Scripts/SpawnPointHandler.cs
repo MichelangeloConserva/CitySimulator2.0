@@ -66,7 +66,7 @@ public class SpawnPointHandler : MonoBehaviour
 
         if (Settings.visualizeRoadNetwork)
             for (int i = 0; i < conn; i++)
-                DrawArrow.ForDebug(node.availableStreets[i].startNode.nodePosition + Vector3.up,
+                Utils.DrawDebugArrow(node.availableStreets[i].startNode.nodePosition + Vector3.up,
                         (node.availableStreets[i].arrivalNode.nodePosition + Vector3.up * (i + 1)) - (node.availableStreets[i].startNode.nodePosition + Vector3.up),
                         Color.white);
     }

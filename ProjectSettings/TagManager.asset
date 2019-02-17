@@ -14,7 +14,9 @@ TagManager:
   - street
   - curvePoint
   - spawnPoint
-  - workingPlace
+  - housingUnit
+  - supermarket
+  - workPlace
   layers:
   - Default
   - TransparentFX
@@ -27,7 +29,7 @@ TagManager:
   - street
   - network
   - car
-  - trafficLight
+  - possibleDestinations
   - 
   - 
   - 
