@@ -244,11 +244,12 @@ public class RoadSpawn : MonoBehaviour
         //forward-right
         if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
             cross = Instantiate(curveChunk, pos, Quaternion.Euler(0, 270, 0), crossGarage.transform);
-
         // Adding the cross point 
+
         for (int i = 0; i < cross.transform.childCount; i++)
             if (cross.transform.GetChild(i).gameObject.tag == "crossPoint")
                 crossPointsToUpdate.Add(cross.transform.GetChild(i).gameObject);
+        
     }
 
     /// <summary>
