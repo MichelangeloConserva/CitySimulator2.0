@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RoadSpawn : MonoBehaviour
 {
@@ -29,6 +30,8 @@ public class RoadSpawn : MonoBehaviour
 
     private List<GameObject> streetPointsToUpdate;
     private List<GameObject> crossPointsToUpdate;
+
+    private bool deleting = false;
 
     /// <summary>
     /// Check for the presence of streets and create the network for them
@@ -60,9 +63,39 @@ public class RoadSpawn : MonoBehaviour
             }
         }
 
-        // Spawning the initial chunk
+        /*if (deleting == true)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                    Debug.DrawLine(ray.origin, hit.point);
+            }
+        }*/
+        
+        // Deleting test
         if (Input.GetMouseButtonDown(1) && curBlocks.Count == 0)
-            InitialSpawn();
+            UpdateAllNetwork();
+    }
+
+    /// <summary>
+    /// Receives responses from buttons depending on button names
+    /// </summary>
+    public void BuildButtonResponse(string messageType)
+    {
+        switch (messageType)
+        {
+            case "Strada UCUCDS":
+                if (curBlocks.Count == 0)
+                    InitialSpawn();
+                break;
+            case "Delete Building":
+                if (curBlocks.Count == 0)
+                    deleting = true;
+                break;
+        }
     }
 
     /// <summary>
@@ -184,6 +217,18 @@ public class RoadSpawn : MonoBehaviour
             if (streetPoint != null)
                 FromStreetPointNodesCreation(streetPoint);
         foreach (GameObject crossPoint in crossPointsToUpdate)
+            if (crossPoint != null)
+                FromCrossNodesCreation(crossPoint);
+    }
+
+    public void UpdateAllNetwork()
+    {
+        var streetPoints = GameObject.FindGameObjectsWithTag("streetPoint");
+        var crossPoints = GameObject.FindGameObjectsWithTag("crossPoint");
+        foreach (GameObject streetPoint in streetPoints)
+            if (streetPoint != null)
+                FromStreetPointNodesCreation(streetPoint);
+        foreach (GameObject crossPoint in crossPoints)
             if (crossPoint != null)
                 FromCrossNodesCreation(crossPoint);
     }
