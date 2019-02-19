@@ -30,7 +30,7 @@ public class HUInitFamily : MonoBehaviour
     private GameObject[] possibleWorkingPlaces;
     private GameObject[] supermarkets;
 
-    public NodeStreet spawnPoint;
+    public NodeStreet GetspawnPoint() => GetComponentInChildren<SpawnPointHandler>().node;
 
 
 
@@ -60,10 +60,6 @@ public class HUInitFamily : MonoBehaviour
     private void InitFamily()
     {
 
-        spawnPoint = GetComponentInChildren<SpawnPointHandler>().node;
-
-
-
         var search = 1000;
         var colls = Physics.OverlapBox(transform.position, new Vector3(search, 10, search), Quaternion.identity, LayerMask.GetMask("possibleDestinations"));
 
@@ -81,7 +77,6 @@ public class HUInitFamily : MonoBehaviour
             else if (c.gameObject.tag == "supermarket")
                 marketsNearby.Add(c.gameObject);
         }
-
 
         // Family
         possibleNumberOfAdultsComponents = new int[] {1,1,1,1,
@@ -107,6 +102,7 @@ public class HUInitFamily : MonoBehaviour
         numberOfAdultsComponents = RandomFromArray(ref possibleNumberOfAdultsComponents);
         numberOfChildrenComponents = RandomFromArray(ref possibleNumberOfChildrenComponents);
         huGeneralManager.numAdults += numberOfAdultsComponents;
+
     }
 
     private IEnumerator InitCarHandler()
@@ -125,10 +121,6 @@ public class HUInitFamily : MonoBehaviour
 
 
         huCarsHandler.car = car; // TODO : add the possibility of more cars prefabs
-
-
-        // Setting spawn point for the cars
-        huCarsHandler.spawnPoint = spawnPoint;
 
 
         // Initializing CarHandlers variables for the adults

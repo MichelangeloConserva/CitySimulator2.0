@@ -104,6 +104,8 @@ public class RoadSpawn : MonoBehaviour
 
         // It was up to be easily clicked
         curPointer.transform.position -= Vector3.up;
+        curPointer.GetComponent<GridSnapping>().enabled = false;
+
 
         // Complete the road after the street is fully created
         StartCoroutine(CompleteRoad());
@@ -126,9 +128,10 @@ public class RoadSpawn : MonoBehaviour
         // First Initialising of the nodes
         foreach (GameObject roadPart in streetPointsToUpdate)
             roadPart.GetComponent<NodeHandler>().InitializeNode();
+
         foreach (GameObject roadPart in crossPointsToUpdate)
             roadPart.GetComponent<NodeHandler>().InitializeNode();
-        
+
         UpdateNetwork();
     }
 
@@ -245,11 +248,12 @@ public class RoadSpawn : MonoBehaviour
         //forward-right
         if (leftColl.Length == 0 && rightColl.Length == 1 && forwardColl.Length == 1 && backColl.Length == 0)
             cross = Instantiate(curveChunk, pos, Quaternion.Euler(0, 270, 0), crossGarage.transform);
-
         // Adding the cross point 
+
         for (int i = 0; i < cross.transform.childCount; i++)
             if (cross.transform.GetChild(i).gameObject.tag == "crossPoint")
                 crossPointsToUpdate.Add(cross.transform.GetChild(i).gameObject);
+        
     }
 
     /// <summary>

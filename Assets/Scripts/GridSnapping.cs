@@ -117,8 +117,11 @@ public class GridSnapping : MonoBehaviour {
 
     private void OnMouseUp()
     {
-        roadSpawn.UpdateBlocks();
-        Destroy(this.gameObject);
+        if (this.enabled)
+        {
+            roadSpawn.UpdateBlocks();
+            Destroy(this.gameObject);
+        }
     }
 
     void Update ()

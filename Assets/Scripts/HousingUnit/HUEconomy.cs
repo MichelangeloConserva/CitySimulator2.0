@@ -74,12 +74,12 @@ public class HUEconomy : MonoBehaviour
                 {
                     var curMarket = RandomFromArray(ref supermarketNearby);
                     var endNode = curMarket.GetComponentInChildren<SpawnPointHandler>().node;
-                    var car = Instantiate(huInitFamily.car, huInitFamily.spawnPoint.nodePosition, transform.rotation);
+                    var car = Instantiate(huInitFamily.car, huInitFamily.GetspawnPoint().nodePosition, transform.rotation);
 
-                    SendVehicleFromTo(huInitFamily.spawnPoint, endNode, car);
+                    SendVehicleFromTo(huInitFamily.GetspawnPoint(), endNode, car);
 
 
-                    StartCoroutine(curMarket.GetComponent<ShopsHandler>().ShopperResender(1, huInitFamily.spawnPoint,car, huInitFamily.car));
+                    StartCoroutine(curMarket.GetComponent<ShopsHandler>().ShopperResender(1, huInitFamily.GetspawnPoint(), car, huInitFamily.car));
 
                     daysWithoutGoingToSupermarket = 0;
                 }

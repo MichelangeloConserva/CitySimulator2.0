@@ -45,6 +45,9 @@ public class HUCarsHandler : MonoBehaviour
 
 
             var endNode = workingPlaces[adult].GetComponentInChildren<SpawnPointHandler>().node;
+            spawnPoint = GetComponentInChildren<SpawnPointHandler>().node;
+
+
             var car =WorkerMoving(spawnPoint, endNode, transform.rotation);
 
             workingPlaces[adult].GetComponent<WHInit>().AddWorker(adult, huInitFamily.huEconomy, this, car);
