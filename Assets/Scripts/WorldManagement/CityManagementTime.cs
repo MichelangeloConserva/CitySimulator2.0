@@ -88,6 +88,6 @@ public class CityManagementTime : MonoBehaviour
     {
         var style = new GUIStyle();
         style.normal.textColor = Color.black;
-        GUI.Label(new Rect(10, 30, 400, 100), "Time: " + realTime.ToString("HH:mm:ss ") + dayTime.ToString(), style);
+        GUI.Label(new Rect(10, 30, 400, 100), "Time: " + realTime.ToString("d/M/yyyy HH:mm:ss ") + dayTime.ToString(), style);
     }
 }

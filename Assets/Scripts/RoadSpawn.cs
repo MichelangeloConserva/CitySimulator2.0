@@ -137,6 +137,8 @@ public class RoadSpawn : MonoBehaviour
 
         // It was up to be easily clicked
         curPointer.transform.position -= Vector3.up;
+        curPointer.GetComponent<GridSnapping>().enabled = false;
+
 
         // Complete the road after the street is fully created
         StartCoroutine(CompleteRoad());
@@ -159,9 +161,10 @@ public class RoadSpawn : MonoBehaviour
         // First Initialising of the nodes
         foreach (GameObject roadPart in streetPointsToUpdate)
             roadPart.GetComponent<NodeHandler>().InitializeNode();
+
         foreach (GameObject roadPart in crossPointsToUpdate)
             roadPart.GetComponent<NodeHandler>().InitializeNode();
-        
+
         UpdateNetwork();
     }
 
@@ -242,6 +245,7 @@ public class RoadSpawn : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
 
+        Debug.Log("Destroy");
         if (curBlocks.Count != 1 & curRoadChunk.GetComponent<CollisionChecking>().isColliding)
             Destroy(curRoadChunk);
     }
