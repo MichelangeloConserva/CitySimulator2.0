@@ -18,7 +18,7 @@ MonoBehaviour:
   turningForce: 40
   frontForce: 300
   minTurn: 0.2
-  minDistanceToCompleteCheck: 5
+  minDistanceToCompleteCheck: 4
   raySensorLength: 15
   securityDistance: 5
   stopped: 0
@@ -31,6 +31,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1943803604853755552, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: tire
+      value: 
+      objectReference: {fileID: 6224791071831905370}
+    - target: {fileID: 1943803604853755552, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: wc
+      value: 
+      objectReference: {fileID: 1806846350606917557}
+    - target: {fileID: 1472061710398196978, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: tire
+      value: 
+      objectReference: {fileID: 6224791071831905372}
+    - target: {fileID: 1472061710398196978, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: wc
+      value: 
+      objectReference: {fileID: 585079557751849912}
+    - target: {fileID: 956126426098141119, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: tire
+      value: 
+      objectReference: {fileID: 6224791071831905374}
+    - target: {fileID: 956126426098141119, guid: 3ce6b5f007435a24fb8f83de83d90685,
+        type: 3}
+      propertyPath: wc
+      value: 
+      objectReference: {fileID: 4839981442684033464}
     - target: {fileID: 8042658815590536885, guid: 3ce6b5f007435a24fb8f83de83d90685,
         type: 3}
       propertyPath: m_Name
@@ -161,36 +191,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 956126426098141119, guid: 3ce6b5f007435a24fb8f83de83d90685,
-        type: 3}
-      propertyPath: tire
-      value: 
-      objectReference: {fileID: 6224791071831905374}
-    - target: {fileID: 956126426098141119, guid: 3ce6b5f007435a24fb8f83de83d90685,
-        type: 3}
-      propertyPath: wc
-      value: 
-      objectReference: {fileID: 4839981442684033464}
-    - target: {fileID: 1472061710398196978, guid: 3ce6b5f007435a24fb8f83de83d90685,
-        type: 3}
-      propertyPath: tire
-      value: 
-      objectReference: {fileID: 6224791071831905372}
-    - target: {fileID: 1472061710398196978, guid: 3ce6b5f007435a24fb8f83de83d90685,
-        type: 3}
-      propertyPath: wc
-      value: 
-      objectReference: {fileID: 585079557751849912}
-    - target: {fileID: 1943803604853755552, guid: 3ce6b5f007435a24fb8f83de83d90685,
-        type: 3}
-      propertyPath: tire
-      value: 
-      objectReference: {fileID: 6224791071831905370}
-    - target: {fileID: 1943803604853755552, guid: 3ce6b5f007435a24fb8f83de83d90685,
-        type: 3}
-      propertyPath: wc
-      value: 
-      objectReference: {fileID: 1806846350606917557}
     - target: {fileID: 5157894811633143839, guid: 3ce6b5f007435a24fb8f83de83d90685,
         type: 3}
       propertyPath: tire

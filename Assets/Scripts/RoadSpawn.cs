@@ -197,6 +197,7 @@ public class RoadSpawn : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
 
+        Debug.Log("Destroy");
         if (curBlocks.Count != 1 & curRoadChunk.GetComponent<CollisionChecking>().isColliding)
             Destroy(curRoadChunk);
     }
