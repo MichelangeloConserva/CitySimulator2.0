@@ -13,5 +13,6 @@
 
 
 #### Videos 
-* [Car AI at traffic light](https://www.youtube.com/watch?v=vxhp9CbZrtk&feature=youtu.be)
+* [Car AI at traffic light (complete video)](https://www.youtube.com/watch?v=vxhp9CbZrtk&feature=youtu.be)
 
+![2](https://github.com/MichelangeloConserva/CitySimulator2.0/blob/master/media/city.gif)
