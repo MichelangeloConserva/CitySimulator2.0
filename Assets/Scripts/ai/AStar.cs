@@ -31,7 +31,6 @@ public class AStar {
     {
         while (openedNodes.Count > 0)
         {
-            
             // Finding the best node from all the opened nodes
             NodeStreet currentNode = openedNodes[0];
             for (int i=1; i<openedNodes.Count; i++)
@@ -49,17 +48,35 @@ public class AStar {
                 RetracePath();
                 return true;
             }
-                
 
             // Analyzing neighbors
             var neighbours = currentNode.GetNeighbors();
+            
             foreach (NodeStreet neighbour in neighbours)
             {
                 // the neighbor has already been explored
                 if (closedNodes.Contains(neighbour))
                     continue;
 
-                float newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
+                // Extra cost to avoid traffic jam on single lane
+                float carPresence = 0;
+                Vector3 ext = Vector3.one;
+                var dir = neighbour.nodePosition - currentNode.nodePosition;
+                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
+                    ext += Vector3.right * (14-2);
+                else
+                    ext += Vector3.forward * (14-2);
+
+                var colls = Physics.OverlapBox(neighbour.nodePosition, ext, Quaternion.identity, LayerMask.GetMask("vehicle"));
+
+                foreach (Collider c in colls)
+                    carPresence += 100f;
+
+                float newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour) + carPresence;
+                if (neighbours.Count >= 1)
+                {
+                    // TODO : make them go left newMovementCostToNeighbour += Random.Range(0, 5);
+                }
                 if (newMovementCostToNeighbour < neighbour.gCost | !openedNodes.Contains(neighbour))
                 {
                     neighbour.gCost = newMovementCostToNeighbour;
@@ -111,14 +128,14 @@ public class AStar {
     }
 
 
-    public static List<Vector3> PathFromTo(NodeStreet startNode, NodeStreet endNode)
+    public static List<NodeStreet> PathFromTo(NodeStreet startNode, NodeStreet endNode)
     {
         // pathfinding
         var pathFinder = new AStar(startNode, endNode);
         var found = pathFinder.PathFinder();
-        var path = new List<Vector3>();
+        var path = new List<NodeStreet>();
         foreach (NodeStreet n in pathFinder.path)
-            path.Add(n.nodePosition);
+            path.Add(n);
 
         return path;
     }

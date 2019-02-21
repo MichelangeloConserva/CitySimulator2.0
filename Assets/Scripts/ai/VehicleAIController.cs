@@ -6,7 +6,7 @@ public abstract class VehicleAIController : MonoBehaviour
 {
     [Header("Path variables")]
     [Space]
-    public List<Vector3> waypoints;
+    public List<NodeStreet> waypoints;
     
 
     [Header("Debug variables")]
@@ -36,6 +36,11 @@ public abstract class VehicleAIController : MonoBehaviour
 
     private bool aboutToTurn;
 
+    public NodeStreet nextWaypoint;
+    public NodeStreet arrivalNode;
+
+
+
 
     void Start()
     {
@@ -43,10 +48,10 @@ public abstract class VehicleAIController : MonoBehaviour
         aboutToTurn = false;
         stopAtTrafficLight = false;
         nearbyCars = new List<GameObject>();
+        waypoints = new List<NodeStreet>();
         maxSpeed = Mathf.Infinity;
 
         motor = GetComponent<MotorSimulator>();
-
     }
 
     void FixedUpdate()
@@ -68,7 +73,7 @@ public abstract class VehicleAIController : MonoBehaviour
 
         // Checking arrival at waypoint
         var carPos = transform.position - Vector3.up * transform.position.y;
-        var wayPos = waypoints[0] - Vector3.up * waypoints[0].y;
+        var wayPos = Utils.Down(nextWaypoint.nodePosition);
         var distance = Vector3.Distance(carPos, wayPos);
         if (distance < minDistanceToCompleteCheck)
             StartCoroutine(Recalculating());
@@ -101,6 +106,8 @@ public abstract class VehicleAIController : MonoBehaviour
             Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength, Color.blue);
             Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 4 + transform.right, Color.blue);
             Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 4 - transform.right, Color.blue);
+            Utils.DrawDebugArrow(frontPos,  transform.right * 1.5f, Color.blue);
+            Utils.DrawDebugArrow(frontPos, -transform.right * 1.5f, Color.blue);
         }
 
 
@@ -110,7 +117,7 @@ public abstract class VehicleAIController : MonoBehaviour
                            frontDirection,
                            out hit,
                            sensorLength,
-                           LayerMask.GetMask("car")))
+                           LayerMask.GetMask("vehicle")))
         {
             otherCarInFront = true;
             goNoProblem = false;
@@ -120,23 +127,46 @@ public abstract class VehicleAIController : MonoBehaviour
                                  frontDirection * sensorLength / 4 + transform.right,
                                  out hit,
                                  sensorLength/4,
-                                 LayerMask.GetMask("car")))
+                                 LayerMask.GetMask("vehicle")))
         {
             otherCarNearby = true;
             goNoProblem = false;
-            turning -= 0.1f;
+            turning -= 0.2f;
         }
         // checking cars at left
         else if (Physics.Raycast(frontPos,
                                  frontDirection * sensorLength / 4 - transform.right,
                                  out hit,
                                  sensorLength / 4,
-                                 LayerMask.GetMask("car")))
+                                 LayerMask.GetMask("vehicle")))
         {
             otherCarNearby = true;
             goNoProblem = false;
-            turning += 0.1f;
+            turning += 0.2f;
         }
+        // Checking car on the right
+        else if(Physics.Raycast(frontPos,
+                                 transform.right,
+                                 out hit,
+                                 1.5f,
+                                 LayerMask.GetMask("vehicle")))
+        {
+            otherCarNearby = true;
+            goNoProblem = false;
+            turning -= 0.3f;
+        }
+        // Checking car on the left
+        else if (Physics.Raycast(frontPos,
+                                 - transform.right,
+                                 out hit,
+                                 1.5f,
+                                 LayerMask.GetMask("vehicle")))
+        {
+            otherCarNearby = true;
+            goNoProblem = false;
+            turning += 0.3f;
+        }
+
 
 
         // Moving forward
@@ -165,7 +195,15 @@ public abstract class VehicleAIController : MonoBehaviour
             else if (stopAtTrafficLight)
             {
                 var dist = Vector3.Distance(transform.position, stopPosForTrafficLight);
-                StoppingProcedure(dist-1, turning);
+                Vector3 ext = Vector3.zero;
+                var dir = stopPosForTrafficLight - transform.position;
+                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
+                    ext += Vector3.right;
+                else
+                    ext += Vector3.forward;
+                
+                var cross = Vector3.Cross(transform.forward, ext);
+                StoppingProcedure(dist-1, cross.y);
             }
 
             // Slowing since I'm about to turn
@@ -179,7 +217,7 @@ public abstract class VehicleAIController : MonoBehaviour
             else if (otherCarNearby)
             {
                 var dist = Vector3.Distance(transform.position, hit.point);
-                SlowingProcedure(dist, turning);
+                SlowingProcedure(dist+5, turning);
             }
         }
 
@@ -254,7 +292,7 @@ public abstract class VehicleAIController : MonoBehaviour
     private float AngleToTurn()
     {
         if(waypoints.Count == 0) { return 0; }
-        var heading = waypoints[0] - transform.position;
+        var heading = waypoints[0].nodePosition - transform.position;
         var cross = Vector3.Cross(transform.forward, heading.normalized);
         return cross.y;
     }
@@ -268,7 +306,7 @@ public abstract class VehicleAIController : MonoBehaviour
         if (waypoints.Count <= 1)
             return false;
 
-        var heading = waypoints[1] - transform.position;
+        var heading = waypoints[1].nodePosition - transform.position;
         var cross = Vector3.Cross(transform.forward, heading.normalized).y;
 
         if (Mathf.Abs(cross) < minTurn)
@@ -284,4 +322,6 @@ public abstract class VehicleAIController : MonoBehaviour
     /// <returns></returns>
     public abstract IEnumerator Recalculating();
 
+
+    // TODO : dynamic pathfinding to avoid traffic
 }

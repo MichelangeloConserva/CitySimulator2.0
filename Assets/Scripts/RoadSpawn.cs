@@ -313,17 +313,19 @@ public class RoadSpawn : MonoBehaviour
         // all the four positions to check from a cross
         List<Vector3> checkPositions = new List<Vector3> {
             cross.transform.position + (cross.transform.forward * 10),
+            cross.transform.position + (cross.transform.forward * 8),
             cross.transform.position + (cross.transform.right  *  -7 ),
             cross.transform.position + (cross.transform.right  *  -7 - cross.transform.forward * 7),
         };
+        float radius = 2.5f;
         // if the cross is actually a curve
         if (cross.tag == "curvePoint")
         {
-            checkPositions.RemoveAt(1);
-            checkPositions.RemoveAt(1);
+            checkPositions = new List<Vector3> {
+            cross.transform.position + (cross.transform.forward * 9)};
         }
         foreach (Vector3 checkPos in checkPositions)
-            CheckAtPositionForNodesFromCross(checkPos, curNode);
+            CheckAtPositionForNodesFromCross(checkPos, curNode, radius);
     }
     
     /// <summary>

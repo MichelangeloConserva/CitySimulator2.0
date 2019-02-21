@@ -30,7 +30,7 @@ public class NodeHandler : MonoBehaviour
         if (Settings.visualizeRoadNetwork)
             for (int i=0; i<conn; i++)
                 Utils.DrawDebugArrow(node.availableStreets[i].startNode.nodePosition + Vector3.up,
-                        (node.availableStreets[i].arrivalNode.nodePosition + Vector3.up*(i+1)) - (node.availableStreets[i].startNode.nodePosition + Vector3.up),
+                        (node.availableStreets[i].arrivalNode.nodePosition + Vector3.up) - (node.availableStreets[i].startNode.nodePosition + Vector3.up),
                         Color.white);
     }
 

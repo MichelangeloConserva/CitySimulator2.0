@@ -10,9 +10,6 @@ public class HUCarsHandler : MonoBehaviour
     [HideInInspector]
     public HUInitFamily huInitFamily;
 
-    [HideInInspector]
-    public NodeStreet spawnPoint;
-
     public CarsManager carsManager;
 
     public CityManagementTime cityManagementTime;
@@ -39,18 +36,31 @@ public class HUCarsHandler : MonoBehaviour
                (dtWorkingLeaving[adult].Minute > cityManagementTime.realTime.Minute && 
                dtWorkingLeaving[adult].Minute < cityManagementTime.realTime.Minute + 5))
         {
-            adultsAtWork[adult] = true;
 
 
 
 
-            var endNode = workingPlaces[adult].GetComponentInChildren<SpawnPointHandler>().node;
-            spawnPoint = GetComponentInChildren<SpawnPointHandler>().node;
 
+            var endNode = workingPlaces[adult].GetComponent<WHInit>().GetspawnPoint();
 
-            var car =WorkerMoving(spawnPoint, endNode, transform.rotation);
+            Utils.DrawDebugArrow(workingPlaces[adult].GetComponent<WHInit>().GetspawnPoint().nodePosition, 
+                Vector3.up * 3, 
+                Color.black, Mathf.Infinity);
 
-            workingPlaces[adult].GetComponent<WHInit>().AddWorker(adult, huInitFamily.huEconomy, this, car);
+            var spawnPoint = huInitFamily.GetspawnPoint();
+
+            
+            var car = WorkerMoving(spawnPoint, endNode, transform.rotation);
+            if (car != null)
+            {
+                workingPlaces[adult].GetComponent<WHInit>().AddWorker(adult, huInitFamily.huEconomy, this, car);
+                adultsAtWork[adult] = true;
+            }
+            else
+            {
+                yield return null;
+            }
+
         }
 
         yield return null;
@@ -58,12 +68,25 @@ public class HUCarsHandler : MonoBehaviour
 
     public GameObject WorkerMoving(NodeStreet startNode, NodeStreet endNode, Quaternion rot)
     {
-        var worker = Instantiate(car, startNode.nodePosition, rot, carsManager.transform);
-        Utils.SendVehicleFromTo(startNode, endNode, worker);
-        return worker;
+
+        if (startNode == null || endNode == null)
+        {
+            return null;
+        }
+        else
+        {
+            var worker = Instantiate(car, startNode.nodePosition, rot, carsManager.garage.transform);
+            StartCoroutine(SendWorker(startNode, endNode, worker));
+   
+            return worker;
+        }
     }
 
-
+    private IEnumerator SendWorker(NodeStreet startNode,NodeStreet endNode,GameObject worker)
+    {
+        yield return new WaitForFixedUpdate();
+        Utils.SendVehicleFromTo(startNode, endNode, worker);
+    }
 
 
 }

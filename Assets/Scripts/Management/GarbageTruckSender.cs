@@ -64,7 +64,7 @@ public class GarbageTruckSender : MonoBehaviour
 
 
         truck.GetComponent<TruckAIController>().destinations = destinations;
-        truck.GetComponent<TruckAIController>().waypoints = new List<Vector3> { Vector3.zero };
+        truck.GetComponent<TruckAIController>().waypoints = new List<NodeStreet> {};
 
         StartCoroutine(truck.GetComponent<TruckAIController>().Recalculating());
     }
