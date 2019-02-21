@@ -1,6 +1,6 @@
 # CitySimulator current tasks
 
-1. - [ ] Improvement for ai vehicles
+1. - [ ] Improvement for ai vehicles 
 1. - [ ] City prefabs 
 1. - [ ] User interface for building roads
 1. - [ ] Models for:
@@ -12,3 +12,7 @@
 1. - [ ] Procedural terrain
 
 
+#### Videos 
+* [Car AI at traffic light (complete video)](https://www.youtube.com/watch?v=vxhp9CbZrtk&feature=youtu.be)
+
+![2](https://github.com/MichelangeloConserva/CitySimulator2.0/blob/master/media/city.gif)
