@@ -2062,6 +2062,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OfficeAndGarageAllMesh
       objectReference: {fileID: 0}
+    - target: {fileID: 1406007203, guid: 0b0791bd91965a74abc9006581e44cbb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1406007207, guid: 0b0791bd91965a74abc9006581e44cbb, type: 3}
       propertyPath: m_LocalPosition.x
       value: -125.4
