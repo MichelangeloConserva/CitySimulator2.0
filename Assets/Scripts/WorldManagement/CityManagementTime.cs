@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class CityManagementTime : MonoBehaviour
 {
-    public HUGeneralManager huGeneralManager;
-
+    public List<HUGeneralManager> huGeneralManagers;
 
 
     public System.DateTime realTime;
@@ -44,9 +43,6 @@ public class CityManagementTime : MonoBehaviour
                                        0, // minutes
                                        0);// seconds
 
-
-
-
         StartCoroutine(ChangeDayTime(dayTime));
     }
 
@@ -76,9 +72,9 @@ public class CityManagementTime : MonoBehaviour
 
         this.dayTime = dayTime;
 
-
         // Updating the costs for the hus
-        huGeneralManager.DayTimeChanged(dayTime);
+        foreach(HUGeneralManager huGeneralManager in huGeneralManagers)
+            huGeneralManager.DayTimeChanged(dayTime);
 
         yield return new WaitForSeconds(dayTimeDuration[dayTime] * 3600 / Settings.timeMultiplyer);
 

@@ -33,7 +33,6 @@ public class WHWorker
     public void GoHome()
     {
         myHUCarsHandler.adultsAtWork[adultIndex] = false;
-                                               // TODO : refactor
         myHUCarsHandler.WorkerMoving(workSpawn, myHUCarsHandler.huInitFamily.GetspawnPoint(), rot);
     }
 

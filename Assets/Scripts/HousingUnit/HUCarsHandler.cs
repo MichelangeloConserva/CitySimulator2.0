@@ -11,9 +11,7 @@ public class HUCarsHandler : MonoBehaviour
     public HUInitFamily huInitFamily;
 
     public CarsManager carsManager;
-
     public CityManagementTime cityManagementTime;
-
 
     public System.DateTime[] dtWorkingLeaving;
     public bool[] adultsAtWork;
@@ -25,9 +23,7 @@ public class HUCarsHandler : MonoBehaviour
         if (dtWorkingLeaving != null)
             for (int adult = 0; adult < huInitFamily.numberOfAdultsComponents; adult++)
                 if (!adultsAtWork[adult])
-                {
                     StartCoroutine(GoToWork(adult));
-                }
     }
 
     private IEnumerator GoToWork(int adult)
@@ -36,20 +32,12 @@ public class HUCarsHandler : MonoBehaviour
                (dtWorkingLeaving[adult].Minute > cityManagementTime.realTime.Minute && 
                dtWorkingLeaving[adult].Minute < cityManagementTime.realTime.Minute + 5))
         {
-
-
-
-
-
             var endNode = workingPlaces[adult].GetComponent<WHInit>().GetspawnPoint();
-
             Utils.DrawDebugArrow(workingPlaces[adult].GetComponent<WHInit>().GetspawnPoint().nodePosition, 
                 Vector3.up * 3, 
                 Color.black, Mathf.Infinity);
 
             var spawnPoint = huInitFamily.GetspawnPoint();
-
-            
             var car = WorkerMoving(spawnPoint, endNode, transform.rotation);
             if (car != null)
             {
@@ -68,14 +56,11 @@ public class HUCarsHandler : MonoBehaviour
 
     public GameObject WorkerMoving(NodeStreet startNode, NodeStreet endNode, Quaternion rot)
     {
-
         if (startNode == null || endNode == null)
-        {
             return null;
-        }
         else
         {
-            var worker = Instantiate(car, startNode.nodePosition, rot, carsManager.garage.transform);
+            var worker = Instantiate(car, startNode.nodePosition + Vector3.up, rot, carsManager.garage.transform);
             StartCoroutine(SendWorker(startNode, endNode, worker));
    
             return worker;
@@ -87,6 +72,4 @@ public class HUCarsHandler : MonoBehaviour
         yield return new WaitForFixedUpdate();
         Utils.SendVehicleFromTo(startNode, endNode, worker);
     }
-
-
 }

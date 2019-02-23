@@ -18,8 +18,6 @@ public class GarbageTruckSender : MonoBehaviour
     {
         destinationPlaces = new List<GameObject>();
 
-
-
         // Find all the places where to send truck
         foreach (GameObject house in GameObject.FindGameObjectsWithTag("housingUnit"))
             destinationPlaces.Add(house);
@@ -46,7 +44,6 @@ public class GarbageTruckSender : MonoBehaviour
             // Sending the truck
             SendTruck(destinations);
 
-
             yield return new WaitForSeconds(hoursInterval * 3600 / Settings.timeMultiplyer);
         }
     }
@@ -58,15 +55,10 @@ public class GarbageTruckSender : MonoBehaviour
     private void SendTruck(List<NodeStreet> destinations)
     {
         spawnPoint = GetComponentInChildren<SpawnPointHandler>().node;
-
-
         var truck = Instantiate(garbageTruck, Utils.Down(spawnPoint.nodePosition)+Vector3.up, Quaternion.identity);
 
-
+        Utils.SendVehicleFromTo(spawnPoint, destinations[0], truck);
         truck.GetComponent<TruckAIController>().destinations = destinations;
-        truck.GetComponent<TruckAIController>().waypoints = new List<NodeStreet> {};
-
-        StartCoroutine(truck.GetComponent<TruckAIController>().Recalculating());
     }
 
 

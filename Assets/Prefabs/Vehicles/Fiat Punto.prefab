@@ -581,7 +581,7 @@ MonoBehaviour:
   turningForce: 40
   frontForce: 300
   minTurn: 0.2
-  minTurnToTurn: 0.1
+  minTurnToTurn: 0.05
   minDistanceToCompleteCheck: 4.5
   raySensorLength: 15
   securityDistance: 5

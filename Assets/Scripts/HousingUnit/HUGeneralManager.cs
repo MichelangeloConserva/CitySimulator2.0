@@ -10,13 +10,16 @@ public class HUGeneralManager : MonoBehaviour
     public List<HUInitFamily> HUs = new List<HUInitFamily>();
     public int numAdults;
 
+    void Start()
+    {
+        GameObject.Find("GlobalManager").GetComponent<CityManagementTime>().huGeneralManagers.Add(this);
+    }
+
     public void DayTimeChanged(DayTime dayTime)
     {
         foreach(HUInitFamily hu in HUs)
             hu.huEconomy.DayTimeCostsUpdate(dayTime);
-
     }
-
 
     void OnGUI()
     {

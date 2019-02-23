@@ -105,12 +105,9 @@ public class Utils
         return nearNode;
     }
 
-
-
     public static void SendVehicleFromTo(NodeStreet startNode, NodeStreet endNode, GameObject vehicle)
     {
         var path = AStar.PathFromTo(startNode, endNode, vehicle);
-        
         if (path.Count > 0)
         {
             vehicle.transform.LookAt(path[0].nodePosition);
@@ -121,7 +118,6 @@ public class Utils
         }
         Debug.Log("Path not found");
     }
-
 
     public static T RandomFromArray<T>(ref T[] arr)
     {

@@ -40,6 +40,10 @@ public class RoadSpawn : MonoBehaviour
     {
         allBlocks = new List<GameObject>();
 
+        // Deactive GrisSnapping
+        //for (GameObject g in GameObject.FindGameObjectsWithTag("housingUnit"))
+        //    g.GetComponent<GridS>
+
         NetworkAtStart();
     }
 
@@ -346,7 +350,7 @@ public class RoadSpawn : MonoBehaviour
         var curNode = streetPoint.GetComponent<NodeHandler>().node;
 
         // Checking for nodes in front of the current node
-        var colls = Physics.OverlapSphere(streetPoint.transform.position + (streetPoint.transform.forward.normalized * 14f), 2.3f, LayerMask.GetMask("network"));
+        var colls = Physics.OverlapSphere(streetPoint.transform.position + (streetPoint.transform.forward.normalized * 13f), 2.3f, LayerMask.GetMask("network"));
         if (colls.Length > 0)
         {
             CheckAtPositionForNodesFromStreetPoint(colls, streetPoint, curNode);

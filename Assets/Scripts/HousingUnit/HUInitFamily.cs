@@ -38,7 +38,7 @@ public class HUInitFamily : MonoBehaviour
     void Start()
     {
 
-        huGeneralManager = GameObject.Find("Manager").GetComponent<HUGeneralManager>();
+        huGeneralManager = GetComponentInParent<HUGeneralManager>();
         huGeneralManager.HUs.Add(this);
 
 
@@ -115,9 +115,9 @@ public class HUInitFamily : MonoBehaviour
         huCarsHandler.huInitFamily = this;
 
         if (huCarsHandler.carsManager == null)
-            huCarsHandler.carsManager = GameObject.Find("Manager").GetComponent<CarsManager>();
+            huCarsHandler.carsManager = GetComponentInParent<CarsManager>();
         if (huCarsHandler.cityManagementTime == null)
-            huCarsHandler.cityManagementTime = GameObject.Find("Manager").GetComponent<CityManagementTime>();
+            huCarsHandler.cityManagementTime = GameObject.Find("GlobalManager").GetComponent<CityManagementTime>();
 
 
         huCarsHandler.car = car; // TODO : add the possibility of more cars prefabs

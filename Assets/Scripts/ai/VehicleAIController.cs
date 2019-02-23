@@ -52,7 +52,7 @@ public abstract class VehicleAIController : MonoBehaviour
         aboutToTurn = false;
         stopAtTrafficLight = false;
         nearbyCars = new List<GameObject>();
-        waypoints = new List<NodeStreet>();
+        //waypoints = new List<NodeStreet>();
         maxSpeed = Mathf.Infinity;
 
         motor = GetComponent<MotorSimulator>();
@@ -82,9 +82,8 @@ public abstract class VehicleAIController : MonoBehaviour
         bool otherCarNearby= false;
         var sensorLength = raySensorLength;
 
-        if (waypoints.Count == 0)
-            waypoints = AStar.PathFromTo(Physics.OverlapSphere(Utils.Down(transform.position), 5, LayerMask.GetMask("network"))[0].gameObject.GetComponent<NodeHandler>().node,
-                                            arrivalNode, gameObject);
+        //Debug.Log(waypoints.Count);
+
 
         // Checking arrival at waypoint
         var carPos = Utils.Down(frontPos);
@@ -99,26 +98,21 @@ public abstract class VehicleAIController : MonoBehaviour
         // Checking how much to turn
         var turning = AngleToTurn();
 
-
-
-
         // we have a situation to handle
         aboutToTurn = IsAboutToTurn();
         if (stopAtTrafficLight || aboutToTurn)
             goNoProblem = false;
 
-
         if (stopAtTrafficLight)
             if (Vector3.Distance(transform.position, stopPosForTrafficLight) < securityDistance+3)
                 sensorLength /= 10;
-
 
         // Debug sensors
         if (Settings.visualizeVehicleSensors)
         {
             Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength, Color.blue);
-            Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 4 + transform.right, Color.blue);
-            Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 4 - transform.right, Color.blue);
+            Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 6 + transform.right, Color.blue);
+            Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 6 - transform.right, Color.blue);
             Utils.DrawDebugArrow(frontPos,  transform.right * 1.5f, Color.blue);
             Utils.DrawDebugArrow(frontPos, -transform.right * 1.5f, Color.blue);
         }
@@ -136,7 +130,7 @@ public abstract class VehicleAIController : MonoBehaviour
         }
         // checking cars at right
         else if (Physics.Raycast(frontPos,
-                                 frontDirection * sensorLength / 4 + transform.right,
+                                 frontDirection * sensorLength / 6 + transform.right,
                                  out hit,
                                  sensorLength/4,
                                  LayerMask.GetMask("vehicle")))
@@ -147,7 +141,7 @@ public abstract class VehicleAIController : MonoBehaviour
         }
         // checking cars at left
         else if (Physics.Raycast(frontPos,
-                                 frontDirection * sensorLength / 4 - transform.right,
+                                 frontDirection * sensorLength / 6 - transform.right,
                                  out hit,
                                  sensorLength / 4,
                                  LayerMask.GetMask("vehicle")))
@@ -332,12 +326,24 @@ public abstract class VehicleAIController : MonoBehaviour
         return true;
     }
 
+
+    private void SensorActivation()
+    {
+
+    }
+
+
+
     /// <summary>
     /// Recalculating the next target after arrival at one
     /// if the path is completed then autodestruction is performed
     /// </summary>
     /// <returns></returns>
     public abstract IEnumerator Recalculating();
+
+
+    
+
 
 
     // TODO : dynamic pathfinding to avoid traffic

@@ -9,9 +9,7 @@ public class WHInit : MonoBehaviour
 
 
     public float retributionPerHour;
-
     public List<WHWorker> workers;
-
     public int actualWorker;
 
     private int[] possibleHoursAtWork;
