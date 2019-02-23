@@ -63,17 +63,19 @@ public class RoadSpawn : MonoBehaviour
             }
         }
 
-        /*if (deleting == true)
+        if (deleting == true)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
-
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-                    Debug.DrawLine(ray.origin, hit.point);
+                {
+                    if (hit.transform.gameObject.tag != "Terrain")
+                    Destroy(hit.transform.gameObject);
+                }
             }
-        }*/
+        }
         
         // Deleting test
         if (Input.GetMouseButtonDown(1) && curBlocks.Count == 0)
@@ -94,6 +96,9 @@ public class RoadSpawn : MonoBehaviour
             case "Delete Building":
                 if (curBlocks.Count == 0)
                     deleting = true;
+                break;
+            case "Back Deleting":
+                deleting = false;
                 break;
         }
     }
