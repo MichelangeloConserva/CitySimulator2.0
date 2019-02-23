@@ -5,6 +5,9 @@ using UnityEngine;
 public class WHInit : MonoBehaviour
 {
 
+    public NodeStreet GetspawnPoint() => GetComponentInChildren<SpawnPointHandler>().node;
+
+
     public float retributionPerHour;
 
     public List<WHWorker> workers;

@@ -29,7 +29,7 @@ public class TruckAIController : VehicleAIController
 
             StartCoroutine(GarbageCollectionProcedure());
 
-            waypoints = AStar.PathFromTo(Utils.NearestNode(transform.position), destinations[0]);
+            waypoints = AStar.PathFromTo(Utils.NearestNode(transform.position), destinations[0], gameObject);
             destinations.Remove(destinations[0]);
         }
 

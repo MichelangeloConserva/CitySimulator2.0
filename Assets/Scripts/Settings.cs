@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Settings
+public class Settings 
 {
 
     public static readonly bool visualizeRoadNetwork = true;
@@ -13,8 +13,6 @@ public class Settings
 
 
     public static readonly float speedLimit = 55;
-
-
 
 
 }

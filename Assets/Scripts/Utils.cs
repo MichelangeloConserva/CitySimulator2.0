@@ -109,9 +109,17 @@ public class Utils
 
     public static void SendVehicleFromTo(NodeStreet startNode, NodeStreet endNode, GameObject vehicle)
     {
-        var path = AStar.PathFromTo(startNode, endNode);
-        vehicle.transform.LookAt(path[0]);
-        vehicle.GetComponent<VehicleAIController>().waypoints = path;
+        var path = AStar.PathFromTo(startNode, endNode, vehicle);
+        
+        if (path.Count > 0)
+        {
+            vehicle.transform.LookAt(path[0].nodePosition);
+            vehicle.GetComponent<VehicleAIController>().nextWaypoint = path[0];
+            vehicle.GetComponent<VehicleAIController>().waypoints = path;
+            vehicle.GetComponent<VehicleAIController>().arrivalNode = endNode;
+            return;
+        }
+        Debug.Log("Path not found");
     }
 
 

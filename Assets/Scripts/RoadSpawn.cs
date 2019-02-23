@@ -318,17 +318,22 @@ public class RoadSpawn : MonoBehaviour
         // all the four positions to check from a cross
         List<Vector3> checkPositions = new List<Vector3> {
             cross.transform.position + (cross.transform.forward * 10),
-            cross.transform.position + (cross.transform.right  *  -7 ),
-            cross.transform.position + (cross.transform.right  *  -7 - cross.transform.forward * 7),
+            cross.transform.position + (cross.transform.forward * 8),
+            cross.transform.position + (cross.transform.right  *  -3 - cross.transform.forward * 3)  - Vector3.up*3,
+            cross.transform.position + (cross.transform.right  *  -3 - cross.transform.forward * -3) + Vector3.up*3,
+            cross.transform.position + (cross.transform.right  *  -3 - cross.transform.forward * 3)  + Vector3.up*3,
+            cross.transform.position + (cross.transform.right  *  3 - cross.transform.forward * -3)  + Vector3.up*3,
+            cross.transform.position + (cross.transform.right  *  3 - cross.transform.forward * 3)   + Vector3.up*3,
         };
+        float radius = 2.5f;
         // if the cross is actually a curve
         if (cross.tag == "curvePoint")
         {
-            checkPositions.RemoveAt(1);
-            checkPositions.RemoveAt(1);
+            checkPositions = new List<Vector3> {
+            cross.transform.position + (cross.transform.forward * 9)};
         }
         foreach (Vector3 checkPos in checkPositions)
-            CheckAtPositionForNodesFromCross(checkPos, curNode);
+            CheckAtPositionForNodesFromCross(checkPos, curNode, radius);
     }
     
     /// <summary>
@@ -341,7 +346,7 @@ public class RoadSpawn : MonoBehaviour
         var curNode = streetPoint.GetComponent<NodeHandler>().node;
 
         // Checking for nodes in front of the current node
-        var colls = Physics.OverlapSphere(streetPoint.transform.position + (streetPoint.transform.forward.normalized * 14f), 2f, LayerMask.GetMask("network"));
+        var colls = Physics.OverlapSphere(streetPoint.transform.position + (streetPoint.transform.forward.normalized * 14f), 2.3f, LayerMask.GetMask("network"));
         if (colls.Length > 0)
         {
             CheckAtPositionForNodesFromStreetPoint(colls, streetPoint, curNode);

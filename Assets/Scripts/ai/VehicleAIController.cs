@@ -6,7 +6,7 @@ public abstract class VehicleAIController : MonoBehaviour
 {
     [Header("Path variables")]
     [Space]
-    public List<Vector3> waypoints;
+    public List<NodeStreet> waypoints;
     
 
     [Header("Debug variables")]
@@ -19,6 +19,7 @@ public abstract class VehicleAIController : MonoBehaviour
     public float turningForce;
     public float frontForce;
     public float minTurn;
+    public float minTurnToTurn;
     public float minDistanceToCompleteCheck;
     public float raySensorLength;
     public float securityDistance;
@@ -36,21 +37,33 @@ public abstract class VehicleAIController : MonoBehaviour
 
     private bool aboutToTurn;
 
+    public NodeStreet nextWaypoint;
+    public NodeStreet arrivalNode;
+
+
+    public Vector3 roadLaneDir;
+
+
 
     void Start()
     {
+        roadLaneDir = Vector3.zero;
         stopped = false;
         aboutToTurn = false;
         stopAtTrafficLight = false;
         nearbyCars = new List<GameObject>();
+        waypoints = new List<NodeStreet>();
         maxSpeed = Mathf.Infinity;
 
         motor = GetComponent<MotorSimulator>();
-
     }
 
     void FixedUpdate()
     {
+        if (nextWaypoint == null)
+            return;
+
+
         if (stopped)
         {
             motor.Brake(100000000 * Mathf.Pow(rbSpeed + 1, 6) + 5);
@@ -58,17 +71,24 @@ public abstract class VehicleAIController : MonoBehaviour
         }
 
 
+        // Checking for cars in front 
+        var frontDirection = motor.wheel[0].transform.forward;
+        var frontPos = transform.position + transform.forward;
+
+        Utils.DrawDebugArrow(frontPos, nextWaypoint.nodePosition - frontPos, Color.green);
+
         bool goNoProblem = true;
         bool otherCarInFront = false;
         bool otherCarNearby= false;
         var sensorLength = raySensorLength;
 
         if (waypoints.Count == 0)
-            return;
+            waypoints = AStar.PathFromTo(Physics.OverlapSphere(Utils.Down(transform.position), 5, LayerMask.GetMask("network"))[0].gameObject.GetComponent<NodeHandler>().node,
+                                            arrivalNode, gameObject);
 
         // Checking arrival at waypoint
-        var carPos = transform.position - Vector3.up * transform.position.y;
-        var wayPos = waypoints[0] - Vector3.up * waypoints[0].y;
+        var carPos = Utils.Down(frontPos);
+        var wayPos = Utils.Down(nextWaypoint.nodePosition);
         var distance = Vector3.Distance(carPos, wayPos);
         if (distance < minDistanceToCompleteCheck)
             StartCoroutine(Recalculating());
@@ -79,9 +99,7 @@ public abstract class VehicleAIController : MonoBehaviour
         // Checking how much to turn
         var turning = AngleToTurn();
 
-        // Checking for cars in front 
-        var frontDirection = motor.wheel[0].transform.forward;
-        var frontPos = transform.position + transform.forward;
+
 
 
         // we have a situation to handle
@@ -101,8 +119,9 @@ public abstract class VehicleAIController : MonoBehaviour
             Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength, Color.blue);
             Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 4 + transform.right, Color.blue);
             Utils.DrawDebugArrow(frontPos, frontDirection * sensorLength / 4 - transform.right, Color.blue);
+            Utils.DrawDebugArrow(frontPos,  transform.right * 1.5f, Color.blue);
+            Utils.DrawDebugArrow(frontPos, -transform.right * 1.5f, Color.blue);
         }
-
 
 
         RaycastHit hit = new RaycastHit();
@@ -110,7 +129,7 @@ public abstract class VehicleAIController : MonoBehaviour
                            frontDirection,
                            out hit,
                            sensorLength,
-                           LayerMask.GetMask("car")))
+                           LayerMask.GetMask("vehicle")))
         {
             otherCarInFront = true;
             goNoProblem = false;
@@ -120,23 +139,48 @@ public abstract class VehicleAIController : MonoBehaviour
                                  frontDirection * sensorLength / 4 + transform.right,
                                  out hit,
                                  sensorLength/4,
-                                 LayerMask.GetMask("car")))
+                                 LayerMask.GetMask("vehicle")))
         {
             otherCarNearby = true;
             goNoProblem = false;
-            turning -= 0.1f;
+            turning -= 0.2f;
         }
         // checking cars at left
         else if (Physics.Raycast(frontPos,
                                  frontDirection * sensorLength / 4 - transform.right,
                                  out hit,
                                  sensorLength / 4,
-                                 LayerMask.GetMask("car")))
+                                 LayerMask.GetMask("vehicle")))
         {
             otherCarNearby = true;
             goNoProblem = false;
-            turning += 0.1f;
+            turning += 0.2f;
         }
+        // Checking car on the right
+        else if(Physics.Raycast(frontPos,
+                                 transform.right,
+                                 out hit,
+                                 1f,
+                                 LayerMask.GetMask("vehicle")))
+        {
+            otherCarNearby = true;
+            goNoProblem = false;
+            turning -= 0.3f;
+            turning = Mathf.Max(turning, -1);
+        }
+        // Checking car on the left
+        else if (Physics.Raycast(frontPos,
+                                 - transform.right,
+                                 out hit,
+                                 1f,
+                                 LayerMask.GetMask("vehicle")))
+        {
+            otherCarNearby = true;
+            goNoProblem = false;
+            turning += 0.3f;
+            turning = Mathf.Min(turning, 1);
+        }
+
 
 
         // Moving forward
@@ -144,9 +188,7 @@ public abstract class VehicleAIController : MonoBehaviour
         {
             // Boosting acceleration if speed is low
             if (rbSpeed < 20)
-            {
                 frontForce *= 1.1f;
-            }
 
             turningForce = turning * motor.turnPower;
             var force = frontForce * motor.enginePower;
@@ -165,7 +207,15 @@ public abstract class VehicleAIController : MonoBehaviour
             else if (stopAtTrafficLight)
             {
                 var dist = Vector3.Distance(transform.position, stopPosForTrafficLight);
-                StoppingProcedure(dist-1, turning);
+                Vector3 ext = Vector3.zero;
+                var dir = stopPosForTrafficLight - transform.position;
+                if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
+                    ext += Vector3.right;
+                else
+                    ext += Vector3.forward;
+                
+                var cross = Vector3.Cross(transform.forward, ext);
+                StoppingProcedure(dist-1, cross.y);
             }
 
             // Slowing since I'm about to turn
@@ -179,7 +229,7 @@ public abstract class VehicleAIController : MonoBehaviour
             else if (otherCarNearby)
             {
                 var dist = Vector3.Distance(transform.position, hit.point);
-                SlowingProcedure(dist, turning);
+                SlowingProcedure(dist+5, turning);
             }
         }
 
@@ -188,9 +238,6 @@ public abstract class VehicleAIController : MonoBehaviour
             GetComponent<Rigidbody>().velocity *= 0.99f;
 
     }
-
-
-
 
     /// <summary>
     /// A calibrated slowing procedure made to look realistic
@@ -220,8 +267,13 @@ public abstract class VehicleAIController : MonoBehaviour
             motor.Brake(dist * 100000000 * Mathf.Pow(rbSpeed + 1, 6) + 3);
         else if (dist > securityDistance)
         {
+
             turningForce = turning * motor.turnPower;
             var force = 1 * motor.enginePower;
+
+            if (turning > 0.3f)
+                force /= 2;
+
             motor.Move(force, turningForce);
         }
         else
@@ -238,13 +290,11 @@ public abstract class VehicleAIController : MonoBehaviour
     {
         if (stop)
         {
-            stopAtTrafficLight = true;
+            this.stopAtTrafficLight = true;
             stopPosForTrafficLight = stopPos;
         }
         else
-        {
-            stopAtTrafficLight = false;
-        }
+            this.stopAtTrafficLight = false;
     }
 
     /// <summary>
@@ -254,8 +304,13 @@ public abstract class VehicleAIController : MonoBehaviour
     private float AngleToTurn()
     {
         if(waypoints.Count == 0) { return 0; }
-        var heading = waypoints[0] - transform.position;
-        var cross = Vector3.Cross(transform.forward, heading.normalized);
+        var heading = waypoints[0].nodePosition - transform.position;
+        var cross =  Vector3.Cross(transform.forward, heading.normalized);
+
+        if (Mathf.Abs(cross.y) < minTurnToTurn)
+            return 0;
+
+
         return cross.y;
     }
 
@@ -268,7 +323,7 @@ public abstract class VehicleAIController : MonoBehaviour
         if (waypoints.Count <= 1)
             return false;
 
-        var heading = waypoints[1] - transform.position;
+        var heading = waypoints[1].nodePosition - transform.position;
         var cross = Vector3.Cross(transform.forward, heading.normalized).y;
 
         if (Mathf.Abs(cross) < minTurn)
@@ -284,4 +339,6 @@ public abstract class VehicleAIController : MonoBehaviour
     /// <returns></returns>
     public abstract IEnumerator Recalculating();
 
+
+    // TODO : dynamic pathfinding to avoid traffic
 }
