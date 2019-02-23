@@ -28,15 +28,11 @@ public class CarsManager : MonoBehaviour {
         cars = new List<GameObject>();
     }
 
-    public void SpawnCar(Vector3 startPos, List<NodeStreet> wayPoints, NodeStreet lastNode, Quaternion rot)
+    public void SpawnCar(Quaternion rot)
     {
-        var curCar = Instantiate(car, startPos + Vector3.up * 3, rot, garage.transform);
-        curCar.transform.LookAt(wayPoints[0].nodePosition);
+        var curCar = Instantiate(car, startNode.nodePosition + Vector3.up * 3, rot, garage.transform);
         cars.Add(curCar);
-        curCar.GetComponent<VehicleAIController>().nextWaypoint = wayPoints[0];
-        curCar.GetComponent<VehicleAIController>().waypoints = wayPoints;
-        curCar.GetComponent<VehicleAIController>().arrivalNode = lastNode;
-
+        Utils.SendVehicleFromTo(startNode, endNode, curCar);
     }
 
     void Update()
@@ -46,10 +42,8 @@ public class CarsManager : MonoBehaviour {
         {
             //PickRandomTrip();
             GO();
-            var path = AStar.PathFromTo(startNode, endNode);
 
-            if (path.Count > 1)
-                SpawnCar(startNode.nodePosition, path, endNode, rot);
+            SpawnCar(rot);
 
             spawn = false;
         }

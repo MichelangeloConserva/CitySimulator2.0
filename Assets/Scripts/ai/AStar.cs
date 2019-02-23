@@ -12,12 +12,18 @@ public class AStar {
 
     public List<NodeStreet> path;
 
-    public AStar(NodeStreet startNode, NodeStreet endNode)
+    public GameObject vehicle;
+
+    public float carCost = 10;
+
+    public AStar(NodeStreet startNode, NodeStreet endNode, GameObject vehicle)
     {
         // Initialize the set of nodes and the path
         openedNodes = new List<NodeStreet>();
         closedNodes = new HashSet<NodeStreet>();
         path = new List<NodeStreet>();
+
+        this.vehicle = vehicle;
 
         // Setting a reference for the start and the end node
         this.startNode = startNode;
@@ -68,15 +74,11 @@ public class AStar {
                     ext += Vector3.forward * (14-2);
 
                 var colls = Physics.OverlapBox(neighbour.nodePosition, ext, Quaternion.identity, LayerMask.GetMask("vehicle"));
-
                 foreach (Collider c in colls)
-                    carPresence += 100f;
+                    if (c.gameObject != vehicle)
+                        carPresence += carCost;
 
                 float newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour) + carPresence;
-                if (neighbours.Count >= 1)
-                {
-                    // TODO : make them go left newMovementCostToNeighbour += Random.Range(0, 5);
-                }
                 if (newMovementCostToNeighbour < neighbour.gCost | !openedNodes.Contains(neighbour))
                 {
                     neighbour.gCost = newMovementCostToNeighbour;
@@ -128,10 +130,10 @@ public class AStar {
     }
 
 
-    public static List<NodeStreet> PathFromTo(NodeStreet startNode, NodeStreet endNode)
+    public static List<NodeStreet> PathFromTo(NodeStreet startNode, NodeStreet endNode, GameObject vehicle)
     {
         // pathfinding
-        var pathFinder = new AStar(startNode, endNode);
+        var pathFinder = new AStar(startNode, endNode, vehicle);
         var found = pathFinder.PathFinder();
         var path = new List<NodeStreet>();
         foreach (NodeStreet n in pathFinder.path)

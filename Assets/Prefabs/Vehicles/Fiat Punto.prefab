@@ -541,7 +541,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enginePower: 400
-  turnPower: 50
+  turnPower: 80
   humanControll: 0
   maxSpeed: 0
   wheel:
@@ -581,11 +581,13 @@ MonoBehaviour:
   turningForce: 40
   frontForce: 300
   minTurn: 0.2
-  minDistanceToCompleteCheck: 4
+  minTurnToTurn: 0.1
+  minDistanceToCompleteCheck: 4.5
   raySensorLength: 15
   securityDistance: 5
   stopped: 0
   maxSpeed: 0
+  roadLaneDir: {x: 0, y: 0, z: 0}
 --- !u!1 &8042658815590536887
 GameObject:
   m_ObjectHideFlags: 0

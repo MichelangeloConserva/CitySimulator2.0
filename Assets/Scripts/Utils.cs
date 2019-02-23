@@ -109,7 +109,7 @@ public class Utils
 
     public static void SendVehicleFromTo(NodeStreet startNode, NodeStreet endNode, GameObject vehicle)
     {
-        var path = AStar.PathFromTo(startNode, endNode);
+        var path = AStar.PathFromTo(startNode, endNode, vehicle);
         
         if (path.Count > 0)
         {
@@ -120,7 +120,6 @@ public class Utils
             return;
         }
         Debug.Log("Path not found");
-        DrawDebugArrow(startNode.nodePosition + Vector3.up * 3, (endNode.nodePosition - startNode.nodePosition) + Vector3.up * 3, Color.red, Mathf.Infinity);
     }
 
 

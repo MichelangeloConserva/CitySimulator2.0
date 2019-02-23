@@ -19,6 +19,7 @@ public abstract class VehicleAIController : MonoBehaviour
     public float turningForce;
     public float frontForce;
     public float minTurn;
+    public float minTurnToTurn;
     public float minDistanceToCompleteCheck;
     public float raySensorLength;
     public float securityDistance;
@@ -40,10 +41,13 @@ public abstract class VehicleAIController : MonoBehaviour
     public NodeStreet arrivalNode;
 
 
+    public Vector3 roadLaneDir;
+
 
 
     void Start()
     {
+        roadLaneDir = Vector3.zero;
         stopped = false;
         aboutToTurn = false;
         stopAtTrafficLight = false;
@@ -56,6 +60,10 @@ public abstract class VehicleAIController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (nextWaypoint == null)
+            return;
+
+
         if (stopped)
         {
             motor.Brake(100000000 * Mathf.Pow(rbSpeed + 1, 6) + 5);
@@ -63,16 +71,23 @@ public abstract class VehicleAIController : MonoBehaviour
         }
 
 
+        // Checking for cars in front 
+        var frontDirection = motor.wheel[0].transform.forward;
+        var frontPos = transform.position + transform.forward;
+
+        Utils.DrawDebugArrow(frontPos, nextWaypoint.nodePosition - frontPos, Color.green);
+
         bool goNoProblem = true;
         bool otherCarInFront = false;
         bool otherCarNearby= false;
         var sensorLength = raySensorLength;
 
         if (waypoints.Count == 0)
-            return;
+            waypoints = AStar.PathFromTo(Physics.OverlapSphere(Utils.Down(transform.position), 5, LayerMask.GetMask("network"))[0].gameObject.GetComponent<NodeHandler>().node,
+                                            arrivalNode, gameObject);
 
         // Checking arrival at waypoint
-        var carPos = transform.position - Vector3.up * transform.position.y;
+        var carPos = Utils.Down(frontPos);
         var wayPos = Utils.Down(nextWaypoint.nodePosition);
         var distance = Vector3.Distance(carPos, wayPos);
         if (distance < minDistanceToCompleteCheck)
@@ -84,9 +99,7 @@ public abstract class VehicleAIController : MonoBehaviour
         // Checking how much to turn
         var turning = AngleToTurn();
 
-        // Checking for cars in front 
-        var frontDirection = motor.wheel[0].transform.forward;
-        var frontPos = transform.position + transform.forward;
+
 
 
         // we have a situation to handle
@@ -109,7 +122,6 @@ public abstract class VehicleAIController : MonoBehaviour
             Utils.DrawDebugArrow(frontPos,  transform.right * 1.5f, Color.blue);
             Utils.DrawDebugArrow(frontPos, -transform.right * 1.5f, Color.blue);
         }
-
 
 
         RaycastHit hit = new RaycastHit();
@@ -148,23 +160,25 @@ public abstract class VehicleAIController : MonoBehaviour
         else if(Physics.Raycast(frontPos,
                                  transform.right,
                                  out hit,
-                                 1.5f,
+                                 1f,
                                  LayerMask.GetMask("vehicle")))
         {
             otherCarNearby = true;
             goNoProblem = false;
             turning -= 0.3f;
+            turning = Mathf.Max(turning, -1);
         }
         // Checking car on the left
         else if (Physics.Raycast(frontPos,
                                  - transform.right,
                                  out hit,
-                                 1.5f,
+                                 1f,
                                  LayerMask.GetMask("vehicle")))
         {
             otherCarNearby = true;
             goNoProblem = false;
             turning += 0.3f;
+            turning = Mathf.Min(turning, 1);
         }
 
 
@@ -174,9 +188,7 @@ public abstract class VehicleAIController : MonoBehaviour
         {
             // Boosting acceleration if speed is low
             if (rbSpeed < 20)
-            {
                 frontForce *= 1.1f;
-            }
 
             turningForce = turning * motor.turnPower;
             var force = frontForce * motor.enginePower;
@@ -227,9 +239,6 @@ public abstract class VehicleAIController : MonoBehaviour
 
     }
 
-
-
-
     /// <summary>
     /// A calibrated slowing procedure made to look realistic
     /// </summary>
@@ -258,8 +267,13 @@ public abstract class VehicleAIController : MonoBehaviour
             motor.Brake(dist * 100000000 * Mathf.Pow(rbSpeed + 1, 6) + 3);
         else if (dist > securityDistance)
         {
+
             turningForce = turning * motor.turnPower;
             var force = 1 * motor.enginePower;
+
+            if (turning > 0.3f)
+                force /= 2;
+
             motor.Move(force, turningForce);
         }
         else
@@ -276,13 +290,11 @@ public abstract class VehicleAIController : MonoBehaviour
     {
         if (stop)
         {
-            stopAtTrafficLight = true;
+            this.stopAtTrafficLight = true;
             stopPosForTrafficLight = stopPos;
         }
         else
-        {
-            stopAtTrafficLight = false;
-        }
+            this.stopAtTrafficLight = false;
     }
 
     /// <summary>
@@ -293,7 +305,12 @@ public abstract class VehicleAIController : MonoBehaviour
     {
         if(waypoints.Count == 0) { return 0; }
         var heading = waypoints[0].nodePosition - transform.position;
-        var cross = Vector3.Cross(transform.forward, heading.normalized);
+        var cross =  Vector3.Cross(transform.forward, heading.normalized);
+
+        if (Mathf.Abs(cross.y) < minTurnToTurn)
+            return 0;
+
+
         return cross.y;
     }
 
