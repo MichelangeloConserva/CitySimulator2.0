@@ -26,6 +26,11 @@ public class RoadSpawn : MonoBehaviour
     public float outLanesWidth = 4.2f;
     public float innerLanesWidth = 1.8f;
 
+    [Header("Buildings to spawn")]
+    [Space]
+    public GameObject garbageOffice;
+    public GameObject houseBlock;
+
     private GameObject curPointer;
 
     private List<GameObject> streetPointsToUpdate;
@@ -100,6 +105,14 @@ public class RoadSpawn : MonoBehaviour
             case "Back Deleting":
                 deleting = false;
                 break;
+            case "Garbage Office":
+                if (curBlocks.Count == 0)
+                    SpawnBuilding(garbageOffice);
+                break;
+            case "House Block":
+                if (curBlocks.Count == 0)
+                    SpawnBuilding(houseBlock);
+                break;
         }
     }
 
@@ -113,6 +126,12 @@ public class RoadSpawn : MonoBehaviour
         curPointer.GetComponent<GridSnapping>().enabled = true;
         curPointer.transform.position += Vector3.up * 1;
         curBlocks.Add(curPointer);
+    }
+
+    public void SpawnBuilding(GameObject spawnable)
+    {
+        Instantiate(spawnable);
+        spawnable.GetComponent<SpawnBuildingInGrid>().enabled = true;
     }
 
     /// <summary>

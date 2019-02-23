@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 631099364382480600}
   - component: {fileID: 4205703793673133746}
   - component: {fileID: 7839079520280409487}
+  - component: {fileID: 7002547089655334729}
   m_Layer: 11
   m_Name: HouseBlock1_allMesh
   m_TagString: housingUnit
@@ -292,3 +293,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.99999994, y: 0.03, z: 0.99999994}
   m_Center: {x: 0, y: 0.01, z: 0}
+--- !u!114 &7002547089655334729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7678109303097230296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2302d79b1f8cabd49ad0417f14b07a7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDragging: 1
