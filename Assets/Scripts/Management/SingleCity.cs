@@ -36,28 +36,44 @@ public class SingleCity : MonoBehaviour
                     SetBoundaries(startPoint.GetChild(i).transform);
         }
 
-
         // TODO : add methods to show interesting things about boundaries
         public void showBoundaries()
         {
 
         }
 
-        public List<Vector3> pointOnGridInside()
+
+        private IEnumerable<Vector3> points()
         {
             var grid = FindObjectOfType<GridProperties>();
             List<Vector3> pointsInside = new List<Vector3>();
 
             Vector3 frontRight = Utils.GetNearestPointOnGrid(new Vector3(xMax, 0, zMax));
-            Vector3 frontLeft  = Utils.GetNearestPointOnGrid(new Vector3(xMax, 0, zMin));
-            Vector3 rearRight  = Utils.GetNearestPointOnGrid(new Vector3(xMin, 0, zMax));
-            Vector3 rearLeft   = Utils.GetNearestPointOnGrid(new Vector3(xMin, 0, zMin));
-            
-            for (float z = zMin; z<zMax; z+=grid.gridSize)
+            Vector3 frontLeft = Utils.GetNearestPointOnGrid(new Vector3(xMax, 0, zMin));
+            Vector3 rearRight = Utils.GetNearestPointOnGrid(new Vector3(xMin, 0, zMax));
+            Vector3 rearLeft = Utils.GetNearestPointOnGrid(new Vector3(xMin, 0, zMin));
+            for (float z = zMin; z < zMax; z += grid.gridSize)
                 for (float x = xMin; x < xMax; x += grid.gridSize)
-                    pointsInside.Add(Utils.GetNearestPointOnGrid(new Vector3(x, 0, z)));
+                    yield return Utils.GetNearestPointOnGrid(new Vector3(x, 0, z));
+        }
+
+        public List<Vector3> pointsInsideGrid()
+        {
+            List<Vector3> pointsInside = new List<Vector3>();
+            foreach (Vector3 p in points())
+                    pointsInside.Add(Utils.GetNearestPointOnGrid(new Vector3(p.x, 0, p.z)));
             return pointsInside;
         }
+
+        public List<Vector3> freePointsInsideGrid()
+        {
+            List<Vector3> pointsInside = new List<Vector3>();
+            foreach (Vector3 p in points())
+                if (Physics.OverlapSphere(new Vector3(p.x, 0, p.z), 3.5F).Length <= 1)
+                        pointsInside.Add(Utils.GetNearestPointOnGrid(new Vector3(p.x, 0, p.z)));
+            return pointsInside;
+        }
+
     }
 
     /// <summary>
@@ -186,7 +202,8 @@ public class SingleCity : MonoBehaviour
 
     void Start()
     {
-        GetBoundaries().pointOnGridInside();
+        foreach (Vector3 v in GetBoundaries().freePointsInsideGrid())
+            Utils.DrawDebugArrow(v, Vector3.up * 10, Color.black, Mathf.Infinity);
     }
 
 
