@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1406007206}
   - component: {fileID: 1406007205}
   - component: {fileID: 1427439366}
+  - component: {fileID: 4840400792416250659}
+  - component: {fileID: 2605954092684827245}
   m_Layer: 0
   m_Name: OfficeAndGarageAllMesh
   m_TagString: Untagged
@@ -102,6 +104,32 @@ MonoBehaviour:
     type: 3}
   destinationPlaces: []
   hoursInterval: 3
+--- !u!114 &4840400792416250659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406007203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2302d79b1f8cabd49ad0417f14b07a7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDragging: 1
+--- !u!65 &2605954092684827245
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406007203}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.000001, y: 3.000001, z: 0.7174469}
+  m_Center: {x: 0, y: -0.00000008053231, z: 0.33777708}
 --- !u!1 &1509229802
 GameObject:
   m_ObjectHideFlags: 0

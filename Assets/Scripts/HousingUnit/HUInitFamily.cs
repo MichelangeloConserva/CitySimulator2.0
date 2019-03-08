@@ -12,13 +12,19 @@ using static Utils;
 /// </summary>
 public class HUInitFamily : MonoBehaviour
 {
+    [Header("Objects to be used")]
+    [Space]
     public GameObject car;
 
+    [Header("References")]
+    [Space]
+    public SingleCity sc;
     public HUGeneralManager huGeneralManager;
     public HUCarsHandler huCarsHandler;
     public HUEconomy huEconomy;
 
     [Header("Family settings")]
+    [Space]
     public int numberOfAdultsComponents;
     public int numberOfChildrenComponents;
 
@@ -30,6 +36,7 @@ public class HUInitFamily : MonoBehaviour
     private GameObject[] possibleWorkingPlaces;
     private GameObject[] supermarkets;
 
+
     public NodeStreet GetspawnPoint() => GetComponentInChildren<SpawnPointHandler>().node;
 
 
@@ -37,10 +44,8 @@ public class HUInitFamily : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        huGeneralManager = GetComponentInParent<HUGeneralManager>();
+        //huGeneralManager = GetComponentInParent<HUGeneralManager>();
         huGeneralManager.HUs.Add(this);
-
 
         // Initliaze the family itself
         InitFamily();
@@ -60,23 +65,9 @@ public class HUInitFamily : MonoBehaviour
     private void InitFamily()
     {
 
-        var search = 1000;
-        var colls = Physics.OverlapBox(transform.position, new Vector3(search, 10, search), Quaternion.identity, LayerMask.GetMask("possibleDestinations"));
-
-
-        var workplacesNearby = new List<GameObject>();
-        var housesNearby = new List<GameObject>();
-        var marketsNearby = new List<GameObject>();
-
-        foreach ( Collider c in colls)
-        {
-            if (c.gameObject.tag == "workPlace")
-                workplacesNearby.Add(c.gameObject);
-            else if (c.gameObject.tag == "housingUnit")
-                housesNearby.Add(c.gameObject);
-            else if (c.gameObject.tag == "supermarket")
-                marketsNearby.Add(c.gameObject);
-        }
+        var workplacesNearby = sc.GetWorkplaces().workplaces;
+        var housesNearby = sc.GetHuUnits().huUnits;
+        var marketsNearby = sc.GetMarketplaces().marketplaces;
 
         // Family
         possibleNumberOfAdultsComponents = new int[] {1,1,1,1,

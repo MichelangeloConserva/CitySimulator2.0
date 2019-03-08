@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CityManagementTime : MonoBehaviour
 {
@@ -10,14 +11,19 @@ public class CityManagementTime : MonoBehaviour
     public System.DateTime realTime;
     public Utils.DayTime dayTime;
 
+    public GameObject timeUI;
 
     private Dictionary<Utils.DayTime, int> dayTimeDuration;
 
     private bool changeDayTime;
 
+    private string time;
+
 
     void Start()
     {
+
+
         changeDayTime = false;
 
 
@@ -58,6 +64,9 @@ public class CityManagementTime : MonoBehaviour
 
 
         deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+
+        time = "Time: " + realTime.ToString("d/M/yyyy HH:mm ") +"\n" +  dayTime.ToString();
+        timeUI.GetComponent<Text>().text = time;
     }
 
 
@@ -86,9 +95,11 @@ public class CityManagementTime : MonoBehaviour
     {
         var style1 = new GUIStyle();
         style1.normal.textColor = Color.black;
+        string time;
+        time = "Time: " + realTime.ToString("d/M/yyyy HH:mm:ss ") + dayTime.ToString();
         GUI.Label(new Rect(10, 30, 400, 100), "Time: " + realTime.ToString("d/M/yyyy HH:mm:ss ") + dayTime.ToString(), style1);
 
-        int w = Screen.width, h = Screen.height;
+        /*int w = Screen.width, h = Screen.height;
         GUIStyle style = new GUIStyle();
         Rect rect = new Rect(10, 80, w, h * 2 / 30);
         style.alignment = TextAnchor.UpperLeft;
@@ -97,7 +108,7 @@ public class CityManagementTime : MonoBehaviour
         float msec = deltaTime * 1000.0f;
         float fps = 1.0f / deltaTime;
         string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
-        GUI.Label(rect, text, style);
+        GUI.Label(rect, text, style);*/
     }
 
 

@@ -26,6 +26,7 @@ public class CarsManager : MonoBehaviour {
     {
         spawn = false;
         cars = new List<GameObject>();
+
     }
 
     public void SpawnCar(Quaternion rot)

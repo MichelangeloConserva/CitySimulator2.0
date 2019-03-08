@@ -105,6 +105,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   markerPos: {fileID: 0}
+--- !u!114 &1794953977335402462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732159222385390371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bf3c168a19a1894db76b8c70d335c46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1940592908755603794
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,6 +558,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a9db4bc8f1a65c42be478917c1ec6bf, type: 3}
+--- !u!1 &1732159222385390371 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1039048826478846, guid: 3a9db4bc8f1a65c42be478917c1ec6bf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1732316444357972957}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1730662930245717063 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4187366549741466, guid: 3a9db4bc8f1a65c42be478917c1ec6bf,

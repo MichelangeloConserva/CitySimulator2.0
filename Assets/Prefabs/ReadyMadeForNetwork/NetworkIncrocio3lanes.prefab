@@ -12,6 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73b1ce9008794ae4ea4265830dc321bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7023884825541631196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908152885588233732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bf3c168a19a1894db76b8c70d335c46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7933620242590053166
 GameObject:
   m_ObjectHideFlags: 0
@@ -704,7 +716,7 @@ PrefabInstance:
     - target: {fileID: 7022606960161693496, guid: 2fe9e7a34c42c0541b12e00e05f499b2,
         type: 3}
       propertyPath: m_Name
-      value: NetworkIncrocio3lanes (1)
+      value: NetworkIncrocio3lanes
       objectReference: {fileID: 0}
     - target: {fileID: 8352043468633316469, guid: 2fe9e7a34c42c0541b12e00e05f499b2,
         type: 3}

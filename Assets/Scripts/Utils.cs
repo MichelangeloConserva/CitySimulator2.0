@@ -121,6 +121,8 @@ public class Utils
 
     public static T RandomFromArray<T>(ref T[] arr)
     {
+        if (arr.Length == 0) { return default; }
+
         return arr[Random.Range(0, arr.Length - 1)];
     }
 
@@ -129,7 +131,21 @@ public class Utils
         return v - Vector3.up * v.y;
     }
 
+    public static Vector3 GetNearestPointOnGrid(Vector3 pos, float y=0)
+    {
+        var grid = Object.FindObjectOfType<GridProperties>();
 
+        int xCount = Mathf.RoundToInt(pos.x / grid.gridSize);
+        int zCount = Mathf.RoundToInt(pos.z / grid.gridSize);
+
+        Vector3 result = new Vector3(
+            (float)xCount * grid.gridSize,
+            y,
+            (float)zCount * grid.gridSize
+            );
+
+        return result;
+    }
 
     //public delegate T del<T>(ref T[] arr);
     //del<float> myDel = (ref float[] arr) => RandomFromArray(ref arr);
